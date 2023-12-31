@@ -1,4 +1,6 @@
 const RestaurantModel= require("../models/RestaurantModel")
+const UserModel= require("../models/UserModel")
+const DeliveryPersonModel= require("../models/DeliveryPersonModel")
 const bcrypt = require("bcryptjs")
 const jwt=require("jsonwebtoken")
 const jwtSecret="EverythinginthisworldisChaoticthereisnomeaningofLifewehavetojustcreateit"
@@ -7,6 +9,31 @@ const jwtSecret="EverythinginthisworldisChaoticthereisnomeaningofLifewehavetojus
 
 const signupRestaurant = async (req,res) => {
     try {
+
+        const user=await UserModel.findOne(
+            {
+                email:req.body.email
+            }
+        )
+        const deliveryperson=await DeliveryPersonModel.findOne(
+            {
+                email:req.body.email
+            }
+        )
+        const restaurant=await RestaurantModel.findOne(
+            {
+                email:req.body.email
+            }
+        )
+    
+        if(user||restaurant||deliveryperson){
+            return res.status(400).json(
+                {
+                    errors: [{message: "Email Already exists!"}]
+                }
+            )
+        }
+
         const salt=await bcrypt.genSalt(10)
         const hashedPassword=await bcrypt.hash(req.body.password,salt)
 
