@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
 app.use(express.json())
 
 app.use("/api/userauth",require("./routes/UserAuthRoute"))
+app.use("/api/restaurant",require("./routes/RestaurantRoute"))
 app.use("/api/deliveryperson",require("./routes/DeliveryPersonRoute"))
 
 
