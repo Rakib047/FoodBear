@@ -8,4 +8,10 @@ router.route("/login")
 router.route("/signup")
         .post(controllers.signupDeliveryPerson)
 
+router.route("/dashboard")
+        .get(controllers.dashboardDeliveryPerson)
+
+router.route("/isavailable/:deliverypersonId")
+        .put(controllers.isAvailableDeliveryPerson)
+
 module.exports = router;

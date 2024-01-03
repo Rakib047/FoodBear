@@ -7,6 +7,7 @@ import  {BrowserRouter as Router,
   Routes,
   Route
 } from "react-router-dom"
+import { DashboardDP } from './pages/DeliveryPerson/DashboardDP';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               <Route exact path="/" element={<Home />} />
               <Route exact path="/deliveryperson/signup" element={<SignupDP />} />
               <Route exact path="/deliveryperson/login" element={<LoginDP />} />
+              <Route exact path="/deliveryperson/dashboard" element={<DashboardDP />} />
             </Routes>
           </div>
         </Router>

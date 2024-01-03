@@ -82,6 +82,7 @@ const loginDeliveryPerson = async (req, res) => {
 
     const authToken = jwt.sign(data, jwtSecret);
     return res.json({
+      dpId:data,
       success: true,
       authToken: authToken,
     });
@@ -91,7 +92,48 @@ const loginDeliveryPerson = async (req, res) => {
   }
 };
 
+const dashboardDeliveryPerson = async (req,res) =>{
+  try {
+
+    const fetchedCollection=await mongoose.connection.db.collection("delivery_persons")
+    //sending all delivery persons
+    const delivery_persons=await fetchedCollection.find({}).toArray()
+
+    res.send(delivery_persons)
+    
+  } catch (error) {
+    console.log(error)
+    return res.status(404).json({success:false})
+  }
+}
+
+const isAvailableDeliveryPerson = async (req,res) =>{
+  const {deliverypersonId} = req.params
+
+  try {
+    const deliveryperson = await DeliveryPersonModel.findById(deliverypersonId)
+    //console.log("here")
+
+    if(!deliveryperson){
+      return res.status(404).json({message:"delivery person not found"})
+    }
+
+    deliveryperson.is_available= !deliveryperson.is_available
+
+    //saving to database
+    await deliveryperson.save()
+
+    return res.status(200).json({message:"is_available status updated!",is_available:deliveryperson.is_available})
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({message:"Server problem vai!"})
+  }
+} 
+
 module.exports = {
   signupDeliveryPerson,
   loginDeliveryPerson,
+  dashboardDeliveryPerson,
+  isAvailableDeliveryPerson
 };
