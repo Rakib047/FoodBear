@@ -82,9 +82,8 @@ const loginDeliveryPerson = async (req, res) => {
 
     const authToken = jwt.sign(data, jwtSecret);
     return res.json({
-      dpId:data,
       success: true,
-      authToken: authToken,
+      authToken: fetchedData._id
     });
   } catch (error) {
     console.log("login error in delivery person");
@@ -108,7 +107,8 @@ const dashboardDeliveryPerson = async (req,res) =>{
 }
 
 const isAvailableDeliveryPerson = async (req,res) =>{
-  const {deliverypersonId} = req.params
+  var {deliverypersonId} = req.params
+  deliverypersonId=deliverypersonId.trim()
 
   try {
     const deliveryperson = await DeliveryPersonModel.findById(deliverypersonId)
