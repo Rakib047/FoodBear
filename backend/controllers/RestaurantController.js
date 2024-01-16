@@ -68,7 +68,16 @@ const loginRestaurant = async (req,res) => {
         }
 
         const salt=fetchedData.salt
-        const isMatched=bcrypt.compare(req.body.password,fetchedData.password,salt)
+        const isMatched=await bcrypt.compare(req.body.password,fetchedData.password,salt)
+
+        if(!isMatched){
+            return res.json(
+                {
+                    success:false
+                }
+            )
+
+        }
 
         const data={
             user:{

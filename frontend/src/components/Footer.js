@@ -12,7 +12,7 @@ export const Footer = () =>{
                   className="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1"
                 >
                 </Link>
-                <span className="text-muted">© 2023 FoodFly</span>
+                <span className="text-muted">© 2023 FoodBear</span>
               </div>
             </footer>
           </div>
