@@ -1,4 +1,6 @@
 const RestaurantModel = require("../models/RestaurantModel");
+const FoodCategoryModel = require("../models/FoodCatagoryModel");
+const FoodModel = require("../models/FoodModel");
 const UserModel = require("../models/UserModel");
 const DeliveryPersonModel = require("../models/DeliveryPersonModel");
 const bcrypt = require("bcryptjs");
@@ -89,45 +91,148 @@ const loginRestaurant = async (req, res) => {
 
 const showDashboard = async (req, res) => {
   try {
-    
-    const restaurants = await RestaurantModel.find({})
+    const restaurants = await RestaurantModel.find({});
 
     res.status(200).send(restaurants);
   } catch (err) {
-    console.log("error getting dashboard")
+    console.log("error getting dashboard");
     res.status(404).json({
-        success:false
-    })
+      success: false,
+    });
   }
 };
 
-const toggleRestaurantOpen = async (req,res)=>{
-    const { restaurantId } = req.params;
- 
-    try {
-      // Find the exact restu by ID
-      const restaurant = await RestaurantModel.findById(restaurantId);
-  
-      if (!restaurant) {
-        return res.status(404).json({ message: "Restuarant not found" });
-      }
-  
-      // Toggle the is_open field
-      restaurant.is_open = !restaurant.is_open; 
-  
-      // Save the updated state
-      await restaurant.save();
-  
-      return res.status(200).json({ message: "is_open status updated", is_open: restaurant.is_open });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
+const toggleRestaurantOpen = async (req, res) => {
+  const { restaurantId } = req.params;
+
+  try {
+    // Find the exact restu by ID
+    const restaurant = await RestaurantModel.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restuarant not found" });
     }
-}
+
+    // Toggle the is_open field
+    restaurant.is_open = !restaurant.is_open;
+
+    // Save the updated state
+    await restaurant.save();
+
+    return res
+      .status(200)
+      .json({ message: "is_open status updated", is_open: restaurant.is_open });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getAllFood = async (req, res) => {
+  try {
+    const food_items = await FoodModel.find({});
+    const food_category = await FoodCategoryModel.find({});
+    const restaurant = await RestaurantModel.find({});
+
+    res.send([food_items, food_category, restaurant]);
+  } catch (error) {
+    console.error("Error in getAllFood:", error);
+    return res.json({ success: false });
+  }
+};
+
+const addFood = async (req, res) => {
+  try {
+    const category = await FoodCategoryModel.findOne({
+      CategoryName: req.body.CategoryName,
+    });
+    if (!category) {
+      await FoodCategoryModel.create({
+        CategoryName: req.body.CategoryName,
+      });
+    }
+
+    await FoodModel.create({
+      name: req.body.name,
+      restaurant_id: req.body.restaurant_id,
+      CategoryName: req.body.CategoryName,
+      price: req.body.price,
+      img: req.body.img,
+    });
+    res.json({ message: "New food added!" });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "food not added!" });
+  }
+};
+
+const deleteFood = async (req, res) => {
+  try {
+    const foodId = req.params.foodId;
+    const deletedFood = await FoodModel.findByIdAndDelete(foodId);
+
+    if (!deletedFood) {
+      return res.status(404).json({ message: "Food item not found" });
+    }
+
+    return res.status(200).json({ message: "Food item deleted" });
+  } catch (error) {
+    console.error("Error deleting food item:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const editFood = async (req, res) => {
+  try {
+    const foodId = req.params.foodId;
+    const updatedData = req.body;
+
+    // Find the food item by ID and update its data
+    const updatedFood = await FoodModel.findByIdAndUpdate(foodId, updatedData, { new: true });
+
+    if (!updatedFood) {
+      return res.status(404).json({ message: 'Food item not found' });
+    }
+
+    return res.json({ message: 'Food item updated successfully', updatedFood });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error updating food item' });
+  }
+};
+
+const stockoutToggle = async (req, res) => {
+  const { foodId } = req.params;
+
+  try {
+    // Find the food item by ID
+    const foodItem = await FoodModel.findById(foodId);
+
+    if (!foodItem) {
+      return res.status(404).json({ message: "Food item not found" });
+    }
+
+    // Toggle the is_instock field
+    foodItem.is_instock = !foodItem.is_instock; 
+
+    // Save the updated food item
+    await foodItem.save();
+
+    return res.json({ message: "Stock Out status updated", isStockOut: foodItem.is_instock });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 module.exports = {
   signupRestaurant,
   loginRestaurant,
   showDashboard,
   toggleRestaurantOpen,
+  getAllFood,
+  addFood,
+  deleteFood,
+  editFood,
+  stockoutToggle,
 };
