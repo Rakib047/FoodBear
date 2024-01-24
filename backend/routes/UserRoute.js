@@ -6,11 +6,13 @@ const controllers = require("../controllers/UserController");
 
 const jwtSecret = "SheIsJustAGirlWhoClaimsThatIAmTheOneButTheKidIsNotMySon";
 
-
-router.route("/:userId").get(controllers.showDashboard)
-
 router.route("/restaurants")
-      .get()
+      .get(controllers.getAllRestaurant)
+
+router.route("/:userId")
+      .get(controllers.showDashboard)
+
+
 
 
 
