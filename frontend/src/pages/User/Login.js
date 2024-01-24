@@ -1,14 +1,13 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-export const LoginDP = () => {
+export const Login = () => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = () => {
     const errors = [];
@@ -30,10 +29,12 @@ export const LoginDP = () => {
     return errors;
   };
 
-  const handleSubmit = async (e) =>{
-    e.preventDefault()
+  const [isLoading, setIsLoading] = useState(false);
 
-    setIsLoading(true)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setIsLoading(true);
 
     const errors = validateForm();
 
@@ -43,23 +44,30 @@ export const LoginDP = () => {
       return;
     }
 
-    const response =await axios.post("http://localhost:4010/api/deliveryperson/login",credentials)
+    const response = await axios.post("http://localhost:4010/api/userauth/login", {
+        email: credentials.email,
+        password: credentials.password,
+    
+    });
 
-    if(!response.data.success){
-        alert("Invalid credentials")
+    console.log(response.data.success)
+
+    if (!response.data.success) {
+      alert("Invalid credentials");
+    } else {
+      localStorage.setItem("authToken", response.data.authToken);
+      localStorage.setItem("user_id", response.data.userId);
+      localStorage.setItem("user_name", response.data.userName);
+    
+      window.location.href = "/user/restaurant"
     }
-    else{
-       localStorage.setItem("deliveryperson_id",response.data.authToken) 
-       localStorage.setItem("authToken",response.data.authToken)
-       window.location.href = "/deliveryperson/dashboard"
-    }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
-  const onChange = (e) =>{
-    setCredentials({...credentials,[e.target.name]:e.target.value})
-  }
+  const onChange = (event) => {
+    setCredentials({ ...credentials, [event.target.name]: event.target.value });
+  };
 
   return (
     <>
@@ -104,7 +112,7 @@ export const LoginDP = () => {
             Submit
           </Button>
           <div className="text-center">
-            <Link to="/deliveryperson/signup">New user? Join now!</Link>
+            <Link to="/signup">New user? Join now!</Link>
           </div>
           <br />
           <br />
@@ -112,4 +120,4 @@ export const LoginDP = () => {
       </div>
     </>
   );
-};
+}
