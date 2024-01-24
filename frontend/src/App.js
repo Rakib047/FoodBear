@@ -1,4 +1,5 @@
 import './App.css';
+import { Login } from './pages/User/Login';
 import { SignupDP } from './pages/DeliveryPerson/SignupDP';
 import { LoginDP } from './pages/DeliveryPerson/LoginDP';
 import {SignupRes} from './pages/Restaurant/SignupRes'
