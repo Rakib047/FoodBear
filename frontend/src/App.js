@@ -1,6 +1,7 @@
 import './App.css';
 import { Login } from './pages/User/Login';
 import {Dashboard_User} from "./pages/User/Dashboard"
+import { UserHome } from './pages/User/UserHome';
 import { SignupDP } from './pages/DeliveryPerson/SignupDP';
 import { LoginDP } from './pages/DeliveryPerson/LoginDP';
 import {SignupRes} from './pages/Restaurant/SignupRes'
@@ -22,7 +23,8 @@ function App() {
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/login" element={<Login />} />
-              <Route exact path="/user/restaurant" element={<Dashboard_User/>}/>
+              <Route exact path="/user/profile" element={<Dashboard_User/>}/>
+              <Route exact path="/user/restaurant" element={<UserHome/>}/>
               <Route exact path="/restaurant/signup" element={<SignupRes />} />
               <Route exact path="/restaurant/login" element={<LoginRes />} />
               <Route exact path="/restaurant/dashboard" element={<DashboardRes />} />
