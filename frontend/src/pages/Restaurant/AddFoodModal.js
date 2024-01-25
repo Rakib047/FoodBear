@@ -13,9 +13,8 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
     setFood({ ...food, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
-
 
     const response = await fetch(
       "http://localhost:4010/api/restaurant/addfood",
@@ -43,7 +42,7 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
         <Modal.Title>Add New Food</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form>
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>
             <Form.Control
@@ -84,9 +83,15 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
               onChange={onChange}
             />
           </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success btn-sm"
+              onClick={handleAddSubmit}
+            >
+              Add food
+            </button>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>
