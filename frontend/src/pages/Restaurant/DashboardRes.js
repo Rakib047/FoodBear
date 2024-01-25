@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavbarRestaurant } from "../../components/NavbarRestaurant";
+import Navbar_Restaurant from "../../components/Navbar_Restaurant";
 import {Footer} from "../../components/Footer";
 import { Modal } from "react-bootstrap";
 import axios from "axios";
@@ -58,7 +58,7 @@ export const DashboardRes = () => {
 
             return (
               <div>
-                <NavbarRestaurant />
+                <Navbar_Restaurant />
 
                 <img
                   key={restaurant._id}

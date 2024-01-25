@@ -1,8 +1,26 @@
-import React from "react";
+import React,{useState} from "react";
 import { Link, useLocation } from "react-router-dom";
+import AddFoodModal from "../pages/Restaurant/AddFoodModal";
 
-export const NavbarRestaurant = ()=> {
+export default function () {
   const location = useLocation();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleAddFood = (foodData) => {
+    // Handle submitting the food data to your API or state management
+    console.log("Submitted food data:", foodData);
+    setShowModal(false);
+  };
+
+
   return (
     <div>
       <nav
@@ -61,21 +79,21 @@ export const NavbarRestaurant = ()=> {
 
             {localStorage.getItem("restaurant_id") ? (
               <div className="d-flex">
-                {location.pathname === "/restaurant/foods" && (
-                  <button
-                    type="button"
-                    className="btn"
-                    style={{
-                      backgroundColor: "#ff8a00",
-                      color: "white",
-                      marginRight: "10px",
-                    }}
-                    data-bs-toggle="modal"
-                    data-bs-target="#AddFoodModal"
-                  >
-                    Add New Food
-                  </button>
-                )}
+            {location.pathname === "/restaurant/foods" && (
+              <button
+              type="button"
+              className="btn"
+              style={{
+                backgroundColor: "#ff8a00",
+                color: "white",
+                marginRight: "10px",
+              }}
+                onClick={handleShowModal}
+                
+              >
+                Add New Food
+              </button>
+            )}
                 <button
                   className="btn"
                   style={{ backgroundColor: "#ff8a00", color: "white" }}
@@ -93,6 +111,12 @@ export const NavbarRestaurant = ()=> {
           </div>
         </div>
       </nav>
+      <AddFoodModal
+        show={showModal}
+        onHide={handleCloseModal}
+        onSubmit={handleAddFood}
+      />
+
     </div>
   );
 }
