@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
-
+import axios from "axios";
 const AddFoodModal = ({ show, onHide, onSubmit }) => {
   const [food, setFood] = useState({
     name: "",
@@ -13,23 +13,46 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
     setFood({ ...food, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    const errors = [];
+
+    if (food.name.trim() === "") {
+      errors.push("Name must not be empty");
+    }
+
+    if (food.CategoryName.length === 0) {
+      errors.push("Category must not be empty");
+    }
+
+    if (food.price <= 0) {
+      errors.push("Price must be greater than 0");
+    }
+
+    if (food.img.trim() === "") {
+      errors.push("Image must not be empty");
+    }
+
+    return errors;
+  };
+
   const handleAddSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(
+    const errors = validateForm();
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+      return;
+    }
+
+    const response = await axios.post(
       "http://localhost:4010/api/restaurant/addfood",
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: food.name,
-          CategoryName: food.CategoryName,
-          price: food.price,
-          img: food.img,
-          restaurant_id: localStorage.getItem("restaurant_id"),
-        }),
+        name: food.name,
+        CategoryName: food.CategoryName,
+        price: food.price,
+        img: food.img,
+        restaurant_id: localStorage.getItem("restaurant_id"),
       }
     );
 
