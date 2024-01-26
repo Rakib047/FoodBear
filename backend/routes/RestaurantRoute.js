@@ -20,5 +20,6 @@ router.route("/editfood/:foodId")
       .put(controllers.editFood)
 router.route("/fooditems/stockout/:foodId")
       .put(controllers.stockoutToggle)
-
+router.route("/updateStock/:foodId/:restaurantId")
+      .put(controllers.updateStock)
 module.exports = router;

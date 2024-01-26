@@ -23,7 +23,19 @@ const showDashboard = async (req, res) => {
     }
   };
 
+const getAllRestaurant = async(req,res)=>{
+  try {
+
+      const restaurants=await RestaurantModel.find({})
+      console.log(restaurants.length)
+      res.send(restaurants)
+  } catch (error) {
+    console.log(error);
+    return res.json({ success: false });
+  }
+}
 
 module.exports = {
     showDashboard,
+    getAllRestaurant
 };

@@ -188,16 +188,20 @@ const editFood = async (req, res) => {
     const updatedData = req.body;
 
     // Find the food item by ID and update its data
-    const updatedFood = await FoodModel.findByIdAndUpdate(foodId, updatedData, { new: true });
+    const updatedFood = await FoodModel.findByIdAndUpdate(foodId, updatedData, {
+      new: true,
+    });
 
     if (!updatedFood) {
-      return res.status(404).json({ message: 'Food item not found' });
+      return res.status(404).json({ message: "Food item not found" });
     }
 
-    return res.json({ message: 'Food item updated successfully', updatedFood });
+    return res
+      .status(200)
+      .json({ message: "Food item updated successfully", updatedFood });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'Error updating food item' });
+    res.status(500).json({ message: "Error updating food item" });
   }
 };
 
@@ -213,15 +217,67 @@ const stockoutToggle = async (req, res) => {
     }
 
     // Toggle the is_instock field
-    foodItem.is_instock = !foodItem.is_instock; 
+    foodItem.is_instock = !foodItem.is_instock;
 
     // Save the updated food item
     await foodItem.save();
 
-    return res.json({ message: "Stock Out status updated", isStockOut: foodItem.is_instock });
+    return res.json({
+      message: "Stock Out status updated",
+      isStockOut: foodItem.is_instock,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+async function updateFoodStock(foodId, newStockStatus, restaurantId) {
+  const food = await FoodModel.findById(foodId);
+
+  if (!food) {
+    console.log("Food item not found");
+    return;
+  }
+
+  food.inStock = newStockStatus;
+  await food.save();
+
+  // Using the passed restaurantId parameter now
+  const restaurant = await RestaurantModel.findById(restaurantId);
+
+  if (!restaurant) {
+    console.log("Restaurant not found");
+    return;
+  }
+
+  // If the restaurant is a home kitchen, check stock status.
+  if (restaurant.is_homekitchen) {
+    const allFoods = await FoodModel.find({ restaurant_id: restaurantId });
+
+    // Check if all foods are out of stock
+    const allOutOfStock = allFoods.every(f => !f.is_instock);
+
+    if (allOutOfStock) {
+      restaurant.hasStock = false;
+      restaurant.is_open = false; // Close the restaurant
+    } else {
+      restaurant.hasStock = true;
+      restaurant.is_open = true; // Open the restaurant
+    }
+
+    await restaurant.save();
+  }
+}
+
+const updateStock = async (req, res) => {
+  try {
+    const { foodId, restaurantId } = req.params;
+    const { inStock } = req.body; // true or false
+    await updateFoodStock(foodId, inStock, restaurantId); // Call the function to update the stock and restaurant's is_open field
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -235,4 +291,5 @@ module.exports = {
   deleteFood,
   editFood,
   stockoutToggle,
+  updateStock
 };
