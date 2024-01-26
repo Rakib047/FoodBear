@@ -12,7 +12,10 @@ router.route("/restaurants")
 router.route("/:userId")
       .get(controllers.showDashboard)
 
-
+router.route("/getcard")
+      .post()
+router.route("/gettocard")
+      .post()      
 
 
 

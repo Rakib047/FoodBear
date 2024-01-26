@@ -4,6 +4,7 @@ import { LoginDP } from './pages/DeliveryPerson/LoginDP';
 import {SignupRes} from './pages/Restaurant/SignupRes'
 import {LoginRes} from './pages/Restaurant/LoginRes'
 import {DashboardRes} from "./pages/Restaurant/DashboardRes"
+import Foods from './pages/Restaurant/Foods'
 import { UserContextProvider } from './contexts/UserContext';
 import {Home} from "./pages/Home"
 import  {BrowserRouter as Router,

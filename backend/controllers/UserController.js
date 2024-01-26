@@ -2,6 +2,7 @@ const RestaurantModel = require("../models/RestaurantModel");
 const FoodCategoryModel = require("../models/FoodCatagoryModel");
 const FoodModel = require("../models/FoodModel");
 const UserModel = require("../models/UserModel");
+const CartModel = require("../models/CartModel");
 const DeliveryPersonModel = require("../models/DeliveryPersonModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -35,7 +36,56 @@ const getAllRestaurant = async(req,res)=>{
   }
 }
 
+const addToCard = async (req,res) => {
+  const userId = req.params.userId;
+  try {
+
+    const user = await UserModel.findById(userId);
+
+    //console.log(user._id);
+    
+
+    if(req.body.food_id==null){
+      console.log("food not found");
+    }
+    await CartModel.create({
+      user_id: req.body.user_id,
+      food_id: req.body.food_id,
+      restaurant_id: req.body.restaurant_id
+    })
+    res.json({ message: "Food added to cart!!" });
+  }
+  catch (error) {
+    console.log("error add to card");
+    res.status(404).json({
+      success: false,
+    });
+  }
+} 
+
+const getCard = async (req,res) => {
+  const userId = req.body.user_id;
+  try {
+    const cart = await CartModel.find({userId});
+    res.json(cart);
+
+  } catch (error) {
+    console.log("error get card");
+    res.status(404).json({
+      success: false,
+    });
+    
+  }
+}
+
+
+
+
+
 module.exports = {
     showDashboard,
-    getAllRestaurant
+    getAllRestaurant,
+    addToCard,
+    getCard,
+
 };
