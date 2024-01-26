@@ -12,10 +12,10 @@ router.route("/restaurants")
 router.route("/:userId")
       .get(controllers.showDashboard)
 
-router.route("/addtocard")
-      .post(controllers.addToCard)
-router.route("/getcard")
-      .post(controllers.getCard) 
+router.route("/addtocart")
+      .post(controllers.addToCart)
+router.route("/getcart")
+      .post(controllers.getCart) 
 
 
 module.exports = router; 

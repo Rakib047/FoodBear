@@ -35,7 +35,7 @@ const getAllRestaurant = async(req,res)=>{
   }
 }
 
-const addToCard = async (req,res) => {
+const addToCart = async (req,res) => {
   const userId = req.params.userId;
   try {
 
@@ -62,7 +62,7 @@ const addToCard = async (req,res) => {
   }
 } 
 
-const getCard = async (req,res) => {
+const getCart = async (req,res) => {
   const userId = req.body.user_id;
   try {
     const cart = await CartModel.find({userId});
@@ -80,6 +80,6 @@ const getCard = async (req,res) => {
 module.exports = {
     showDashboard,
     getAllRestaurant,
-    addToCard,
-    getCard
+    addToCart,
+    getCart
 };
