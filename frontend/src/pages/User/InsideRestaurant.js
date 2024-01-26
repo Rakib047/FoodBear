@@ -299,9 +299,9 @@ export default function ShowFoods_Restaurant() {
 
   useEffect(() => {
     fetchData();
-    fetchRating();
-    fetchReviews();
-    fetchFavorites();
+    //fetchRating();
+    //fetchReviews();
+    //fetchFavorites();
   }, []);
 
   useEffect(() => {
