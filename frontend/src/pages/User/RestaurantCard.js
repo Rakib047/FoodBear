@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-// import { FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 
 
 export const RestaurantCard =(props)=> {
@@ -62,7 +62,7 @@ export const RestaurantCard =(props)=> {
           <div className="d-flex flex-row justify-content-between">
             <h6 className="card-title">{props.name}</h6>
             <div style={{ fontSize: "16px", color: "#ff8a00" }}>
-              &#9733;{props.averageRating.toFixed(1)}
+              &#9733;{props.averageRating}
             </div>
           </div>
           <p className="card-text text-muted fs-10">{props.location}</p>

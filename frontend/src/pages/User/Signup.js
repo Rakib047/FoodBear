@@ -3,7 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-export const Signup =  () => {
+export const Signup = ()=> {
   const [credentials, setCredentials] = useState({
     name: "",
     location: "",
@@ -52,11 +52,10 @@ export const Signup =  () => {
         email: credentials.email,
         password: credentials.password,
         contact: credentials.contact,
-    
     });
+    
 
     if (response.status === 200) {
-        alert("Signup successful!");
         window.location.href = "/login";
       } else {
         alert("Email already exists! Try again with another one.");
@@ -66,7 +65,7 @@ export const Signup =  () => {
 
     const onChange = (event) => {
         setCredentials({...credentials, [event.target.name]: event.target.value})
-    };
+    }
 
   return (
     <>
