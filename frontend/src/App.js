@@ -1,5 +1,6 @@
 import './App.css';
 import { Login } from './pages/User/Login';
+import { Signup } from './pages/User/Signup';
 import {Dashboard_User} from "./pages/User/Dashboard"
 import { UserHome } from './pages/User/UserHome';
 import RestFoods_User from './pages/User/InsideRestaurant';
@@ -25,6 +26,7 @@ function App() {
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/login" element={<Login />} />
+              <Route exact path="/signup" element={<Signup />} />
               <Route exact path="/user/dashboard" element={<Dashboard_User/>}/>
               <Route exact path="/user/restaurant" element={<UserHome/>}/>
               <Route exact path="/user/restaurant/foods" element={<RestFoods_User/>}/>
