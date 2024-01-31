@@ -281,6 +281,29 @@ const updateStock = async (req, res) => {
   }
 };
 
+const getRating = async (req,res)=>{
+  try {
+    const restaurantId = req.params.restaurantId;
+
+    const restaurant = await RestaurantModel.findById(restaurantId);
+
+    res.json({ success: true, averageRating: restaurant.averageRating });
+  } catch (error) {
+    console.error('Error in /rate:', error);
+    res.json({ success: false, message: 'An error occurred' });
+  }
+}
+
+const getReview = async(req,res)=>{
+  try {
+    const restaurant = await RestaurantModel.findById(req.params.restaurantId);
+    // console.log(restaurant.reviews[24].username);
+    res.status(200).json({ success: true, reviews: restaurant.reviews });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'An error occurred' });
+  }
+}
+
 module.exports = {
   signupRestaurant,
   loginRestaurant,
@@ -291,5 +314,7 @@ module.exports = {
   deleteFood,
   editFood,
   stockoutToggle,
-  updateStock
+  updateStock,
+  getRating,
+  getReview
 };
