@@ -17,5 +17,14 @@ router.route("/addtocart")
 router.route("/getcart")
       .post(controllers.getCart) 
 
+router.route("/favorites/add")
+      .post(controllers.addFavourite)
+router.route("/favorites/remove")
+      .post(controllers.removeFavourite)
+router.route("/favorites/:userId")
+      .get(controllers.getFavourite)
+
+
+
 
 module.exports = router; 

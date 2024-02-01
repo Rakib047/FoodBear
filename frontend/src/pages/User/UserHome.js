@@ -9,6 +9,9 @@ import Footer from "../../components/Footer";
 export const UserHome = () => {
   // Fetch data from /api/restaurants route
   const [restaurants, setRestaurants] = useState([]);
+  const [homeKitchens, setHomeKitchens] = useState([]);
+  const [otherRestaurants, setOtherRestaurants] = useState([]);
+  const [mostPopularRestaurants, setMostPopularRestaurants] = useState([]);
 
   // Fetch restaurant data
   const fetchData = async () => {
