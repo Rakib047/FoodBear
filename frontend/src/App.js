@@ -9,7 +9,8 @@ import { SignupDP } from './pages/DeliveryPerson/SignupDP';
 import { LoginDP } from './pages/DeliveryPerson/LoginDP';
 import {SignupRes} from './pages/Restaurant/SignupRes'
 import {LoginRes} from './pages/Restaurant/LoginRes'
-import {DashboardRes} from "./pages/Restaurant/DashboardRes"
+import {DashboardRes} from "./pages/Restaurant/DashboardRes";
+import {StatisticsRes} from "./pages/Restaurant/StatisticsRes";
 import { UserContextProvider } from './contexts/UserContext';
 import {Home} from "./pages/Home"
 import  {BrowserRouter as Router,
@@ -36,6 +37,7 @@ function App() {
               <Route exact path="/restaurant/login" element={<LoginRes />} />
               <Route exact path="/restaurant/foods" element={<Foods />} />
               <Route exact path="/restaurant/dashboard" element={<DashboardRes />} />
+              <Route exact path="/restaurant/statistics" element={<StatisticsRes />} />
               <Route exact path="/deliveryperson/signup" element={<SignupDP />} />
               <Route exact path="/deliveryperson/login" element={<LoginDP />} />
               <Route exact path="/deliveryperson/dashboard" element={<DashboardDP />} />

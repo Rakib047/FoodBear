@@ -102,6 +102,20 @@ const showDashboard = async (req, res) => {
   }
 };
 
+const showStatistics = async (req, res) => {
+  try {
+
+    const restaurants = await RestaurantModel.find({});  //error
+
+    res.status(200).send(restaurants);
+  } catch (err) {
+    console.log("error getting Statistics");
+    res.status(404).json({
+      success: false,
+    });
+  }
+};
+
 const toggleRestaurantOpen = async (req, res) => {
   const { restaurantId } = req.params;
 
@@ -351,6 +365,7 @@ module.exports = {
   signupRestaurant,
   loginRestaurant,
   showDashboard,
+  showStatistics,
   toggleRestaurantOpen,
   getAllFood,
   addFood,
