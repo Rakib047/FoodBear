@@ -156,7 +156,8 @@ export const DashboardRes = () => {
                       <div>
                         <h2>{restaurant.name}</h2>
                         
-                        {renderStars(averageRating)}
+                        {/* {renderStars(averageRating)} */}
+                        <i class="fa-regular fa-star" style={{ color: "#ff8a00" }}></i>
                         <span className="ms-2">
                           {averageRating.toFixed(1)}
                         </span>{" "}
