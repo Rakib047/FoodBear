@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { RestaurantCard } from "./RestaurantCard";
+import Card from "./FoodCardUser";
 import { Navbar } from "../../components/Navbar";
 import { Row, Col } from "react-bootstrap";
 //import "bootstrap-icons/font/bootstrap-icons.css";
@@ -105,7 +105,7 @@ export default function ShowFoods_Restaurant() {
 
     try {
       const response = await fetch(
-        `http://localhost:5001/api/favorites/${userId}`
+        `http://localhost:4010/api/user/favorites/${userId}`
       );
       const data = await response.json();
       console.log("heree is the frontend part");
@@ -129,7 +129,7 @@ export default function ShowFoods_Restaurant() {
   const fetchRatings = async (restaurantId) => {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/restaurant/${restaurantId}/ratings`
+        `http://localhost:4010/api/restaurant/rating/${restaurantId}`
       );
       const data = await response.json();
       return data;
@@ -143,7 +143,7 @@ export default function ShowFoods_Restaurant() {
     const userId = localStorage.getItem("user_id");
     const userName = localStorage.getItem("user_name");
     const response = await fetch(
-      `http://localhost:5001/api/restaurant/review/${desired_restaurant_id}`,
+      `http://localhost:4010/api/restaurant/review/${desired_restaurant_id}`,
       {
         method: "PUT",
         headers: {
@@ -192,8 +192,8 @@ export default function ShowFoods_Restaurant() {
     const restaurantId = localStorage.getItem("restaurant_id");
 
     const url = isFavorite
-      ? "http://localhost:5001/api/favorites/remove"
-      : "http://localhost:5001/api/favorites/add";
+      ? "http://localhost:4010/api/user/favorites/remove"
+      : "http://localhost:4010/api/user/favorites/add";
     const payload = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -301,7 +301,7 @@ export default function ShowFoods_Restaurant() {
     fetchData();
     fetchRating();
     fetchReviews();
-    //fetchFavorites();
+    fetchFavorites();
   }, []);
 
   useEffect(() => {
@@ -750,14 +750,14 @@ export default function ShowFoods_Restaurant() {
                       key={foodItem._id}
                       className="col-12 col-md-6 col-lg-3"
                     >
-                      <RestaurantCard
+                      <Card
                         _id={foodItem._id}
                         restaurant_id={foodItem.restaurant_id}
                         name={foodItem.name}
                         img={foodItem.img}
                         CategoryName={foodItem.CategoryName}
                         price={foodItem.price}
-                      ></RestaurantCard>
+                      ></Card>
                     </div>
                   ))}
                 </div>

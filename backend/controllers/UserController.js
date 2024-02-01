@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const RestaurantModel = require("../models/RestaurantModel");
 const FoodCategoryModel = require("../models/FoodCatagoryModel");
 const FoodModel = require("../models/FoodModel");
@@ -86,6 +87,7 @@ const addFavourite = async(req,res)=>{
     user.favorites.push(restaurantId);
     await user.save();
 
+    
     res.send('Added to favorites');
   } catch (error) {
     console.error("Save failed:", error);
@@ -102,7 +104,7 @@ const removeFavourite = async(req,res)=>{
 
     user.favorites = user.favorites.filter(id => id.toString() !== restaurantId);
     await user.save();
-
+    
     res.send('Removed from favorites');
   } catch (error) {
     res.status(500).send('Server error');
@@ -128,7 +130,7 @@ const getFavourite = async (req,res)=>{
       const favoriteRestaurantIds = user.favorites.map(fav => ({ _id: fav }));
   
       // Fetch all favorite restaurants by their IDs
-      const favoriteRestaurants = await Restaurant.find({
+      const favoriteRestaurants = await RestaurantModel.find({
         '_id': { $in: favoriteRestaurantIds }
       });
   
