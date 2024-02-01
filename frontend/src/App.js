@@ -1,7 +1,6 @@
 import './App.css';
 import {Signup} from "./pages/User/Signup"
 import {Login} from "./pages/User/Login"
-import { Signup } from './pages/User/Signup';
 import {Dashboard_User} from "./pages/User/Dashboard"
 import { UserHome } from './pages/User/UserHome';
 import RestFoods_User from './pages/User/InsideRestaurant';
@@ -11,7 +10,6 @@ import { LoginDP } from './pages/DeliveryPerson/LoginDP';
 import {SignupRes} from './pages/Restaurant/SignupRes'
 import {LoginRes} from './pages/Restaurant/LoginRes'
 import {DashboardRes} from "./pages/Restaurant/DashboardRes"
-import Foods from './pages/Restaurant/Foods'
 import { UserContextProvider } from './contexts/UserContext';
 import {Home} from "./pages/Home"
 import  {BrowserRouter as Router,
