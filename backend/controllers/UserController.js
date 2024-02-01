@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const RestaurantModel = require("../models/RestaurantModel");
 const FoodCategoryModel = require("../models/FoodCatagoryModel");
 const FoodModel = require("../models/FoodModel");
@@ -78,9 +79,76 @@ const getCart = async (req,res) => {
   }
 }
 
+const addFavourite = async(req,res)=>{
+  try {
+    const { userId, restaurantId } = req.body;
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).send("User not found");
+
+    user.favorites.push(restaurantId);
+    await user.save();
+
+    
+    res.send('Added to favorites');
+  } catch (error) {
+    console.error("Save failed:", error);
+  return res.status(500).json({ error: error.toString() });
+    // res.status(500).send('Server error');
+  }
+}
+
+const removeFavourite = async(req,res)=>{
+  try {
+    const { userId, restaurantId } = req.body;
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).send("User not found");
+
+    user.favorites = user.favorites.filter(id => id.toString() !== restaurantId);
+    await user.save();
+    
+    res.send('Removed from favorites');
+  } catch (error) {
+    res.status(500).send('Server error');
+  }
+}
+
+const getFavourite = async (req,res)=>{
+  try {
+    const { userId } = req.params;
+
+    // Validate user ID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+    
+      const user = await UserModel.findById(userId).select('favorites -_id');
+
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Return the favorite restaurant IDs
+      const favoriteRestaurantIds = user.favorites.map(fav => ({ _id: fav }));
+  
+      // Fetch all favorite restaurants by their IDs
+      const favoriteRestaurants = await RestaurantModel.find({
+        '_id': { $in: favoriteRestaurantIds }
+      });
+  
+      res.json(favoriteRestaurants);
+  
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 module.exports = {
     showDashboard,
     getAllRestaurant,
     addToCart,
-    getCart
+    getCart,
+    addFavourite,
+    removeFavourite,
+    getFavourite
 };
