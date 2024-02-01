@@ -69,40 +69,7 @@ export const DashboardRes = () => {
     }
   };
 
-  // Function to render stars
-  const renderStars = (averageRating) => {
-    let stars = [];
-  
-    for (let i = 1; i <= 5; i++) {
-      if (i <= Math.floor(averageRating)) {
-        stars.push(
-          <i className="bi bi-star-fill" style={{ color: "#ff8a00" }}></i>
-        );
-      } else if (i === Math.ceil(averageRating)) {
-        const percentage = ((averageRating % 1) * 100).toFixed(2);
-        stars.push(
-          <div style={{ position: "relative", display: "inline-block" }}>
-            <i className="bi bi-star" style={{ color: "#ff8a00" }}></i>
-            <div
-              style={{
-                position: "absolute",
-                overflow: "hidden",
-                top: 0,
-                left: 0,
-                width: `${percentage}%`,
-                zIndex: 1,
-              }}
-            >
-              <i className="bi bi-star-fill" style={{ color: "#ff8a00" }}></i>
-            </div>
-          </div>
-        );
-      } else {
-        stars.push(<i className="bi bi-star" style={{ color: "#ff8a00" }}></i>);
-      }
-    }
-    return stars;
-  };
+
 
   const fetchReviews = async () => {
     const desired_restaurant_id = localStorage.getItem("restaurant_id");
@@ -156,7 +123,7 @@ export const DashboardRes = () => {
                       <div>
                         <h2>{restaurant.name}</h2>
                         
-                        {/* {renderStars(averageRating)} */}
+                        
                         <i class="fa-regular fa-star" style={{ color: "#ff8a00" }}></i>
                         <span className="ms-2">
                           {averageRating.toFixed(1)}
