@@ -79,6 +79,54 @@ const getCart = async (req,res) => {
   }
 }
 
+const removeFoodFromCart = async (req,res) => {
+  const userId = req.body.user_id;
+  const foodId = req.body.food_id;
+  try {
+    const cart = await CartModel.deleteOne({userId , foodId});
+    res.json(cart);
+
+  } catch (error) {
+    console.log("error remove food from cart");
+    res.status(404).json({
+      success: false,
+    });
+    
+  }
+}
+
+const removeAllFoodFromCart = async (req,res) => {
+  const userId = req.body.user_id;
+  const foodId = req.body.food_id;
+  try {
+    const cart = await CartModel.deleteMany({userId , foodId});
+    res.json(cart);
+
+  } catch (error) {
+    console.log("error remove food from cart");
+    res.status(404).json({
+      success: false,
+    });
+    
+  }
+}
+
+const removeFromCart = async (req,res) => {
+  const userId = req.body.user_id;
+  
+  try {
+    const cart = await CartModel.deleteMany({userId});
+    res.json(cart);
+
+  } catch (error) {
+    console.log("error remove from cart");
+    res.status(404).json({
+      success: false,
+    });
+    
+  }
+}
+
 const addFavourite = async(req,res)=>{
   try {
     const { userId, restaurantId } = req.body;
@@ -148,6 +196,9 @@ module.exports = {
     getAllRestaurant,
     addToCart,
     getCart,
+    removeFromCart,
+    removeFoodFromCart,
+    removeAllFoodFromCart,
     addFavourite,
     removeFavourite,
     getFavourite

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar";
-import CartCard from "../../components/CartCard";
-import Footer from "../../components/Footer";
+import {Navbar} from "../../components/Navbar";
+import {CartCard} from "../../components/CartCard";
+import {Footer} from "../../components/Footer";
 
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { UserContext } from "../../UserContext";
+import { UserContext } from "../../contexts/UserContext";
+import axios from "axios";
+
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,7 +15,7 @@ import {
   faCreditCard,
 } from "@fortawesome/free-solid-svg-icons";
 
-function MyCart() {
+export const MyCart = () => {
   const [foodItems, setFoodItems] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -403,4 +405,4 @@ function MyCart() {
   );
 }
 
-export default MyCart;
+
