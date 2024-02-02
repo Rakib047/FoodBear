@@ -1,0 +1,28 @@
+const express = require("express")
+const router = express.Router()
+
+//user order portion
+router.route("/user/orders/neworder")
+      .post()
+router.route("/user/orders/:userId")
+      .get()
+router.route("/user/orders/pickeduporder/:orderId")
+      .put()
+router.route("/user/foods")
+      .get()
+//restaurant portion
+router.route("/restaurant/orders/:restaurantId")
+      .get()
+router.route("/restaurant/deleteorder/:orderId")
+      .delete()
+router.route("/restaurant/orders/confirmorder/:orderId/:deliverypersonId")
+      .put()
+
+//delivery person portion
+router.route("/deliveryperson/:deliverypersonId")
+      .get()
+router.route("/deliveryperson/orders/:deliverypersonId")
+      .get()
+
+
+module.exports = router;
