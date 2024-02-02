@@ -50,7 +50,7 @@ export default function FoodCard_Restaurant(props) {
       }
 
       localStorage.setItem("restaurant_id", props.restaurant_id);
-      const response = await fetch("http://localhost:5001/api/addtocart", {
+      const response = await fetch("http://localhost:4010/api/user/addtocart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
