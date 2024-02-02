@@ -25,11 +25,12 @@ export const CartCard = (props) => {
 
   const fetchData = async () => {
     try {
+        console.log("here")
         const response = await axios.get(
-            `http://localhost:4010/api/food/${props.id}`,
+            `http://localhost:4010/api/order/user/food/${props.id}`,
             
           );
-          
+          console.log(response.data)
           setFood(response.data);
 
     } catch (error) {

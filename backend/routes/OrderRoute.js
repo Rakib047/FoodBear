@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-
+const controllers= require("../controllers/OrderController")
 //user order portion
 router.route("/user/orders/neworder")
       .post()
@@ -8,8 +8,8 @@ router.route("/user/orders/:userId")
       .get()
 router.route("/user/orders/pickeduporder/:orderId")
       .put()
-router.route("/user/foods")
-      .get()
+router.route("/user/food/:foodId")
+      .get(controllers.getFoods)
 //restaurant portion
 router.route("/restaurant/orders/:restaurantId")
       .get()

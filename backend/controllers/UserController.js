@@ -76,6 +76,15 @@ const getCart = async (req,res) => {
   }
 }
 
+const getFood = async(req,res)=>{
+  try {
+    const food = await FoodModel.findOne({ _id: req.body.food_id });
+    res.json(food);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const addFavourite = async(req,res)=>{
   try {
     const { userId, restaurantId } = req.body;
@@ -147,5 +156,6 @@ module.exports = {
     getCart,
     addFavourite,
     removeFavourite,
-    getFavourite
+    getFavourite,
+    getFood
 };

@@ -21,6 +21,7 @@ export const MyCart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const { foodCount, updateFoodCount } = useContext(UserContext);
   const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchData = async () => {
       const received_cart = await fetch("http://localhost:4010/api/user/getcart", {

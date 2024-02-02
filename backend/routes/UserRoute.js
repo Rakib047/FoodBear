@@ -9,6 +9,7 @@ const jwtSecret = "SheIsJustAGirlWhoClaimsThatIAmTheOneButTheKidIsNotMySon";
 router.route("/restaurants")
       .get(controllers.getAllRestaurant)
 
+
 router.route("/:userId")
       .get(controllers.showDashboard)
 
@@ -16,6 +17,8 @@ router.route("/addtocart")
       .post(controllers.addToCart)
 router.route("/getcart")
       .post(controllers.getCart) 
+router.route("/getfood")
+      .post(controllers.getFood)
 
 router.route("/favorites/add")
       .post(controllers.addFavourite)
