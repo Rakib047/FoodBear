@@ -30,5 +30,7 @@ router.route("/rating/:restaurantId")
 router.route("/review/:restaurantId")
       .get(controllers.getReview)
       .put(controllers.setUserReview)
+router.route("/:id/ratings")
+      .get(controllers.getSpecificRestaurantRating)
 
 module.exports = router;

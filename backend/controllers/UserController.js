@@ -7,6 +7,7 @@ const CartModel = require("../models/CartModel");
 const DeliveryPersonModel = require("../models/DeliveryPersonModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const CartModel = require("../models/CartModel");
 const jwtSecret =
   "EverythinginthisworldisChaoticthereisnomeaningofLifewehavetojustcreateit";
 
@@ -38,12 +39,15 @@ const getAllRestaurant = async(req,res)=>{
 }
 
 const addToCart = async (req,res) => {
-  const userId = req.params.userId;
   try {
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findOne({ _id: req.body.user_id });
 
     //console.log(user._id);
+    if (!user) {
+      console.log("error occured here");
+      return res.status(400).json({ errors: [{ message: "User doesn't exist!" }] });
+    }
     
 
     if(req.body.food_id==null){
@@ -65,17 +69,20 @@ const addToCart = async (req,res) => {
 } 
 
 const getCart = async (req,res) => {
-  const userId = req.body.user_id;
   try {
-    const cart = await CartModel.find({userId});
+    const cart = await CartModel.find({ user_id: req.body.user_id });
     res.json(cart);
-
   } catch (error) {
-    console.log("error get card");
-    res.status(404).json({
-      success: false,
-    });
-    
+    console.log(error);
+  }
+}
+
+const getFood = async(req,res)=>{
+  try {
+    const food = await FoodModel.findOne({ _id: req.body.food_id });
+    res.json(food);
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -201,5 +208,6 @@ module.exports = {
     removeAllFoodFromCart,
     addFavourite,
     removeFavourite,
-    getFavourite
+    getFavourite,
+    getFood
 };
