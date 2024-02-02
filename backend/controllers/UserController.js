@@ -7,7 +7,7 @@ const CartModel = require("../models/CartModel");
 const DeliveryPersonModel = require("../models/DeliveryPersonModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const CartModel = require("../models/CartModel");
+
 const jwtSecret =
   "EverythinginthisworldisChaoticthereisnomeaningofLifewehavetojustcreateit";
 
