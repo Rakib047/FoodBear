@@ -29,7 +29,7 @@ export default function FoodCard_Restaurant(props) {
     if (localStorage.getItem("user_id") === null) {
       alert("Please Login First");
     } else {
-      const check = await fetch("http://localhost:5001/api/getcart", {
+      const check = await fetch("http://localhost:4010/api/user/getcart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

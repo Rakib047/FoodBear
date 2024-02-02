@@ -129,7 +129,7 @@ export default function ShowFoods_Restaurant() {
   const fetchRatings = async (restaurantId) => {
     try {
       const response = await fetch(
-        `http://localhost:4010/api/restaurant/rating/${restaurantId}`
+        `http://localhost:4010/api/restaurant/${restaurantId}/ratings`
       );
       const data = await response.json();
       return data;
@@ -314,8 +314,8 @@ export default function ShowFoods_Restaurant() {
       const restaurant_id = localStorage.getItem("restaurant_id");
       const fetchedRatings = await fetchRatings(restaurant_id);
       console.log("ratings", fetchedRatings);
-      //setRatings(fetchedRatings);
-      //setRatingPercentages(calculateRatingPercentages(fetchedRatings));
+      setRatings(fetchedRatings);
+      setRatingPercentages(calculateRatingPercentages(fetchedRatings));
       console.log("rating percentage", ratingPercentages);
     };
 
@@ -350,82 +350,6 @@ export default function ShowFoods_Restaurant() {
     ? { transform: "scale(1.05)", transition: "transform 0.1s ease" }
     : {};
 
-  // return (
-  //   <div>
-  //     <div>
-  //       <Navbar />
-  //     </div>
-
-  //     <div>
-  //       {restaurants.map((restaurant) =>
-  //         restaurant._id === desired_restaurant_id ? (
-  //           <img
-  //             key={restaurant._id}
-  //             src={restaurant.img}
-  //             alt=""
-  //             height="400px"
-  //             width="100%"
-  //             style={{ objectFit: "cover" }}
-  //           />
-  //         ) : null
-  //       )}
-  //     </div>
-
-  //     <div className="container">
-  //       {restaurants.map((restaurant) =>
-  //         restaurant._id === desired_restaurant_id ? (
-  //           <div
-  //             className="d-flex justify-content-between align-items-center"
-  //             key={restaurant._id}
-  //           >
-  //             <h2 className="mt-3">{restaurant.name}</h2>
-  //           </div>
-  //         ) : null
-  //       )}
-  //     </div>
-
-  //     <div className="container">
-  //       {foodCategory ? (
-  //         foodCategory.map((item, index) => {
-  //           const foodsInCategory = foods.filter(
-  //             (foodItem) =>
-  //               foodItem.CategoryName === item.CategoryName &&
-  //               foodItem.restaurant_id === desired_restaurant_id &&
-  //               foodItem.is_instock === true
-  //           );
-
-  //           if (foodsInCategory.length > 0) {
-  //             return (
-  //               <div key={index} className="row mb-3">
-  //                 <h3>{item.CategoryName}</h3>
-  //                 <hr />
-
-  //                 {foodsInCategory.map((foodItem) => (
-  //                   <div
-  //                     key={foodItem._id}
-  //                     className="col-12 col-md-6 col-lg-3"
-  //                   >
-  //                     <RestaurantCard
-  //                       _id={foodItem._id}
-  //                       restaurant_id={foodItem.restaurant_id}
-  //                       name={foodItem.name}
-  //                       img={foodItem.img}
-  //                       CategoryName={foodItem.CategoryName}
-  //                       price={foodItem.price}
-  //                     ></RestaurantCard>
-  //                   </div>
-  //                 ))}
-  //               </div>
-  //             );
-  //           }
-  //           return null; // Don't render anything if there are no foods in this category
-  //         })
-  //       ) : (
-  //         <h1>Loading...</h1>
-  //       )}
-  //     </div>
-  //   </div>
-  // );
 
   return (
     <div>

@@ -347,6 +347,18 @@ const setUserReview = async(req,res)=>{
   return res.status(200).json({ success: true, message: 'Review successfully added' });
 }
 
+const getSpecificRestaurantRating = async(req,res)=>{
+  try {
+    const restaurant = await RestaurantModel.findById(req.params.id);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+    return res.status(200).json(restaurant.ratings);
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
 module.exports = {
   signupRestaurant,
   loginRestaurant,
@@ -361,5 +373,6 @@ module.exports = {
   getRating,
   getReview,
   setUserRating,
-  setUserReview
+  setUserReview,
+  getSpecificRestaurantRating
 };
