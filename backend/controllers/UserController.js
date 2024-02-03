@@ -85,6 +85,34 @@ const getFood = async(req,res)=>{
   }
 }
 
+const decreaseSpecificFoodQuantity = async (req,res) => {
+  try {
+    const cart = await CartModel.deleteOne({ user_id: req.body.user_id, food_id: req.body.food_id });
+    console.log(cart)
+    res.json(cart);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const deleteSpecificFoodFromCart = async (req,res) => {
+  try {
+    const cart = await CartModel.deleteMany({ user_id: req.body.user_id, food_id: req.body.food_id });
+    res.json(cart);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const deleteAllFromCartAfterPayemnt = async (req,res) => {
+  try {
+    const cart = await CartModel.deleteMany({ user_id: req.body.user_id });
+    res.json(cart);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const addFavourite = async(req,res)=>{
   try {
     const { userId, restaurantId } = req.body;
@@ -149,6 +177,8 @@ const getFavourite = async (req,res)=>{
     }
 }
 
+
+
 module.exports = {
     showDashboard,
     getAllRestaurant,
@@ -157,5 +187,8 @@ module.exports = {
     addFavourite,
     removeFavourite,
     getFavourite,
-    getFood
+    getFood,
+    decreaseSpecificFoodQuantity,
+    deleteSpecificFoodFromCart,
+    deleteAllFromCartAfterPayemnt
 };
