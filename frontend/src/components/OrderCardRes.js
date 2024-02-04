@@ -80,6 +80,7 @@ export default function FoodCard_Restaurant(props) {
 
   const [restaurant, setRestaurant] = useState([]);
   const fetchRestaurant = async () => {
+    
     let response = await fetch(
       `http://localhost:4010/api/restaurant/${props.restaurant_id}`,
       {
@@ -106,6 +107,7 @@ export default function FoodCard_Restaurant(props) {
       }
     });
     console.log("props.res", restaurant._id);
+
     let response = await fetch(
       `http://localhost:4010/api/order/restaurant/orders/confirmorder/${props._id}/${dp_id}`,
       {
