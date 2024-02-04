@@ -12,7 +12,7 @@ export default function FoodCard_Restaurant(props) {
   //fetching all foods
   const [foods, setFoods] = useState([]);
   const fetchFoods = async () => {
-    let response = await fetch("http://localhost:4010/api/foods", {
+    let response = await fetch("http://localhost:4010/api/order/user/foods", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export default function FoodCard_Restaurant(props) {
   const [user, setUser] = useState([]);
   const fetchUser = async () => {
     let response = await fetch(
-      `http://localhost:5001/api/user/${props.user_id}`,
+      `http://localhost:4010/api/user/${props.user_id}`,
       {
         method: "GET",
         headers: {
@@ -46,7 +46,7 @@ export default function FoodCard_Restaurant(props) {
 
   const handleReject = async () => {
     let response = await fetch(
-      `http://localhost:4010/api/restaurant/deleteorder/${props._id}`,
+      `http://localhost:4010/api/order/restaurant/deleteorder/${props._id}`,
       {
         method: "DELETE",
         headers: {
@@ -107,7 +107,7 @@ export default function FoodCard_Restaurant(props) {
     });
     console.log("props.res", restaurant._id);
     let response = await fetch(
-      `http://localhost:4010/api/orders/confirmorder/${props._id}/${dp_id}`,
+      `http://localhost:4010/api/order/restaurant/orders/confirmorder/${props._id}/${dp_id}`,
       {
         method: "PUT",
         headers: {

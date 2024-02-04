@@ -74,9 +74,65 @@ const getUserOrder = async(req,res)=>{
   }
 }
 
+const acceptOrder = async(req,res)=>{
+  try {
+    const orderId = req.params.orderId;
+    const deliverypersonId = req.params.deliverypersonId;
+    const confirmedOrder = await OrderModel.findByIdAndUpdate(orderId, {
+      status: "confirmed",
+      delivery_person_id: deliverypersonId,
+    });
+
+    if (!confirmedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    return res.status(200).json({ message: "order confirmed" });
+  } catch (error) {
+    console.error("Error confirming order:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const rejectOrder = async(req,res)=>{
+  try {
+    const orderId = req.params.orderId;
+    const deletedOrder = await OrderModel.findByIdAndDelete(orderId);
+
+    if (!deletedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    return res.status(200).json({ message: "order deleted" });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const getSpecificRestaurantOrder = async(req,res)=>{
+  const restaurantId = req.params.restaurantId;
+  try {
+    // Find all orders for the specified restaurantId
+    const orders = await OrderModel.find({ restaurant_id: restaurantId });
+
+    if (!orders) {
+      return res
+        .json({ message: "No orders found for this restaurant." });
+    }
+
+    // Send the orders as a response
+    res.send(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports={
     getFoods,
     placeUserOrder,
     getAllOrderedFoods,
-    getUserOrder
+    getUserOrder,
+    rejectOrder,
+    acceptOrder,
+    getSpecificRestaurantOrder
 }

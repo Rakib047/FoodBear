@@ -16,11 +16,11 @@ router.route("/user/foods")
       .get(controllers.getAllOrderedFoods)
 //restaurant portion
 router.route("/restaurant/orders/:restaurantId")
-      .get()
+      .get(controllers.getSpecificRestaurantOrder)
 router.route("/restaurant/deleteorder/:orderId")
-      .delete()
+      .delete(controllers.rejectOrder)
 router.route("/restaurant/orders/confirmorder/:orderId/:deliverypersonId")
-      .put()
+      .put(controllers.acceptOrder)
 
 //delivery person portion
 router.route("/deliveryperson/:deliverypersonId")

@@ -359,6 +359,15 @@ const getSpecificRestaurantRating = async(req,res)=>{
   }
 }
 
+const getSpecificRestaurant = async(req,res)=>{
+  try {
+    const restaurant = await RestaurantModel.findById(req.params.restaurantId);
+    res.send(restaurant);
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'An error occurred' });
+  }
+}
+
 module.exports = {
   signupRestaurant,
   loginRestaurant,
@@ -374,5 +383,6 @@ module.exports = {
   getReview,
   setUserRating,
   setUserReview,
-  getSpecificRestaurantRating
+  getSpecificRestaurantRating,
+  getSpecificRestaurant
 };
