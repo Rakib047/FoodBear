@@ -195,9 +195,9 @@ export default function FoodCard_Restaurant(props) {
               {props.status === "confirmed" && (
                 <div className="d-flex flex-row justify-content-left mt-3">
                   <button
-                    //className="btn btn-warning btn-sm"
+                    className="btn btn-outline-success btn-sm"
                     onClick={() => handlePickup()}
-                    style={buttonStyle}
+                    //style={buttonStyle}
                   >
                     Pickup Order
                   </button>
@@ -207,9 +207,9 @@ export default function FoodCard_Restaurant(props) {
               {props.status === "picked_up" && (
                 <div className="d-flex flex-row justify-content-left mt-3">
                   <button
-                    //className="btn btn-warning btn-sm"
+                    className="btn btn-outline-success btn-sm"
                     onClick={() => handleDeliver()}
-                    style={buttonStyle}
+                    //style={buttonStyle}
                   >
                     Deliver Order
                   </button>
