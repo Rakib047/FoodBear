@@ -210,7 +210,7 @@ export const MyCart = () => {
 
   const handleOrder = async () => {
     try {
-      fetch("http://localhost:4010/api/orders/neworder", {
+      fetch("http://localhost:4010/api/order/user/orders/neworder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
