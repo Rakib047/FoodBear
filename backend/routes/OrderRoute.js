@@ -6,8 +6,7 @@ router.route("/user/orders/neworder")
       .post(controllers.placeUserOrder)
 router.route("/user/orders/:userId")
       .get(controllers.getUserOrder)
-router.route("/user/orders/pickeduporder/:orderId")
-      .put()
+
 //will be used in mycart
 router.route("/user/food/:foodId")
       .get(controllers.getFoods)
@@ -26,7 +25,10 @@ router.route("/restaurant/orders/confirmorder/:orderId/:deliverypersonId")
 router.route("/deliveryperson/:deliverypersonId")
       .get()
 router.route("/deliveryperson/orders/:deliverypersonId")
-      .get()
-
+      .get(controllers.getAllOrderofSpecificDpPerson)
+router.route("/deliveryperson/orders/pickeduporder/:orderId")
+      .put(controllers.handlePickupOrder)
+router.route("/deliveryperson/orders/deliveredorder/:orderId")
+      .put(controllers.deliverOrder)
 
 module.exports = router;

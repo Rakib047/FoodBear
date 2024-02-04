@@ -127,6 +127,59 @@ const getSpecificRestaurantOrder = async(req,res)=>{
   }
 }
 
+const getAllOrderofSpecificDpPerson = async(req,res)=>{
+  const deliverypersonId = req.params.deliverypersonId;
+  try {
+    // Find all orders for the specified deliverypersonId
+    const orders = await OrderModel.find({ delivery_person_id: deliverypersonId });
+
+    if (!orders || orders.length === 0) {
+      return res
+        .json({ message: "No orders found for this delivery person." });
+    }
+
+    // Send the orders as a response
+    res.send(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const handlePickupOrder = async(req,res)=>{
+  try {
+    const orderId = req.params.orderId;
+    const pickedupOrder = await OrderModel.findByIdAndUpdate(orderId, {
+      status: "picked_up",
+    });
+
+    if (!pickedupOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    return res.status(200).json({ message: "order status changed: picked_up" });
+  } catch (error) {
+    console.error("Error changing order status:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const deliverOrder = async(req,res)=>{
+  try {
+    const orderId = req.params.orderId;
+    const deliveredOrder = await OrderModel.findByIdAndUpdate(orderId, {
+      status: "delivered",
+    });
+
+    if (!deliveredOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    return res.status(200).json({ message: "order status changed: delivered" });
+  } catch (error) {
+    console.error("Error changing order status:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports={
     getFoods,
     placeUserOrder,
@@ -134,5 +187,8 @@ module.exports={
     getUserOrder,
     rejectOrder,
     acceptOrder,
-    getSpecificRestaurantOrder
+    getSpecificRestaurantOrder,
+    getAllOrderofSpecificDpPerson,
+    handlePickupOrder,
+    deliverOrder
 }
