@@ -179,6 +179,8 @@ const getFavourite = async (req,res)=>{
 
 
 
+
+
 module.exports = {
     showDashboard,
     getAllRestaurant,
@@ -190,5 +192,5 @@ module.exports = {
     getFood,
     decreaseSpecificFoodQuantity,
     deleteSpecificFoodFromCart,
-    deleteAllFromCartAfterPayemnt
+    deleteAllFromCartAfterPayemnt,
 };

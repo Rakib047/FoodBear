@@ -42,6 +42,7 @@ function App() {
               <Route exact path="/deliveryperson/signup" element={<SignupDP />} />
               <Route exact path="/deliveryperson/login" element={<LoginDP />} />
               <Route exact path="/deliveryperson/dashboard" element={<DashboardDP />} />
+
             </Routes>
           </div>
         </Router>
