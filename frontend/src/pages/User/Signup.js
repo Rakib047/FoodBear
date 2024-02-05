@@ -20,10 +20,10 @@ export const Signup = () => {
   const handleShowMapModal = () => setShowMapModal(true);
   const handleCloseMapModal = () => setShowMapModal(false);
 
-  const updateLocationName = (LocationName)=>{
-    console.log(LocationName+" here")
-    setCredentials({ ...credentials, location: LocationName })
-  }
+  const updateLocationName = (LocationName) => {
+    console.log(LocationName + " here");
+    setCredentials({ ...credentials, location: LocationName });
+  };
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -206,10 +206,19 @@ export const Signup = () => {
           <Modal.Title>Select your Location</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <GoogleMap updateLocationName={updateLocationName}/>
+          <GoogleMap updateLocationName={updateLocationName} />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseMapModal}>
+          <Button
+            variant="secondary"
+            onClick={handleCloseMapModal}
+            style={{
+              color: "white",
+              backgroundColor: "#ff8a00",
+              border: "1px solid #ff8a00",
+              outline: "none",
+            }}
+          >
             Done
           </Button>
         </Modal.Footer>
