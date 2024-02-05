@@ -84,8 +84,15 @@ export const UserHome = () => {
   const [user, setUser] = useState(null);
   const [latestLocation, setLatestLocation] = useState("");
 
-  const updateLatestLocation = (LocationName)=>{
+  const updateLatestLocation = async (LocationName)=>{
+    const userId = localStorage.getItem("user_id");
     setLatestLocation(LocationName)
+    const res=await axios.put(`http://localhost:4010/api/user/updateLocation/${userId}`,
+      {
+        location:LocationName
+      }
+    )
+    console.log(res)
   }
   const fetchUser = async () => {
     const userId = localStorage.getItem("user_id");
