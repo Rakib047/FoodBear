@@ -1,6 +1,7 @@
 import React, { useState,useRef, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import GoogleMapReact from 'google-map-react';
+import axios from 'axios';
 
 const GoogleMap = () => {
   const [showModal, setShowModal] = useState(false);
@@ -8,9 +9,22 @@ const GoogleMap = () => {
   const [longitude,setLongitude]=useState("")
   const apiKey = "AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0"
   const markerRef = useRef(null)
+  const [locationName, setLocationName] = useState("");
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
+
+  const getLocationName = async (lat, lng) => {
+    try {
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`);
+      const { results } = response.data;
+      if (results && results.length > 0) {
+        setLocationName(results[0].formatted_address);
+      }
+    } catch (error) {
+      console.error("Error fetching location name:", error);
+    }
+  };
 
 
   const handleMarkerDragEnd = () => {
@@ -18,6 +32,8 @@ const GoogleMap = () => {
       const newLatLng = markerRef.current.getPosition(); // Get new position
       setLatitude(newLatLng.lat()); // Update latitude state
       setLongitude(newLatLng.lng());
+      getLocationName(newLatLng.lat(), newLatLng.lng());
+
       console.log(newLatLng)
     }
   };
@@ -39,6 +55,7 @@ const GoogleMap = () => {
           });
           markerRef.current.addListener('dragend', handleMarkerDragEnd);
           map.panTo(center);
+          getLocationName(center.lat, center.lng);
       });
     }
   };
@@ -61,6 +78,7 @@ const GoogleMap = () => {
       </Button>
       <p>{latitude}</p>
       <p>{longitude}</p>
+      <p>{locationName}</p>
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Google Map Modal</Modal.Title>
