@@ -19,6 +19,7 @@ import  {BrowserRouter as Router,
   Route
 } from "react-router-dom"
 import { DashboardDP } from './pages/DeliveryPerson/DashboardDP';
+import GoogleMap from './pages/User/Map';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
               <Route exact path="/deliveryperson/signup" element={<SignupDP />} />
               <Route exact path="/deliveryperson/login" element={<LoginDP />} />
               <Route exact path="/deliveryperson/dashboard" element={<DashboardDP />} />
+              <Route exact path="/test" element={<GoogleMap />} />
 
             </Routes>
           </div>
