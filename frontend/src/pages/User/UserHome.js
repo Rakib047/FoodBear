@@ -5,6 +5,8 @@ import { Footer } from "../../components/Footer";
 import { FaHeart } from "react-icons/fa";
 import { FaFire } from "react-icons/fa";
 import axios from "axios";
+import { Form, Button, Modal } from "react-bootstrap";
+import GoogleMap from "./Map";
 
 export const UserHome = () => {
   // Fetch data from /api/restaurants route
@@ -81,6 +83,10 @@ export const UserHome = () => {
 
   const [user, setUser] = useState(null);
   const [latestLocation, setLatestLocation] = useState("");
+
+  const updateLatestLocation = (LocationName)=>{
+    setLatestLocation(LocationName)
+  }
   const fetchUser = async () => {
     const userId = localStorage.getItem("user_id");
     try {
@@ -160,70 +166,14 @@ export const UserHome = () => {
     setFoodCount(newFoodCount);
   }, [localStorage.getItem("food_count")]);
 
-  const [showModal, setShowModal] = useState(false);
 
-  // Function to handle opening modal
-  const openModal = () => {
-    setShowModal(true);
-  };
 
-  // Function to handle closing modal
-  const closeModal = () => {
-    setShowModal(false);
-  };
+  const [showMapModal, setShowMapModal] = useState(false);
 
-  const getCurrentLocation = () => {
-    
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          try {
-            const response = await axios.get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0`
-            );
-            if (response.data.results.length > 0) {
-              const address = response.data.results[0].formatted_address;
-              console.log(address)
-              setLatestLocation(address); // Save formatted address in updatedLocation state
-              closeModal()
-            } else {
-              alert("Location not found");
-            }
-          } catch (error) {
-            console.error("Error fetching location:", error);
-            alert("Error fetching location. Please try again.");
-          }
-        },
-        () => alert("Location permission denied.")
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
+  const handleShowMapModal = () => setShowMapModal(true); // Should set it to true
+  const handleCloseMapModal = () => setShowMapModal(false); // Should set it to false
+  
 
-  const Modal = () => {
-    return (
-      <div className="modal" tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Use Current Location?</h5>
-
-            </div>
-            <div className="modal-body">
-              <p>We would like to use your current location.</p>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-primary" onClick={getCurrentLocation}>Confirm</button>
-              <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div>
@@ -263,7 +213,7 @@ export const UserHome = () => {
               alignItems: "center",
               outline: "none",
             }}
-            onClick={openModal}
+            onClick={handleShowMapModal}
           >
             <i className="fa-solid fa-location-dot"></i>
           </button>
@@ -375,6 +325,29 @@ export const UserHome = () => {
           </div>
         )}
         <Modal />
+
+        <Modal show={showMapModal} onHide={handleCloseMapModal}>
+        <Modal.Header>
+          <Modal.Title>Select your Location</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <GoogleMap updateLocationName={updateLatestLocation}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={handleCloseMapModal}
+            style={{
+              color: "white",
+              backgroundColor: "#ff8a00",
+              border: "1px solid #ff8a00",
+              outline: "none",
+            }}
+          >
+            Done
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
         <Footer />
       </div>
