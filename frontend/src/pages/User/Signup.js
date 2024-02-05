@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import GoogleMap from "./Map";
 
 export const Signup = () => {
   const [credentials, setCredentials] = useState({
@@ -14,24 +15,39 @@ export const Signup = () => {
     contact: "",
   });
 
+  const [showMapModal, setShowMapModal] = useState(false);
+
+  const handleShowMapModal = () => setShowMapModal(true);
+  const handleCloseMapModal = () => setShowMapModal(false);
+
+  const updateLocationName = (LocationName)=>{
+    console.log(LocationName+" here")
+    setCredentials({ ...credentials, location: LocationName })
+  }
+
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        try {
-          const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0`);
-          if (response.data.results.length > 0) {
-            const address = response.data.results[0].formatted_address;
-            setCredentials({ ...credentials, location: address });
-          } else {
-            alert("Location not found");
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          try {
+            const response = await axios.get(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0`
+            );
+            if (response.data.results.length > 0) {
+              const address = response.data.results[0].formatted_address;
+              setCredentials({ ...credentials, location: address });
+            } else {
+              alert("Location not found");
+            }
+          } catch (error) {
+            console.error("Error fetching location:", error);
+            alert("Error fetching location. Please try again.");
           }
-        } catch (error) {
-          console.error("Error fetching location:", error);
-          alert("Error fetching location. Please try again.");
-        }
-      }, () => alert("Location permission denied."))
+        },
+        () => alert("Location permission denied.")
+      );
     } else {
       alert("Geolocation is not supported by this browser.");
     }
@@ -50,7 +66,11 @@ export const Signup = () => {
 
     if (credentials.email.trim() === "") {
       errors.push("Email must not be empty");
-    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(credentials.email)) {
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+        credentials.email
+      )
+    ) {
       errors.push("Invalid email address");
     }
 
@@ -70,13 +90,16 @@ export const Signup = () => {
       return;
     }
 
-    const response = await axios.post("http://localhost:4010/api/userauth/signup", {
-      name: credentials.name,
-      location: credentials.location,
-      email: credentials.email,
-      password: credentials.password,
-      contact: credentials.contact,
-    });
+    const response = await axios.post(
+      "http://localhost:4010/api/userauth/signup",
+      {
+        name: credentials.name,
+        location: credentials.location,
+        email: credentials.email,
+        password: credentials.password,
+        contact: credentials.contact,
+      }
+    );
 
     if (response.status === 200) {
       window.location.href = "/login";
@@ -86,12 +109,19 @@ export const Signup = () => {
   };
 
   const onChange = (event) => {
-    setCredentials({ ...credentials, [event.target.name]: event.target.value })
-  }
+    setCredentials({ ...credentials, [event.target.name]: event.target.value });
+  };
 
   return (
     <>
-      <div className="container" style={{ width: "600px", border: "1px solid white", margin: "10px auto" }}>
+      <div
+        className="container"
+        style={{
+          width: "600px",
+          border: "1px solid white",
+          margin: "10px auto",
+        }}
+      >
         <Form onSubmit={handleSubmit}>
           <h1 className="text-center mt-4">Signup</h1>
 
@@ -116,7 +146,7 @@ export const Signup = () => {
                 value={credentials.location}
                 onChange={onChange}
               />
-              <Button variant="outline-secondary" onClick={getCurrentLocation}>
+              <Button variant="outline-secondary" onClick={handleShowMapModal}>
                 <FontAwesomeIcon icon={faMapMarkerAlt} />
               </Button>
             </div>
@@ -169,6 +199,21 @@ export const Signup = () => {
           <br />
         </Form>
       </div>
+
+      {/* GoogleMap Modal */}
+      <Modal show={showMapModal} onHide={handleCloseMapModal}>
+        <Modal.Header>
+          <Modal.Title>Select your Location</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <GoogleMap updateLocationName={updateLocationName}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseMapModal}>
+            Done
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
-}
+};

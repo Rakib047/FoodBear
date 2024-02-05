@@ -3,7 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import GoogleMapReact from 'google-map-react';
 import axios from 'axios';
 
-const GoogleMap = () => {
+const GoogleMap = ({updateLocationName}) => {
   const [showModal, setShowModal] = useState(false);
   const [latitude,setLatitude]=useState("")
   const [longitude,setLongitude]=useState("")
@@ -20,6 +20,7 @@ const GoogleMap = () => {
       const { results } = response.data;
       if (results && results.length > 0) {
         setLocationName(results[0].formatted_address);
+        updateLocationName(results[0].formatted_address)
       }
     } catch (error) {
       console.error("Error fetching location name:", error);
@@ -60,25 +61,19 @@ const GoogleMap = () => {
     }
   };
 
-//   useEffect(() => {
-//     const marker = markerRef.current;
-//     if (marker) {
-//         console.log("here----")
-//       marker.addListener('dragend', handleMarkerDragEnd);
-//       return () => {
-//         marker.removeListener('dragend', handleMarkerDragEnd);
-//       };
-//     }
-//   }, []);
 
   return (
-    <>
+    <div className="d-flex flex-column align-items-center justify-content-center">
       <Button variant="primary" onClick={handleShow}>
-        Open Map Modal
+        Choose Location From Map
       </Button>
-      <p>{latitude}</p>
-      <p>{longitude}</p>
-      <p>{locationName}</p>
+      <br/>
+      <div className="text-center">
+        <h5>Your Selected Location</h5>
+        <p>{latitude}</p>
+        <p>{longitude}</p>
+        <p>{locationName}</p>
+      </div>
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Google Map Modal</Modal.Title>
@@ -94,14 +89,15 @@ const GoogleMap = () => {
             />
           </div>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="justify-content-center">
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Place here
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
+  
 };
 
 export default GoogleMap;
