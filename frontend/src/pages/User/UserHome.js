@@ -163,8 +163,8 @@ export const UserHome = () => {
       setUserLongitude(response.data.longitude);
 
       // Store latitude and longitude in local storage
-      localStorage.setItem(userId + "_lat", user.latitude);
-      localStorage.setItem(userId + "_long", user.longitude);
+      localStorage.setItem(userId + "_lat", response.data.latitude);
+      localStorage.setItem(userId + "_long", response.data.longitude);
     } catch (error) {
       console.log(error);
     }
