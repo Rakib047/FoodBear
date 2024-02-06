@@ -140,6 +140,12 @@ export const UserHome = () => {
   ) => {
     const userId = localStorage.getItem("user_id");
     setLatestLocation(LocationName);
+    if (userId) {
+      localStorage.removeItem(userId + "_lat");
+      localStorage.removeItem(userId + "_long");
+    }
+    localStorage.setItem(userId + "_lat", latitudeVal);
+    localStorage.setItem(userId + "_long", longitudeVal);
     const res = await axios.put(
       `http://localhost:4010/api/user/updateLocation/${userId}`,
       {
@@ -148,6 +154,7 @@ export const UserHome = () => {
         longitude: longitudeVal,
       }
     );
+    
     console.log(res);
   };
 
