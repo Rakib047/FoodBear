@@ -5,8 +5,8 @@ import axios from "axios";
 
 const GoogleMap = ({ updateLocationName }) => {
   const [showModal, setShowModal] = useState(false);
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const apiKey = "AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0";
   const markerRef = useRef(null);
   const [locationName, setLocationName] = useState("");
@@ -22,12 +22,19 @@ const GoogleMap = ({ updateLocationName }) => {
       const { results } = response.data;
       if (results && results.length > 0) {
         setLocationName(results[0].formatted_address);
-        updateLocationName(results[0].formatted_address);
+        updateLocationName(results[0].formatted_address,latitude,longitude);
+        console.log(latitude+" "+longitude+" checking")
       }
     } catch (error) {
       console.error("Error fetching location name:", error);
     }
   };
+
+  useEffect(() => {
+    // Call getLocationName whenever latitude or longitude changes
+    getLocationName(latitude, longitude);
+  }, [latitude, longitude]);
+
 
   const handleMarkerDragEnd = () => {
     if (markerRef.current) {

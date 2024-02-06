@@ -37,7 +37,10 @@ const signupRestaurant = async (req, res) => {
       contact: req.body.contact,
       is_homekitchen: req.body.is_homekitchen,
       img: req.body.img,
+      latitude: req.body.latitude, // Add latitude
+      longitude: req.body.longitude, // Add longitude
     });
+    console.log(req.body.latitude+" "+req.body.longitude)
     res.status(200).json(newRestaurant);
   } catch (error) {
     console.log("error in signing up restu");
