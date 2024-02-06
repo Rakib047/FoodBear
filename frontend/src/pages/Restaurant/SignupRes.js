@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button ,Modal} from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import GoogleMap from "../../components/Map";
@@ -15,8 +15,8 @@ export const SignupRes = () => {
     contact: "",
     is_homekitchen: "",
     img: "",
-    latitude:null,
-    longitude:null,
+    latitude: null,
+    longitude: null,
   });
 
   const [showMapModal, setShowMapModal] = useState(false);
@@ -24,9 +24,14 @@ export const SignupRes = () => {
   const handleShowMapModal = () => setShowMapModal(true);
   const handleCloseMapModal = () => setShowMapModal(false);
 
-  const updateLocationName = (LocationName,latitudeVal,longitudeVal) => {
+  const updateLocationName = (LocationName, latitudeVal, longitudeVal) => {
     console.log(LocationName + " here res");
-    setCredentials({ ...credentials, location: LocationName ,latitude:latitudeVal,longitude:longitudeVal});
+    setCredentials({
+      ...credentials,
+      location: LocationName,
+      latitude: latitudeVal,
+      longitude: longitudeVal,
+    });
   };
 
   const validateCredentials = (credentials) => {
@@ -89,8 +94,8 @@ export const SignupRes = () => {
         contact: credentials.contact,
         img: credentials.img,
         is_homekitchen: credentials.is_homekitchen === true ? true : false,
-        latitude:credentials.latitude,
-        longitude:credentials.longitude,
+        latitude: credentials.latitude,
+        longitude: credentials.longitude,
       }
     );
 
@@ -225,8 +230,8 @@ export const SignupRes = () => {
         </Form>
       </div>
 
-            {/* GoogleMap Modal */}
-            <Modal show={showMapModal} onHide={handleCloseMapModal}>
+      {/* GoogleMap Modal */}
+      <Modal show={showMapModal} onHide={handleCloseMapModal}>
         <Modal.Header>
           <Modal.Title>Select your Location</Modal.Title>
         </Modal.Header>

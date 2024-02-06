@@ -6,16 +6,20 @@ import axios from "axios";
 export const DashboardDP = () => {
   const [delivery_persons, setDeliveryPersons] = useState([]);
   const [isAvailable, setIsAvailable] = useState(true);
+  const [locationName,setLocationName]=useState("")
 
   const fetchAllDeliveryPersons = async (req, res) => {
     let response = await axios.get(
       "http://localhost:4010/api/deliveryperson/dashboard"
     );
     setDeliveryPersons(response.data);
+    getLocationName();
 
     delivery_persons.map((singleDP) => {
       if (singleDP._id === localStorage.getItem("deliveryperson_id")) {
         setIsAvailable(singleDP.is_available);
+        console.log(singleDP.location)
+        setLocationName(singleDP.location)
       }
     });
   };
@@ -42,7 +46,48 @@ export const DashboardDP = () => {
 
   useEffect(() => {
     fetchAllDeliveryPersons();
-  }, []);
+  }, [locationName]);
+
+  const apiKey = "AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0";
+
+  const getLocationName = async (lat, lng) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
+      );
+      const { results } = response.data;
+      if (results && results.length > 0) {
+        setLocationName(results[0].formatted_address)
+      }
+    } catch (error) {
+      console.error("Error fetching location name:", error);
+    }
+  };
+
+
+  const handleUpdateLocation = async () => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        getLocationName(latitude,longitude)
+        console.log(locationName+" dp er")
+        try {
+          const response = await axios.put(
+            `http://localhost:4010/api/deliveryperson/location/${localStorage.getItem(
+              "deliveryperson_id"
+            )}`,
+            { location:locationName,latitude, longitude }
+          );
+          console.log("Location updated:", response.data);
+        } catch (error) {
+          console.error("Error updating location:", error);
+        }
+      },
+      (error) => {
+        console.error("Error getting current position:", error);
+      }
+    );
+  };
 
   //Order management part
   //Completed orders and active orders
@@ -123,6 +168,14 @@ export const DashboardDP = () => {
                         <label className="form-check-label" htmlFor="is_open">
                           Available Now
                         </label>
+
+                        <button
+                          className="btn btn-primary ms-3" // Add proper class for button design
+                          onClick={handleUpdateLocation} // Add appropriate onClick function
+                          style={{background:"#ff8a00", border: "1px solid #ff8a00",outline: "none"}}
+                        >
+                          Update Location
+                        </button>
                       </div>
                     </div>
 
@@ -146,7 +199,7 @@ export const DashboardDP = () => {
                         </tr>
                       </tbody>
                     </table>
-                    
+
                     <div className="row lg-6">
                       {/* Active Order gula show korsi */}
                       {sortedActiveOrders.length > 0 && (
@@ -200,7 +253,6 @@ export const DashboardDP = () => {
                         </div>
                       )}
                     </div>
-
                   </div>
                 </div>
               </div>

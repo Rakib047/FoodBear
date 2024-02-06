@@ -13,5 +13,7 @@ router.route("/dashboard")
 
 router.route("/isavailable/:deliverypersonId")
         .put(controllers.isAvailableDeliveryPerson)
+router.route("/location/:dpId")
+        .put(controllers.updateLocationDeliveryPerson)
 
 module.exports = router;
