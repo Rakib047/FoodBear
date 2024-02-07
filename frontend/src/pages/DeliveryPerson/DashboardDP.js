@@ -18,6 +18,7 @@ export const DashboardDP = () => {
     delivery_persons.map((singleDP) => {
       if (singleDP._id === localStorage.getItem("deliveryperson_id")) {
         setIsAvailable(singleDP.is_available);
+        console.log("available ",singleDP.is_available)
         console.log(singleDP.location)
         setLocationName(singleDP.location)
       }
@@ -71,6 +72,7 @@ export const DashboardDP = () => {
         const { latitude, longitude } = position.coords;
         getLocationName(latitude,longitude)
         console.log(locationName+" dp er")
+        console.log(locationName,latitude,longitude)
         try {
           const response = await axios.put(
             `http://localhost:4010/api/deliveryperson/location/${localStorage.getItem(

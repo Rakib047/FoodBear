@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { Modal, Button } from "react-bootstrap";
 
 export default function FoodCard_Restaurant(props) {
   const [isHovered, setIsHovered] = useState(false);
+  const [showModal, setShowModal] = useState(false); // State for showing the modal
+  const [dpName, setDpName] = useState("");
+
   const handleMouseEnter = () => {
     setIsHovered(true);
   };
@@ -80,7 +84,6 @@ export default function FoodCard_Restaurant(props) {
 
   const [restaurant, setRestaurant] = useState([]);
   const fetchRestaurant = async () => {
-    
     let response = await fetch(
       `http://localhost:4010/api/restaurant/${props.restaurant_id}`,
       {
@@ -137,9 +140,15 @@ export default function FoodCard_Restaurant(props) {
       return distance <= 3 && deliveryperson.is_available;
     });
 
-    if(eligibleDeliveryPersons.length>0){
+    if (eligibleDeliveryPersons.length > 0) {
       const selectedDeliveryPerson = eligibleDeliveryPersons[0];
-      dp_id=selectedDeliveryPerson._id
+      dp_id = selectedDeliveryPerson._id;
+      setShowModal(true);
+      setDpName(selectedDeliveryPerson.name);
+    } else {
+      // If no eligible delivery person found, show modal with message
+      setShowModal(true);
+      setDpName("No Delivery Person Found");
     }
 
     // deliverypersons.map((deliveryperson) => {
@@ -272,6 +281,23 @@ export default function FoodCard_Restaurant(props) {
           )}
         </div>
       </div>
+
+      {/* dp_modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delivery Person Status</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Delivery Person Name: {dpName}</p>
+          {/* Add more information about the assigned delivery person here */}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {/* dp modal */}
     </div>
   );
 }

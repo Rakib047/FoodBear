@@ -121,6 +121,7 @@ const isAvailableDeliveryPerson = async (req,res) =>{
     }
 
     deliveryperson.is_available= !deliveryperson.is_available
+    console.log(deliveryperson.is_available)
 
     //saving to database
     await deliveryperson.save()
