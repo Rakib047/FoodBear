@@ -72,6 +72,7 @@ export const DashboardDP = () => {
       { location: LocationName, latitude:latitudeVal, longitude:longitudeVal }
     );
     console.log("ei j ",response.data);
+    
     }
 
   };
