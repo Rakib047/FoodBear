@@ -88,14 +88,13 @@ export const UserHome = () => {
     setRestaurants(filteredRestaurants);
     console.log("restaurants", data);
 
-
     const fetchOrdersForRestaurant = async (restaurantId) => {
       try {
         const response = await axios.get(
           `http://localhost:4010/api/order/restaurant/orders/${restaurantId}`
         );
         const orders = response.data;
-        console.log("order len : ",orders.length)
+        console.log("order len : ", orders.length);
         return orders.length;
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -122,8 +121,7 @@ export const UserHome = () => {
       console.log("most popular", mostPopularRestaurants);
     };
 
-    calculatePopularity()
-
+    calculatePopularity();
 
     const homeKitchens = data.filter((restaurant) => restaurant.is_homekitchen);
     const otherRests = data.filter((restaurant) => !restaurant.is_homekitchen);
@@ -134,12 +132,13 @@ export const UserHome = () => {
   };
   const fetchFavoriteRestaurants = async () => {
     const userId = localStorage.getItem("user_id");
+
     try {
       const response = await fetch(
         `http://localhost:4010/api/user/favorites/${userId}`
       );
       const data = await response.json();
-      console.log("the dataaa");
+
       // console.log(data);
 
       if (response.ok) {
@@ -147,8 +146,30 @@ export const UserHome = () => {
         // const favorites = restaurants.filter(r =>
         //   data.some(fav => fav._id === r._id)
         // );
-        console.log(data);
-        setFavoriteRestaurants(data);
+
+        //will do the work of fetching restu (with distance )
+        const filteredRestaurants = data.filter((restaurant) => {
+          // Calculate distance between restaurant and user's location
+          const restaurantLocation = {
+            latitude: restaurant.latitude,
+            longitude: restaurant.longitude,
+          };
+
+          const userId = localStorage.getItem("user_id");
+          const latitudeUser = localStorage.getItem(userId + "_lat");
+          const longitudeUser = localStorage.getItem(userId + "_long");
+
+          const userLocation = {
+            latitude: latitudeUser,
+            longitude: longitudeUser,
+          };
+          const distance = calculateDistance(restaurantLocation, userLocation); // Implement a function to calculate distance
+
+          // Return true if distance is less than 4km
+          return distance <= 4;
+        });
+
+        setFavoriteRestaurants(filteredRestaurants);
         console.log(favoriteRestaurants);
       } else {
         console.log("Error fetching favorites:", data.message);
@@ -157,6 +178,10 @@ export const UserHome = () => {
       console.error("An error occurred while fetching favorites:", error);
     }
   };
+
+  useEffect(()=>{
+    fetchFavoriteRestaurants()
+  },[latestLocation])
 
   const updateLatestLocation = async (
     LocationName,
