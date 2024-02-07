@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import GoogleMap from "./Map";
 
-export const Signup = ()=> {
+export const Signup = () => {
   const [credentials, setCredentials] = useState({
     name: "",
     location: "",
@@ -12,28 +15,69 @@ export const Signup = ()=> {
     contact: "",
   });
 
+  const [showMapModal, setShowMapModal] = useState(false);
+
+  const handleShowMapModal = () => setShowMapModal(true);
+  const handleCloseMapModal = () => setShowMapModal(false);
+
+  const updateLocationName = (LocationName) => {
+    console.log(LocationName + " here");
+    setCredentials({ ...credentials, location: LocationName });
+  };
+
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          try {
+            const response = await axios.get(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0`
+            );
+            if (response.data.results.length > 0) {
+              const address = response.data.results[0].formatted_address;
+              setCredentials({ ...credentials, location: address });
+            } else {
+              alert("Location not found");
+            }
+          } catch (error) {
+            console.error("Error fetching location:", error);
+            alert("Error fetching location. Please try again.");
+          }
+        },
+        () => alert("Location permission denied.")
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
 
   const validateCredentials = (credentials) => {
     const errors = [];
-  
-    if (credentials.name.length===0) {
+
+    if (credentials.name.length === 0) {
       errors.push("Name must not be empty");
     }
- 
-    if (credentials.location.length===0) {
-        errors.push("Location must not be empty");
-      }
-  
+
+    if (credentials.location.length === 0) {
+      errors.push("Location must not be empty");
+    }
+
     if (credentials.email.trim() === "") {
       errors.push("Email must not be empty");
-    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(credentials.email)) {
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+        credentials.email
+      )
+    ) {
       errors.push("Invalid email address");
     }
-  
-    if (credentials.password.length<6) {
-      errors.push("Password should be atleast 6 characters long");
+
+    if (credentials.password.length < 6) {
+      errors.push("Password should be at least 6 characters long");
     }
-  
+
     return errors;
   };
 
@@ -46,30 +90,38 @@ export const Signup = ()=> {
       return;
     }
 
-    const response = await axios.post("http://localhost:4010/api/userauth/signup", {
+    const response = await axios.post(
+      "http://localhost:4010/api/userauth/signup",
+      {
         name: credentials.name,
         location: credentials.location,
         email: credentials.email,
         password: credentials.password,
         contact: credentials.contact,
-    });
-    
+      }
+    );
 
     if (response.status === 200) {
-        window.location.href = "/login";
-      } else {
-        alert("Email already exists! Try again with another one.");
-      }
+      window.location.href = "/login";
+    } else {
+      alert("Email already exists! Try again with another one.");
+    }
   };
 
-
-    const onChange = (event) => {
-        setCredentials({...credentials, [event.target.name]: event.target.value})
-    }
+  const onChange = (event) => {
+    setCredentials({ ...credentials, [event.target.name]: event.target.value });
+  };
 
   return (
     <>
-      <div className="container" style={{ width: "600px", border: "1px solid white", margin:"10px auto"}}>
+      <div
+        className="container"
+        style={{
+          width: "600px",
+          border: "1px solid white",
+          margin: "10px auto",
+        }}
+      >
         <Form onSubmit={handleSubmit}>
           <h1 className="text-center mt-4">Signup</h1>
 
@@ -86,13 +138,18 @@ export const Signup = ()=> {
 
           <Form.Group className="mb-3" controlId="formBasicLocation">
             <Form.Label>Location</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter Location"
-              name="location"
-              value={credentials.location}
-              onChange={onChange}
-            />
+            <div className="input-group">
+              <Form.Control
+                type="text"
+                placeholder="Enter Location"
+                name="location"
+                value={credentials.location}
+                onChange={onChange}
+              />
+              <Button variant="outline-secondary" onClick={handleShowMapModal}>
+                <FontAwesomeIcon icon={faMapMarkerAlt} />
+              </Button>
+            </div>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -132,16 +189,40 @@ export const Signup = ()=> {
             variant=" mb-2 mt-4"
             type="submit"
             className="d-block mx-auto"
-            style={{ color: "white" , backgroundColor: "#ff8a00"}}
+            style={{ color: "white", backgroundColor: "#ff8a00" }}
           >
             Submit
           </Button>
           <div className="text-center">
             <Link to="/login">Already have an account? Login!</Link>
           </div>
-          <br/>
+          <br />
         </Form>
       </div>
+
+      {/* GoogleMap Modal */}
+      <Modal show={showMapModal} onHide={handleCloseMapModal}>
+        <Modal.Header>
+          <Modal.Title>Select your Location</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <GoogleMap updateLocationName={updateLocationName} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={handleCloseMapModal}
+            style={{
+              color: "white",
+              backgroundColor: "#ff8a00",
+              border: "1px solid #ff8a00",
+              outline: "none",
+            }}
+          >
+            Done
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
-}
+};
