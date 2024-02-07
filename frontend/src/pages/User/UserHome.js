@@ -34,6 +34,7 @@ export const UserHome = () => {
     return (degrees * Math.PI) / 180;
   };
 
+  //Haversine formula
   const calculateDistance = (point1, point2) => {
     const earthRadiusKm = 6371; // Radius of the Earth in kilometers
     const dLat = degreesToRadians(point2.latitude - point1.latitude);
