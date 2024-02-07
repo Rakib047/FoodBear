@@ -252,6 +252,15 @@ export const UserHome = () => {
   const handleShowMapModal = () => setShowMapModal(true); // Should set it to true
   const handleCloseMapModal = () => setShowMapModal(false); // Should set it to false
 
+    // useEffect to watch for changes in location state
+    useEffect(() => {
+      // Call updateLatestLocation whenever latestLocation changes
+      if (latestLocation !== "") {
+        fetchData();
+      }
+    }, [latestLocation]);
+  
+
   return (
     <div>
       <Navbar />
