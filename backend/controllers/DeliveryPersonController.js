@@ -144,7 +144,7 @@ const updateLocationDeliveryPerson = async (req, res) => {
     if (!deliveryPerson) {
       return res.status(404).json({ message: "Delivery person not found" });
     }
-
+    console.log(location,latitude,longitude)
     deliveryPerson.location=location
     deliveryPerson.latitude = latitude;
     deliveryPerson.longitude = longitude;

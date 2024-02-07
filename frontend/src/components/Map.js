@@ -22,7 +22,7 @@ const GoogleMap = ({ updateLocationName }) => {
       const { results } = response.data;
       if (results && results.length > 0) {
         setLocationName(results[0].formatted_address);
-        updateLocationName(results[0].formatted_address,latitude,longitude);
+        updateLocationName(results[0].formatted_address,lat,lng);
         console.log(latitude+" "+longitude+" checking")
       }
     } catch (error) {

@@ -410,6 +410,7 @@ export const UserHome = () => {
             ))}
           </div>
         )}
+
         <Modal />
         <Modal show={showMapModal} onHide={handleCloseMapModal}>
           <Modal.Header>
@@ -433,6 +434,7 @@ export const UserHome = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+        
         <Footer />
       </div>
     </div>
