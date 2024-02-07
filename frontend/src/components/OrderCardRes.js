@@ -99,14 +99,55 @@ export default function FoodCard_Restaurant(props) {
     fetchRestaurant();
   }, []);
 
+  const degreesToRadians = (degrees) => {
+    return (degrees * Math.PI) / 180;
+  };
+
+  const calculateDistance = (point1, point2) => {
+    const earthRadiusKm = 6371; // Radius of the Earth in kilometers
+    const dLat = degreesToRadians(point2.latitude - point1.latitude);
+    const dLon = degreesToRadians(point2.longitude - point1.longitude);
+
+    const lat1 = degreesToRadians(point1.latitude);
+    const lat2 = degreesToRadians(point2.latitude);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    console.log("radius " + earthRadiusKm * c);
+    return earthRadiusKm * c; // Distance in kilometers
+  };
+
   const handleAccept = async () => {
     let dp_id = "";
-    deliverypersons.map((deliveryperson) => {
-      if (deliveryperson.location === restaurant.location && deliveryperson.is_available === true) {
-        dp_id = deliveryperson._id;
-      }
+
+    const eligibleDeliveryPersons = deliverypersons.filter((deliveryperson) => {
+      const distance = calculateDistance(
+        {
+          latitude: deliveryperson.latitude,
+          longitude: deliveryperson.longitude,
+        },
+        {
+          latitude: restaurant.latitude,
+          longitude: restaurant.longitude,
+        }
+      );
+      return distance <= 3 && deliveryperson.is_available;
     });
-    console.log("props.res", restaurant._id);
+
+    if(eligibleDeliveryPersons.length>0){
+      const selectedDeliveryPerson = eligibleDeliveryPersons[0];
+      dp_id=selectedDeliveryPerson._id
+    }
+
+    // deliverypersons.map((deliveryperson) => {
+    //   if (deliveryperson.location === restaurant.location && deliveryperson.is_available === true) {
+    //     dp_id = deliveryperson._id;
+    //   }
+    // });
+    // console.log("props.res", restaurant._id);
 
     let response = await fetch(
       `http://localhost:4010/api/order/restaurant/orders/confirmorder/${props._id}/${dp_id}`,
