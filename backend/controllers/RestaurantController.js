@@ -371,6 +371,8 @@ const getSpecificRestaurant = async(req,res)=>{
   }
 }
 
+
+
 module.exports = {
   signupRestaurant,
   loginRestaurant,
@@ -387,5 +389,5 @@ module.exports = {
   setUserRating,
   setUserReview,
   getSpecificRestaurantRating,
-  getSpecificRestaurant
+  getSpecificRestaurant,
 };

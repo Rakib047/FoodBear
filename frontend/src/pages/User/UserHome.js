@@ -68,7 +68,6 @@ export const UserHome = () => {
         latitude: restaurant.latitude,
         longitude: restaurant.longitude,
       };
-      
 
       const userId = localStorage.getItem("user_id");
       const latitudeUser = localStorage.getItem(userId + "_lat");
@@ -88,17 +87,43 @@ export const UserHome = () => {
 
     setRestaurants(filteredRestaurants);
     console.log("restaurants", data);
-    // Sort the restaurants by ratings (assuming you have a ratings field)
-    const sortedByRating = [...filteredRestaurants].sort(
-      (a, b) => b.averageRating - a.averageRating
-    );
 
-    // Take the top 5 (or however many you want) to show as most popular
-    const topRated = sortedByRating.slice(0, 4);
-    console.log("Top-rated:", topRated); // Debug line
 
-    setMostPopularRestaurants(topRated);
-    console.log("most popular", mostPopularRestaurants);
+    const fetchOrdersForRestaurant = async (restaurantId) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4010/api/order/restaurant/orders/${restaurantId}`
+        );
+        const orders = response.data;
+        console.log("order len : ",orders.length)
+        return orders.length;
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        return 0; // Return 0 if there's an error
+      }
+    };
+
+    // Define a function to calculate popularity based on orders count
+    const calculatePopularity = async () => {
+      const popularRestaurants = [];
+
+      for (const restaurant of filteredRestaurants) {
+        const ordersCount = await fetchOrdersForRestaurant(restaurant._id);
+        if (restaurant.averageRating >= 4 && ordersCount >= 10) {
+          popularRestaurants.push(restaurant);
+        }
+      }
+
+      // Take the top 5 (or however many you want) to show as most popular
+      const topRated = popularRestaurants.slice(0, 4); // Change to slice(0, 5) if you want top 5
+      console.log("Top-rated:", topRated); // Debug line
+      // Take the top 4 (or however many you want) to show as most popular
+      setMostPopularRestaurants(topRated);
+      console.log("most popular", mostPopularRestaurants);
+    };
+
+    calculatePopularity()
+
 
     const homeKitchens = data.filter((restaurant) => restaurant.is_homekitchen);
     const otherRests = data.filter((restaurant) => !restaurant.is_homekitchen);
@@ -154,7 +179,7 @@ export const UserHome = () => {
         longitude: longitudeVal,
       }
     );
-    
+
     console.log(res);
   };
 
@@ -252,14 +277,13 @@ export const UserHome = () => {
   const handleShowMapModal = () => setShowMapModal(true); // Should set it to true
   const handleCloseMapModal = () => setShowMapModal(false); // Should set it to false
 
-    // useEffect to watch for changes in location state
-    useEffect(() => {
-      // Call updateLatestLocation whenever latestLocation changes
-      if (latestLocation !== "") {
-        fetchData();
-      }
-    }, [latestLocation]);
-  
+  // useEffect to watch for changes in location state
+  useEffect(() => {
+    // Call updateLatestLocation whenever latestLocation changes
+    if (latestLocation !== "") {
+      fetchData();
+    }
+  }, [latestLocation]);
 
   return (
     <div>
@@ -410,7 +434,6 @@ export const UserHome = () => {
             ))}
           </div>
         )}
-
         <Modal />
         <Modal show={showMapModal} onHide={handleCloseMapModal}>
           <Modal.Header>
@@ -434,7 +457,6 @@ export const UserHome = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-        
         <Footer />
       </div>
     </div>
