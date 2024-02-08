@@ -41,9 +41,12 @@ const signupUser = async (req,res) =>{
                 location: req.body.location,
                 email : req.body.email,
                 contact: req.body.contact,
-                password: hashedPassword
+                password: hashedPassword,
+                latitude: req.body.latitude, // Add latitude
+                longitude: req.body.longitude, // Add longitude
             }
         )
+        console.log(newUser.latitude+" "+newUser.longitude+" :user")
         res.status(200).json(newUser)
     } catch (error) {
         console.log("User signing up failed")

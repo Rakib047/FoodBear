@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import GoogleMap from "./Map";
+import GoogleMap from "../../components/Map";
 
 export const Signup = () => {
   const [credentials, setCredentials] = useState({
@@ -13,6 +13,8 @@ export const Signup = () => {
     email: "",
     password: "",
     contact: "",
+    latitude:null,
+    longitude:null,
   });
 
   const [showMapModal, setShowMapModal] = useState(false);
@@ -20,38 +22,11 @@ export const Signup = () => {
   const handleShowMapModal = () => setShowMapModal(true);
   const handleCloseMapModal = () => setShowMapModal(false);
 
-  const updateLocationName = (LocationName) => {
+  const updateLocationName = (LocationName,latitudeVal,longitudeVal) => {
     console.log(LocationName + " here");
-    setCredentials({ ...credentials, location: LocationName });
+    setCredentials({ ...credentials, location: LocationName,latitude:latitudeVal,longitude:longitudeVal });
   };
 
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          try {
-            const response = await axios.get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0`
-            );
-            if (response.data.results.length > 0) {
-              const address = response.data.results[0].formatted_address;
-              setCredentials({ ...credentials, location: address });
-            } else {
-              alert("Location not found");
-            }
-          } catch (error) {
-            console.error("Error fetching location:", error);
-            alert("Error fetching location. Please try again.");
-          }
-        },
-        () => alert("Location permission denied.")
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
 
   const validateCredentials = (credentials) => {
     const errors = [];
@@ -98,6 +73,8 @@ export const Signup = () => {
         email: credentials.email,
         password: credentials.password,
         contact: credentials.contact,
+        latitude:credentials.latitude,
+        longitude:credentials.longitude,
       }
     );
 

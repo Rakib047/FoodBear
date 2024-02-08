@@ -127,15 +127,16 @@ const getSpecificRestaurantOrder = async(req,res)=>{
   }
 }
 
-const getAllOrderofSpecificDpPerson = async(req,res)=>{
+const getAllOrderofSpecificDpPerson = async (req, res) => {
   const deliverypersonId = req.params.deliverypersonId;
   try {
     // Find all orders for the specified deliverypersonId
     const orders = await OrderModel.find({ delivery_person_id: deliverypersonId });
 
+    // Check if no orders found
     if (!orders || orders.length === 0) {
-      return res
-        .json({ message: "No orders found for this delivery person." });
+      // Return an empty array
+      return res.json([]);
     }
 
     // Send the orders as a response
