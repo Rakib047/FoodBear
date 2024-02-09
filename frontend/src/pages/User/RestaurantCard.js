@@ -89,7 +89,11 @@ export const RestaurantCard =(props)=> {
             </div>
           </div>
           <p className="card-text text-muted fs-10">{props.location}</p>
-          <p className="card-text text-muted fs-10">{orderCount>=10?"10+":orderCount}</p> {/* Display food count */}
+          <div className="d-flex justify-content-between"> {/* Add a parent div for flex layout */}
+            <p className="card-text text-muted fs-10">{orderCount>=10?"10+":orderCount}</p> {/* Display food count */}
+            <p className="card-text text-muted fs-10">{props.distance.toFixed(2)}km away</p> {/* Display distance */}
+          </div>
+
         </div>
       </div>
     </div>
