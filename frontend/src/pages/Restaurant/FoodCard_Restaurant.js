@@ -148,7 +148,7 @@ export default function (props) {
   const [showAddOfferModal, setShowAddOfferModal] = useState(false);
   const [newOffer, setNewOffer] = useState({
     // Initialize state for the new offer fields
-    offertype: "",
+    offercatagory: "",
     discount: "",
   });
 
@@ -230,7 +230,7 @@ export default function (props) {
             <button
               type="button"
               className="btn btn-outline-success btn-sm mr-4"
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "25px" }}
               onClick={() => setShowAddOfferModal(true)}
             >
               Add Offer

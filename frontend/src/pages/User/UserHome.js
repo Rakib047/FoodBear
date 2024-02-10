@@ -311,6 +311,24 @@ export const UserHome = () => {
     }
   }, [latestLocation]);
 
+  const calculatePropDistance = (restaurant)=>{
+    const restaurantLocation = {
+      latitude: restaurant.latitude,
+      longitude: restaurant.longitude,
+    };
+
+    const userId = localStorage.getItem("user_id");
+    const latitudeUser = localStorage.getItem(userId + "_lat");
+    const longitudeUser = localStorage.getItem(userId + "_long");
+
+    const userLocation = {
+      latitude: latitudeUser,
+      longitude: longitudeUser,
+    };
+    const distance = calculateDistance(restaurantLocation, userLocation);
+    return distance
+  }
+
   return (
     <div>
       <Navbar />
@@ -365,6 +383,7 @@ export const UserHome = () => {
             </h4>
             <hr />
             {favoriteRestaurants.slice(0, 4).map((restaurant) => (
+              
               <div key={restaurant._id} className="col-12 col-md-6 col-lg-3">
                 <RestaurantCard
                   _id={restaurant._id}
@@ -373,6 +392,7 @@ export const UserHome = () => {
                   location={restaurant.location}
                   averageRating={restaurant.averageRating}
                   is_open={restaurant.is_open}
+                  distance={calculatePropDistance(restaurant)}
                 />
               </div>
             ))}
@@ -397,6 +417,7 @@ export const UserHome = () => {
                     location={restaurant.location}
                     averageRating={restaurant.averageRating}
                     is_open={restaurant.is_open}
+                    distance={calculatePropDistance(restaurant)}
                   />
                 </div>
               ))}
@@ -417,6 +438,7 @@ export const UserHome = () => {
                     location={restaurant.location}
                     averageRating={restaurant.averageRating}
                     is_open={restaurant.is_open}
+                    distance={calculatePropDistance(restaurant)}
                   />
                 </div>
               ))}
@@ -437,6 +459,7 @@ export const UserHome = () => {
                     location={restaurant.location}
                     averageRating={restaurant.averageRating}
                     is_open={restaurant.is_open}
+                    distance={calculatePropDistance(restaurant)}
                   />
                 </div>
               ))}
@@ -455,6 +478,7 @@ export const UserHome = () => {
                   location={restaurant.location}
                   averageRating={restaurant.averageRating}
                   is_open={restaurant.is_open}
+                  distance={calculatePropDistance(restaurant)}
                 />
               </div>
             ))}
