@@ -41,7 +41,7 @@ export const Home = () => {
             >
               <div className="px-2">
                 <img
-                  src="https://c1.wallpaperflare.com/preview/345/487/799/kitchen-cook-flame-food.jpg"
+                  src="https://media.istockphoto.com/id/1369920192/photo/chef-presenting-a-plate-of-food.webp?b=1&s=170667a&w=0&k=20&c=5Pg68hwW09ke2lQAVCd5VyZCARI6NGKT4vWoV01CW04="
                   alt=""
                   height="100%"
                   width="100%"
@@ -132,7 +132,7 @@ export const Home = () => {
             >
               <div className="px-2">
                 <img
-                  src="https://img.freepik.com/free-photo/food-delivery-boy-delivering-food-scooter_1303-27695.jpg?w=1380&t=st=1704220856~exp=1704221456~hmac=ab472ca4f86aa17604169849e1f80fa948cc118139cff06bed590d0e36db1d7e"
+                  src="https://pandariders.foodpanda.com.bd/wp-content/uploads/sites/14/2022/12/DSC3262.jpg"
                   alt=""
                   height="100%"
                   width="100%"
