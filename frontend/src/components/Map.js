@@ -2,14 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import GoogleMapReact from "google-map-react";
 import axios from "axios";
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
 const GoogleMap = ({ updateLocationName }) => {
   const [showModal, setShowModal] = useState(false);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const apiKey = "AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0";
+  const [apiKey, setApiKey] = useState("AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0");
   const markerRef = useRef(null);
   const [locationName, setLocationName] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -22,8 +24,7 @@ const GoogleMap = ({ updateLocationName }) => {
       const { results } = response.data;
       if (results && results.length > 0) {
         setLocationName(results[0].formatted_address);
-        updateLocationName(results[0].formatted_address,lat,lng);
-        console.log(latitude+" "+longitude+" checking")
+        updateLocationName(results[0].formatted_address, lat, lng);
       }
     } catch (error) {
       console.error("Error fetching location name:", error);
@@ -31,41 +32,49 @@ const GoogleMap = ({ updateLocationName }) => {
   };
 
   useEffect(() => {
-    // Call getLocationName whenever latitude or longitude changes
     getLocationName(latitude, longitude);
   }, [latitude, longitude]);
 
-
   const handleMarkerDragEnd = () => {
     if (markerRef.current) {
-      const newLatLng = markerRef.current.getPosition(); // Get new position
-      setLatitude(newLatLng.lat()); // Update latitude state
+      const newLatLng = markerRef.current.getPosition();
+      setLatitude(newLatLng.lat());
       setLongitude(newLatLng.lng());
       getLocationName(newLatLng.lat(), newLatLng.lng());
-
-      console.log(newLatLng);
     }
   };
 
   const handleApiLoaded = (map, maps) => {
-    // Get current location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const center = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-
         markerRef.current = new maps.Marker({
           position: center,
           map,
           title: "You are here!",
-          draggable: true, // Make the marker draggable
+          draggable: true,
         });
         markerRef.current.addListener("dragend", handleMarkerDragEnd);
         map.panTo(center);
         getLocationName(center.lat, center.lng);
       });
+    }
+  };
+
+  const handleSelect = async (value) => {
+    setAddress(value);
+    try {
+      const results = await geocodeByAddress(value);
+      const latLng = await getLatLng(results[0]);
+      setLatitude(latLng.lat);
+      setLongitude(latLng.lng);
+      setLocationName(value);
+      updateLocationName(value, latLng.lat, latLng.lng);
+    } catch (error) {
+      console.error("Error selecting place:", error);
     }
   };
 
@@ -95,12 +104,33 @@ const GoogleMap = ({ updateLocationName }) => {
               onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             />
           </div>
+          <br />
+          <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect}>
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+              <div>
+                <input {...getInputProps({ placeholder: "Search Places..." })} />
+                <div>
+                  {loading ? <div>Loading...</div> : null}
+                  {suggestions.map((suggestion) => {
+                    const style = {
+                      backgroundColor: suggestion.active ? "#41b6e6" : "#fff",
+                    };
+                    return (
+                      <div {...getSuggestionItemProps(suggestion, { style })}>
+                        {suggestion.description}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </PlacesAutocomplete>
         </Modal.Body>
         <Modal.Footer className="justify-content-center">
           <Button
             variant="secondary"
             onClick={handleClose}
-            style={{ color: "white", backgroundColor: "#ff8a00",border: "1px solid #ff8a00",outline: "none" }}
+            style={{ color: "white", backgroundColor: "#ff8a00", border: "1px solid #ff8a00", outline: "none" }}
           >
             Place here
           </Button>
