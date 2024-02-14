@@ -144,6 +144,7 @@ const GoogleMap = ({ updateLocationName }) => {
                     borderRadius: "5px",
                     fontSize: "16px",
                     outline: "none",
+                    
                   }}
                   {...getInputProps({ placeholder: "Search Places..." })}
                 />
