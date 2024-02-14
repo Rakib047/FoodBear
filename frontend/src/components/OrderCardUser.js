@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import MapModal from "./DpToUserMap";
 
 export default function FoodCard_Restaurant(props) {
   const [isHovered, setIsHovered] = useState(false);
@@ -33,7 +34,7 @@ export default function FoodCard_Restaurant(props) {
       },
     });
     response = await response.json();
-    console.log("in restu")
+    console.log("in restu");
     setRestaurants(response);
   };
 
@@ -48,6 +49,11 @@ export default function FoodCard_Restaurant(props) {
     transform: isHovered ? "scale(1.03)" : "scale(1)",
     transition: "transform 0.1s ease-in-out",
   };
+
+  const [showMapModal, setShowMapModal] = useState(false);
+
+  const handleShowMapModal = () => setShowMapModal(true);
+  const handleCloseMapModal = () => setShowMapModal(false);
 
   return (
     <div
@@ -131,16 +137,43 @@ export default function FoodCard_Restaurant(props) {
                           </span>
                         </h5>
                       )}
-                      {props.status === "picked_up" && (
-                        <h5>
-                          <span
-                            className="badge bg-warning text-white badge-lg"
-                            style={{ alignSelf: "flex-start" }}
-                          >
-                            On The Way
-                          </span>
-                        </h5>
-                      )}
+                      <>
+                        {props.status === "picked_up" && (
+                          <h5>
+                            <span
+                              className="badge bg-warning text-white badge-lg"
+                              style={{ alignSelf: "flex-start" }}
+                            >
+                              On The Way
+                            </span>
+                            <button
+                              onClick={handleShowMapModal}
+                              className="badge text-white badge-lg"
+                              style={{
+                                backgroundColor: "#ff8a00",
+                                color: "white",
+                                border: "none",
+                                margin: "10px",
+                                padding: "10px 20px",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                                fontSize: "16px",
+                                marginLeft: "1px"
+                              }}
+                            >
+                              Check <i class="fa-solid fa-location-dot"></i>
+                            </button>
+                          </h5>
+                        )}
+
+                        {showMapModal && (
+                          <MapModal
+                            show={showMapModal} // Pass show prop
+                            user={props.user} // Pass user prop
+                            onClose={handleCloseMapModal} // Pass onClose prop
+                          />
+                        )}
+                      </>
                     </div>
                   </div>
                 );
