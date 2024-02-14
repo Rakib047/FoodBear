@@ -2,13 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import GoogleMapReact from "google-map-react";
 import axios from "axios";
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 
 const GoogleMap = ({ updateLocationName }) => {
   const [showModal, setShowModal] = useState(false);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [apiKey, setApiKey] = useState("AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0");
+  const [apiKey, setApiKey] = useState(
+    "AIzaSyBzg7NzFmIXnrDx_ectt8aYFtfsTcvuSq0"
+  );
   const markerRef = useRef(null);
   const [locationName, setLocationName] = useState("");
   const [address, setAddress] = useState("");
@@ -73,6 +79,15 @@ const GoogleMap = ({ updateLocationName }) => {
       setLongitude(latLng.lng);
       setLocationName(value);
       updateLocationName(value, latLng.lat, latLng.lng);
+
+      if (markerRef.current) {
+        markerRef.current.setPosition({ lat: latLng.lat, lng: latLng.lng });
+      }
+
+      // Center the map on the selected location
+      if (markerRef.current && markerRef.current.map) {
+        markerRef.current.map.panTo({ lat: latLng.lat, lng: latLng.lng });
+      }
     } catch (error) {
       console.error("Error selecting place:", error);
     }
@@ -105,10 +120,34 @@ const GoogleMap = ({ updateLocationName }) => {
             />
           </div>
           <br />
-          <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect}>
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+        </Modal.Body>
+        <Modal.Footer className="justify-content-center">
+          <PlacesAutocomplete
+            value={address}
+            onChange={setAddress}
+            onSelect={handleSelect}
+          >
+            {({
+              getInputProps,
+              suggestions,
+              getSuggestionItemProps,
+              loading,
+            }) => (
               <div>
-                <input {...getInputProps({ placeholder: "Search Places..." })} />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  style={{
+                    width: "10cm",
+                    padding: "10px",
+                    border: "2px solid #ccc",
+                    borderRadius: "5px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                  {...getInputProps({ placeholder: "Search Places..." })}
+                />
+
                 <div>
                   {loading ? <div>Loading...</div> : null}
                   {suggestions.map((suggestion) => {
@@ -125,12 +164,15 @@ const GoogleMap = ({ updateLocationName }) => {
               </div>
             )}
           </PlacesAutocomplete>
-        </Modal.Body>
-        <Modal.Footer className="justify-content-center">
           <Button
             variant="secondary"
             onClick={handleClose}
-            style={{ color: "white", backgroundColor: "#ff8a00", border: "1px solid #ff8a00", outline: "none" }}
+            style={{
+              color: "white",
+              backgroundColor: "#ff8a00",
+              border: "1px solid #ff8a00",
+              outline: "none",
+            }}
           >
             Place here
           </Button>
