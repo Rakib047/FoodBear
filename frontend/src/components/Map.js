@@ -143,8 +143,7 @@ const GoogleMap = ({ updateLocationName }) => {
                     border: "2px solid #ccc",
                     borderRadius: "5px",
                     fontSize: "16px",
-                    outline: "none",
-                    
+                    outline: "none",  
                   }}
                   {...getInputProps({ placeholder: "Search Places..." })}
                 />
