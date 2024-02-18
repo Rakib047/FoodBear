@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MapModal from "./DpToUserMap";
+import ReviewModal from "./ReviewModal";
 
 export default function FoodCard_Restaurant(props) {
   const [isHovered, setIsHovered] = useState(false);
@@ -54,6 +55,17 @@ export default function FoodCard_Restaurant(props) {
 
   const handleShowMapModal = () => setShowMapModal(true);
   const handleCloseMapModal = () => setShowMapModal(false);
+
+  //review modal part
+  const [showReviewModal, setShowReviewModal] = useState(false);
+
+  const handleShowReviewModal = () => setShowReviewModal(true);
+  const handleCloseReviewModal = () => setShowReviewModal(false);
+
+  const handleReviewSubmit = (event) => {
+    event.preventDefault();
+    // handle review submission here
+  };
 
   return (
     <div
@@ -112,7 +124,6 @@ export default function FoodCard_Restaurant(props) {
                       <br />
                       Contact: {restaurant.contact}
                     </p>
-
                     <div
                       className="d-flex flex-row justify-content-left mt-4"
                       style={{ alignItems: "center", marginBottom: "0px" }}
@@ -158,7 +169,7 @@ export default function FoodCard_Restaurant(props) {
                                 borderRadius: "5px",
                                 cursor: "pointer",
                                 fontSize: "16px",
-                                marginLeft: "1px"
+                                marginLeft: "1px",
                               }}
                             >
                               Check <i class="fa-solid fa-location-dot"></i>
@@ -182,6 +193,28 @@ export default function FoodCard_Restaurant(props) {
             })}
           </div>
         </div>
+        <button
+          className="btn btn-primary"
+          style={{
+            position: "absolute",
+            bottom: "15px",
+            right: "81px",
+            backgroundColor: "#ff8a00",
+            borderColor: "#ff8a00",
+          }}
+          onClick={handleShowReviewModal}
+        >
+          Give Review
+        </button>
+
+        {showReviewModal && (
+          <ReviewModal
+            show={showReviewModal}
+            handleClose={handleCloseReviewModal}
+            handleSubmit={handleReviewSubmit}
+          />
+        )}
+        
       </div>
     </div>
   );
