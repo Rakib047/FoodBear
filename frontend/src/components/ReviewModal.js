@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
 
-const ReviewModal = ({ show, handleClose, restaurant_id }) => {
+const ReviewModal = ({ show, handleClose, restaurant_id,order_id }) => {
   const [userRating, setUserRating] = useState(0);
   const [userReview, setUserReview] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false); // new state variable
@@ -15,23 +16,31 @@ const ReviewModal = ({ show, handleClose, restaurant_id }) => {
 
     const userId = localStorage.getItem("user_id");
     const userName = localStorage.getItem("user_name");
-    const response = await fetch(
-      `http://localhost:4010/api/restaurant/review/${restaurant_id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId, userName, review: userReview }),
+    if (userReview !== "") {
+        const response = await fetch(
+          `http://localhost:4010/api/restaurant/review/${restaurant_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, userName, review: userReview }),
+          }
+        );
       }
-    );
     setIsSubmitted(true);
+    await axios.post("http://localhost:4010/api/order/orderReview/addOrderReview", {
+        userId: localStorage.getItem("user_id"),
+        restaurantId: restaurant_id,
+        orderId: order_id,
+    }
+    );
+    
     setTimeout(() => {
       setIsSubmitted(false); // Reset the isSubmitted state
       handleClose();
-    }, 4000);
-    console.log("review er response");
-    console.log(response);
+    }, 2400);
+    
   };
 
   const handleUserRating = async (rating) => {

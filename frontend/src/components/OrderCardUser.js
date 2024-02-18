@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MapModal from "./DpToUserMap";
 import ReviewModal from "./ReviewModal";
 import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
 
 export default function FoodCard_Restaurant(props) {
   const [isHovered, setIsHovered] = useState(false);
@@ -65,53 +66,97 @@ export default function FoodCard_Restaurant(props) {
 
   const [userRating, setUserRating] = useState(0); // State to hold user's rating
 
-    // Fetch user's rating for the restaurant
-    useEffect(() => {
-      const fetchRating = async () => {
-        //`http://localhost:4010/api/restaurant/rating/${props.restaurant_id}?${userId}`
-        //console.log(data)
-        //setUserRating(data.rating); // Set user's rating
-        const userId = localStorage.getItem("user_id");
-        const response = await fetch(
-          `http://localhost:4010/api/restaurant/rating/${props.restaurant_id}/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+  // Fetch user's rating for the restaurant
+  const [reviewButtonOrRating, setReviewButtonOrRating] = useState(null);
+  useEffect(() => {
+    const fetchRating = async () => {
+      const userId = localStorage.getItem("user_id");
+      const response = await fetch(
+        `http://localhost:4010/api/restaurant/rating/${props.restaurant_id}/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      setUserRating(data.rating); // Set user's rating
+    };
+
+    const renderReviewButtonOrRating = async () => {
+      const userId = localStorage.getItem("user_id");
+      const response = await axios.get(
+        `http://localhost:4010/api/order/orderReview/getOrderReview/${userId}/${props.restaurant_id}/${props._id}`
+      );
+
+      if (response.data.found) {
+        setReviewButtonOrRating(
+          <div>
+            <br />
+            <p>
+              <span style={{ verticalAlign: "middle" }}>You rated this </span>
+              <span style={{ fontWeight: "bold", verticalAlign: "middle" }}>
+                {userRating}
+              </span>
+              <i
+                class="fa-solid fa-star"
+                style={{
+                  color: "#ff8a00",
+                  fontSize: ".9em",
+                  verticalAlign: "middle",
+                }}
+              ></i>
+            </p>
+          </div>
         );
-        const data = await response.json();
-        // console.log("from backend rating")
-        // console.log(data.rating)
-        setUserRating(data.rating); // Set user's rating
-      };
-  
-      fetchRating();
-    }, [props.restaurant_id]);
-  
-      // Render review button or user's rating
-  const renderReviewButtonOrRating = () => {
+      } else {
+        setReviewButtonOrRating(
+          <Button
+            className="btn btn-primary"
+            style={{
+              position: "relative",
+              top: "15px",
+              backgroundColor: "#ff8a00",
+              borderColor: "#ff8a00",
+            }}
+            onClick={handleShowReviewModal}
+          >
+            Give Review
+          </Button>
+        );
+      }
+    };
 
-    if (userRating > 0) { //ei if else tar jaygay ei order ta reviewed kina check kora lagbe
-      return <p>You rated this {userRating} stars</p>;
-    }
+    fetchRating();
+    renderReviewButtonOrRating();
+  }, [props.restaurant_id, reviewButtonOrRating]);
 
-    return (
-      <Button
-        className="btn btn-primary"
-        style={{
-          position: "relative",
-          top: "15px",
-          backgroundColor: "#ff8a00",
-          borderColor: "#ff8a00",
-        }}
-        onClick={handleShowReviewModal}
-      >
-        Give Review
-      </Button>
-    );
-  };
+  // Render review button or user's rating
+  // const renderReviewButtonOrRating = async () => {
+  //   const userId = localStorage.getItem("user_id");
+  //   const response = await axios.get(`http://localhost:4010/api/order/orderReview/getOrderReview/${userId}/${props.restaurant_id}/${props._id}`);
+
+  //   //console.log(response.data.found)
+  //   if (response.data.found) { //ei if else tar jaygay ei order ta reviewed kina check kora lagbe
+  //     return <p>You rated this {userRating} <i class="fa-solid fa-star" style={{ color: "#ff8a00" }}></i></p>;
+  //   }
+
+  //   return (
+  //     <Button
+  //       className="btn btn-primary"
+  //       style={{
+  //         position: "relative",
+  //         top: "15px",
+  //         backgroundColor: "#ff8a00",
+  //         borderColor: "#ff8a00",
+  //       }}
+  //       onClick={handleShowReviewModal}
+  //     >
+  //       Give Review
+  //     </Button>
+  //   );
+  // };
 
   return (
     <div
@@ -240,7 +285,7 @@ export default function FoodCard_Restaurant(props) {
           </div>
         </div>
 
-        <button
+        {/* <button
           className="btn btn-primary"
           style={{
             position: "relative",
@@ -251,13 +296,17 @@ export default function FoodCard_Restaurant(props) {
           onClick={handleShowReviewModal}
         >
           Give Review
-        </button>
+        </button> */}
+        {/* Render review button or user's rating */}
+
+        {reviewButtonOrRating}
 
         {showReviewModal && (
           <ReviewModal
             show={handleShowReviewModal}
             handleClose={handleCloseReviewModal}
             restaurant_id={props.restaurant_id}
+            order_id={props._id}
           />
         )}
       </div>
