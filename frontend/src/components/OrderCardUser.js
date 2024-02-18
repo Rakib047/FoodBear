@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MapModal from "./DpToUserMap";
-import ReviewModal from "./ReviewModal";
+//import ReviewModal from "./ReviewModal";
+import { Modal, Button, Form } from "react-bootstrap";
 
 export default function FoodCard_Restaurant(props) {
   const [isHovered, setIsHovered] = useState(false);
@@ -62,9 +63,123 @@ export default function FoodCard_Restaurant(props) {
   const handleShowReviewModal = () => setShowReviewModal(true);
   const handleCloseReviewModal = () => setShowReviewModal(false);
 
-  const handleReviewSubmit = (event) => {
+  const [userReview, setUserReview] = useState("");
+
+  const handleReviewChange = (event) => {
+    setUserReview(event.target.value);
+  };  
+
+  const handleReviewSubmit = async (event) => {
     event.preventDefault();
-    // handle review submission here
+    
+    const userId = localStorage.getItem("user_id");
+    const userName = localStorage.getItem("user_name");
+    const response = await fetch(
+      `http://localhost:4010/api/restaurant/review/${props.restaurant_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, userName, review: userReview }),
+      }
+    );
+    setShowReviewModal(false)
+    console.log("review er response")
+    console.log(response);
+  };
+
+
+
+  //review component bringing it here rather than a file
+  const ReviewModal = () => {
+    
+    const [userRating, setUserRating] = useState(0);
+
+    const handleUserRating = async (rating) => {
+      setUserRating(rating);
+
+      //user will rate the restaurant
+      const userId = localStorage.getItem("user_id");
+
+      const response = await fetch(
+        `http://localhost:4010/api/restaurant/rating/${props.restaurant_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, rating: rating }),
+        }
+      );
+
+      const data = await response.json();
+      console.log("review er data");
+      console.log(data);
+    };
+
+    const renderClickableStars = () => {
+      if (userRating > 0) {
+        return (
+          <div>
+          You rated {userRating}<i class="fa-solid fa-star" style={{color:"#ff8a00"}}></i>
+          </div>
+        );
+      }
+
+      let stars = [];
+      for (let i = 1; i <= 5; i++) {
+        stars.push(
+          <i
+            key={i}
+            className={i <= userRating ? "bi bi-star-fill" : "bi bi-star"}
+            onClick={() => handleUserRating(i)}
+            style={{ cursor: "pointer", color: "#ff8a00" }}
+          ></i>
+        );
+      }
+      return stars;
+    };
+
+    return (
+      <Modal show={showReviewModal} onHide={handleCloseReviewModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Give Review</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleReviewSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <strong>Your Rating</strong>
+              </Form.Label>
+              <div>{renderClickableStars()}</div>
+              <br />
+              <Form.Label>
+                <strong>Tell others more about this restaurant</strong>
+              </Form.Label>
+              <Form.Control
+                placeholder="Share your thoughts about the food quality, delivery experience, and overall satisfaction with our service!"
+                as="textarea"
+                rows={3}
+                value={userReview}
+                onChange={handleReviewChange}
+              />
+            </Form.Group>
+
+            <Button
+              variant="primary"
+              type="submit"
+              style={{
+                backgroundColor: "#ff8a00",
+                borderColor: "#ff8a00",
+              }}
+            >
+              Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    );
   };
 
   return (
@@ -207,14 +322,7 @@ export default function FoodCard_Restaurant(props) {
           Give Review
         </button>
 
-        {showReviewModal && (
-          <ReviewModal
-            show={showReviewModal}
-            handleClose={handleCloseReviewModal}
-            handleSubmit={handleReviewSubmit}
-          />
-        )}
-        
+        {showReviewModal && <ReviewModal />}
       </div>
     </div>
   );
