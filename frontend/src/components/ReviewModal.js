@@ -1,87 +1,158 @@
-// import React, { useState } from "react";
-// import { Modal, Button, Form } from "react-bootstrap";
+import React, { useState } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 
-// const ReviewModal = ({ show, handleClose, handleSubmit,restaurant_id }) => {
-//   const [userRating, setUserRating] = useState(0);
+const ReviewModal = ({ show, handleClose, restaurant_id }) => {
+  const [userRating, setUserRating] = useState(0);
+  const [userReview, setUserReview] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false); // new state variable
 
-//   const handleUserRating = async (rating) => {
-//         setUserRating(rating);
+  const handleReviewChange = (event) => {
+    setUserReview(event.target.value);
+  };
 
-//         //user will rate the restaurant
-//         const userId = localStorage.getItem("user_id");
-        
-//         const response = await fetch(
-//           `http://localhost:4010/api/restaurant/rating/${restaurant_id}`,
-//           {
-//             method: "PUT",
-//             headers: {
-//               "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({ userId, rating: rating }),
-//           }
-//         );
-    
-//         const data = await response.json();
-//         console.log("review er data")
-//         console.log(data)
-//   };
+  const handleReviewSubmit = async (event) => {
+    event.preventDefault();
 
-//   const renderClickableStars = () => {
-//     if (userRating > 0) {
-//       return <p>You rated {userRating} star{userRating > 1 ? 's' : ''}</p>;
-//     }
+    const userId = localStorage.getItem("user_id");
+    const userName = localStorage.getItem("user_name");
+    const response = await fetch(
+      `http://localhost:4010/api/restaurant/review/${restaurant_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, userName, review: userReview }),
+      }
+    );
+    setIsSubmitted(true);
+    setTimeout(() => {
+      setIsSubmitted(false); // Reset the isSubmitted state
+      handleClose();
+    }, 4000);
+    console.log("review er response");
+    console.log(response);
+  };
 
-//     let stars = [];
-//     for (let i = 1; i <= 5; i++) {
-//       stars.push(
-//         <i
-//           key={i}
-//           className={i <= userRating ? "bi bi-star-fill" : "bi bi-star"}
-//           onClick={() => handleUserRating(i)}
-//           style={{ cursor: "pointer", color: "#ff8a00" }}
-//         ></i>
-//       );
-//     }
-//     return stars;
-//   };
+  const handleUserRating = async (rating) => {
+    setUserRating(rating);
 
-//   return (
-//     <Modal show={show} onHide={handleClose}>
-//       <Modal.Header closeButton>
-//         <Modal.Title>Give Review</Modal.Title>
-//       </Modal.Header>
-//       <Modal.Body>
-//         <Form onSubmit={handleSubmit}>
-//           <Form.Group className="mb-3">
-//             <Form.Label>
-//               <strong>Your Rating</strong>
-//             </Form.Label>
-//             <div>{renderClickableStars()}</div>
-//             <br />
-//             <Form.Label>
-//               <strong>Tell others more about this restaurant</strong>
-//             </Form.Label>
-//             <Form.Control
-//               placeholder="Share your thoughts about the food quality, delivery experience, and overall satisfaction with our service!"
-//               as="textarea"
-//               rows={3}
-//             />
-//           </Form.Group>
+    //user will rate the restaurant
+    const userId = localStorage.getItem("user_id");
 
-//           <Button
-//             variant="primary"
-//             type="submit"
-//             style={{
-//               backgroundColor: "#ff8a00",
-//               borderColor: "#ff8a00",
-//             }}
-//           >
-//             Submit
-//           </Button>
-//         </Form>
-//       </Modal.Body>
-//     </Modal>
-//   );
-// };
+    const response = await fetch(
+      `http://localhost:4010/api/restaurant/rating/${restaurant_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, rating: rating }),
+      }
+    );
 
-// export default ReviewModal;
+    const data = await response.json();
+    console.log("review er data");
+    console.log(data);
+  };
+
+  const renderClickableStars = () => {
+    if (userRating > 0) {
+      return (
+        <div>
+          You rated {userRating}
+          <i class="fa-solid fa-star" style={{ color: "#ff8a00" }}></i>
+        </div>
+      );
+    }
+
+    let stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <i
+          key={i}
+          className={i <= userRating ? "bi bi-star-fill" : "bi bi-star"}
+          onClick={() => handleUserRating(i)}
+          style={{ cursor: "pointer", color: "#ff8a00" }}
+        ></i>
+      );
+    }
+    return stars;
+  };
+
+  return (
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Give Review</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {isSubmitted ? (
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                fontWeight: "bold",
+              }}
+            >
+              <i
+                className="fa fa-check-circle"
+                style={{ fontSize: "1em", color: "green" }}
+              ></i>
+              Thanks for your review!
+            </div>
+                <br/>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <p style={{ textAlign: 'center' }}>
+                This review will provide valuable insights to others seeking to
+                experience our service. Thank you for contributing!
+              </p>
+            </div>
+          </div>
+        ) : (
+          <Form onSubmit={handleReviewSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <strong>Your Rating</strong>
+              </Form.Label>
+              <div>{renderClickableStars()}</div>
+              <br />
+              <Form.Label>
+                <strong>Tell others more about this restaurant</strong>
+              </Form.Label>
+              <Form.Control
+                placeholder="Share your thoughts about the food quality, delivery experience, and overall satisfaction with our service!"
+                as="textarea"
+                rows={3}
+                value={userReview}
+                onChange={handleReviewChange}
+              />
+            </Form.Group>
+
+            <Button
+              variant="primary"
+              type="submit"
+              style={{
+                backgroundColor: "#ff8a00",
+                borderColor: "#ff8a00",
+              }}
+            >
+              Submit
+            </Button>
+          </Form>
+        )}
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+export default ReviewModal;

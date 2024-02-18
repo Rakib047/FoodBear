@@ -32,7 +32,7 @@ const placeUserOrder = async(req,res)=>{
       total_price: req.body.total_price,
       payment_method: req.body.payment_method,
     });
-    console.log("in temp",temp)
+    //console.log("in temp",temp)
     res.json({ message: "New order placed!" });
   } catch (error) {
     console.log(error);
@@ -66,7 +66,7 @@ const getUserOrder = async(req,res)=>{
     }
 
     // Send the orders as a response
-    console.log(orders)
+    //console.log(orders)
     res.send(orders);
   } catch (error) {
     console.error("Error fetching orders:", error);
