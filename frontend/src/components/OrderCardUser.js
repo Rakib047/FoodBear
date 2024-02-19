@@ -299,7 +299,8 @@ export default function FoodCard_Restaurant(props) {
         </button> */}
         {/* Render review button or user's rating */}
 
-        {reviewButtonOrRating}
+        {props.status === "delivered" && //ekahne ei order ta delivered kina check kora lagbe
+          reviewButtonOrRating}
 
         {showReviewModal && (
           <ReviewModal
