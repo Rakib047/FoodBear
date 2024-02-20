@@ -385,6 +385,35 @@ const getSpecificRestaurant = async(req,res)=>{
   }
 }
 
+const getSpecificUserRatingForSpecificRestaurant = async (req, res) => {
+  const { restaurantId, userId } = req.params;
+  
+
+  try {
+    // Find the restaurant by ID
+    const restaurant = await RestaurantModel.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: 'Restaurant not found' });
+    }
+
+    
+    // Find the user's rating in the restaurant's ratings array
+    const userRating = restaurant.ratings.find(rating => rating.user.toString() === userId);
+  
+
+    if (!userRating) {
+      return res.status(404).json({ message: 'User rating not found for this restaurant' });
+    }
+
+    // Return the user's rating
+    res.json({ rating: userRating.rating });
+  } catch (error) {
+    console.error('Error fetching user rating:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 
 module.exports = {
@@ -405,4 +434,5 @@ module.exports = {
   setUserReview,
   getSpecificRestaurantRating,
   getSpecificRestaurant,
+  getSpecificUserRatingForSpecificRestaurant
 };

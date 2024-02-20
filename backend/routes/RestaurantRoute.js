@@ -35,5 +35,7 @@ router.route("/:id/ratings")
 router.route("/:restaurantId")
       .get(controllers.getSpecificRestaurant)
 
+router.route("/rating/:restaurantId/:userId")
+      .get(controllers.getSpecificUserRatingForSpecificRestaurant)
 
 module.exports = router;

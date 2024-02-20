@@ -527,7 +527,7 @@ export default function ShowFoods_Restaurant() {
                 ) : (
                   <>
                     <div className="d-flex justify-content-between align-items-center">
-                      <button
+                      {/* <button
                       onMouseEnter={() => setIsHovered3(true)}
                       onMouseLeave={() => setIsHovered3(false)}
                         onClick={() => setShowRatingButtons(true)}
@@ -545,7 +545,7 @@ export default function ShowFoods_Restaurant() {
                         }}
                       >
                         Rate & Review Us!
-                      </button>
+                      </button> */}
 
                       {/* Review Modal */}
                       <Modal show={showReviewModal} onHide={toggleReviewModal}>

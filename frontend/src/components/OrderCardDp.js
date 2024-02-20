@@ -88,6 +88,7 @@ export default function FoodCard_Restaurant(props) {
       }
     );
     response = await response.json();
+    
     setTimeout(() => {
         window.location.reload("http://localhost:3000/deliveryperson/dashboard");
       }, 1000); // 1000 milliseconds (1 second) delay
