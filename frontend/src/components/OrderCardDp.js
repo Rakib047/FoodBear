@@ -138,7 +138,7 @@ export default function FoodCard_Restaurant(props) {
               );
 
               if (orderedFood) {
-                const subtotal = orderedFood.quantity * food.price;
+                const subtotal = props.total_price;
 
                 return (
                   <div className="row">
