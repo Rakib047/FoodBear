@@ -36,4 +36,10 @@ router.route("/:restaurantId")
 router.route("/rating/:restaurantId/:userId")
       .get(controllers.getSpecificUserRatingForSpecificRestaurant)
 
+
+router.route("/offer/:restaurantId/:foodId")
+      .post(controllers.addOfferedFood)
+      .delete(controllers.removeOfferedFood)
+router.route("/offer/:restaurantId")
+      .get(controllers.getSpecificRestaurantOfferedFood)
 module.exports = router;

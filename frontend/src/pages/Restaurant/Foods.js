@@ -7,17 +7,27 @@ export default function ShowFoods_Restaurant() {
   const [foods, setFoodItems] = useState([]);
   const [foodCategory, setFoodCategory] = useState([]);
   const [authToken, setAuthToken] = useState("");
+  const [offeredFoods, setOfferedFoods] = useState([]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4010/api/restaurant/foods');
-  
+      const response = await axios.get(
+        "http://localhost:4010/api/restaurant/foods"
+      );
+      const response2 = await axios.get(
+        `http://localhost:4010/api/restaurant/offer/${localStorage.getItem(
+          "restaurant_id"
+        )}`
+      );
+
       const responseData = response.data;
       setFoodItems(responseData[0]);
       setFoodCategory(responseData[1]);
-      console.log(responseData);
+
+      setOfferedFoods(response2.data);
+      console.log(offeredFoods);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -35,6 +45,29 @@ export default function ShowFoods_Restaurant() {
       <Navbar_Restaurant />
 
       <div className="container" style={{ position: "relative", top: "100px" }}>
+        {offeredFoods && offeredFoods.length > 0
+          ? offeredFoods.map((foodItem, index) => (
+              <div key={index} className="row mb-3">
+                <h3>{foodItem.offeredCatagoryName}</h3>
+                <hr />
+
+                <div className="col-12 col-md-6 col-lg-3">
+                  <Card
+                    _id={foodItem.foodId}
+                    restaurant_id={foodItem.restaurant_id}
+                    name={foodItem.foodItemName}
+                    img={foodItem.img}
+                    CategoryName={foodItem.offeredCatagoryName}
+                    price={foodItem.mainPrice}
+                    offeredPrice={foodItem.offeredPrice}
+                    isDiscounted={true}
+                    is_instock={foodItem.is_instock}
+                  ></Card>
+                </div>
+              </div>
+            ))
+          : null}
+
         {foodCategory ? (
           foodCategory.map((item, index) => {
             const foodsInCategory = foods.filter(
@@ -62,6 +95,8 @@ export default function ShowFoods_Restaurant() {
                         CategoryName={foodItem.CategoryName}
                         price={foodItem.price}
                         is_instock={foodItem.is_instock}
+                        isDiscounted={false}
+                        isAddedToOffer={offeredFoods.some(offeredFood => offeredFood.foodId === foodItem._id)}
                       ></Card>
                     </div>
                   ))}

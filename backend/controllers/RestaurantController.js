@@ -3,6 +3,7 @@ const FoodCategoryModel = require("../models/FoodCatagoryModel");
 const FoodModel = require("../models/FoodModel");
 const UserModel = require("../models/UserModel");
 const DeliveryPersonModel = require("../models/DeliveryPersonModel");
+const OfferedFoodModel = require("../models/OfferedFoodModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwtSecret =
@@ -400,6 +401,56 @@ const getSpecificUserRatingForSpecificRestaurant = async (req, res) => {
   }
 };
 
+const addOfferedFood = async (req, res) => {
+   const { restaurantId, foodId } = req.params;
+   const { foodItemName,img,offeredCatagoryName,mainPrice,offeredPrice,is_instock } = req.body; 
+   
+   try {
+    const offeredFood = await OfferedFoodModel.create({
+      foodId: foodId,
+      restaurant_id: restaurantId,
+      foodItemName: foodItemName,
+      img: img,
+      offeredCatagoryName: offeredCatagoryName,
+      mainPrice: mainPrice,
+      offeredPrice: offeredPrice,
+      is_instock: is_instock,
+    });
+    
+    res.status(200).json(offeredFood);  
+  }
+  catch (error) {
+    console.log(error.message);
+    console.log("error in adding offered food");
+    res.json({ message: "offered food not added!" });
+  }
+}
+
+const removeOfferedFood = async (req, res) => {
+  const { restaurantId, foodId } = req.params;
+  try {
+    const removedOfferedFood = await OfferedFoodModel.findOneAndDelete({ foodId: foodId, restaurant_id: restaurantId });
+    if (!removedOfferedFood) {
+      return res.status(404).json({ message: 'Offered food not found' });
+    }
+    res.status(200).json(removedOfferedFood);
+  } catch (error) {
+    console.log("error in removing offered food");
+    res.json({ message: "offered food not removed!" });
+  }
+}
+
+const getSpecificRestaurantOfferedFood = async (req, res) => {
+   const { restaurantId } = req.params;
+    try {
+      const offeredFood = await OfferedFoodModel.find({ restaurant_id: restaurantId });
+      res.status(200).json(offeredFood);
+    }
+    catch (error) {
+      console.log("error in getting offered food");
+      res.json({ message: "offered food not found!" });
+    }
+}
 
 
 module.exports = {
@@ -419,5 +470,8 @@ module.exports = {
   setUserReview,
   getSpecificRestaurantRating,
   getSpecificRestaurant,
-  getSpecificUserRatingForSpecificRestaurant
+  getSpecificUserRatingForSpecificRestaurant,
+  addOfferedFood,
+  removeOfferedFood,
+  getSpecificRestaurantOfferedFood
 };
