@@ -414,6 +414,7 @@ const addOfferedFood = async (req, res) => {
       offeredCatagoryName: offeredCatagoryName,
       mainPrice: mainPrice,
       offeredPrice: offeredPrice,
+      discountPercentage: ((mainPrice - offeredPrice) / mainPrice) * 100,
       is_instock: is_instock,
     });
     
@@ -452,6 +453,42 @@ const getSpecificRestaurantOfferedFood = async (req, res) => {
     }
 }
 
+const editOfferedFood = async (req, res) => {
+  try {
+    const { foodId } = req.params;
+    const updatedData = req.body;
+
+    // Find the food item by custom ID and update its data
+    const updatedFood = await OfferedFoodModel.findOneAndUpdate({ foodId: foodId }, updatedData, {
+      new: true,
+    });
+
+    if (!updatedFood) {
+      return res.status(404).json({ message: "Food item not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Food item updated successfully", updatedFood });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error updating food item" });
+  }
+};
+
+const getSpecificOfferedFoodForSpecificRestaurant = async(req,res)=>{
+    const { restaurantId, foodId } = req.params;
+    try {
+      const offeredFood = await OfferedFoodModel.findOne({ restaurant_id: restaurantId, foodId: foodId });
+      res.status(200).json(offeredFood);
+    }
+    catch (error) {
+      console.log("error in getting offered food");
+      
+      res.json({ message: "offered food not found!" });
+    }
+}
+
 
 module.exports = {
   signupRestaurant,
@@ -473,5 +510,7 @@ module.exports = {
   getSpecificUserRatingForSpecificRestaurant,
   addOfferedFood,
   removeOfferedFood,
-  getSpecificRestaurantOfferedFood
+  getSpecificRestaurantOfferedFood,
+  editOfferedFood,
+  getSpecificOfferedFoodForSpecificRestaurant
 };

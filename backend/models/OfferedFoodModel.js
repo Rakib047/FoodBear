@@ -30,6 +30,10 @@ const OfferedFoodSchema = new Schema({
         type: Number,
         required: true,
     },
+    discountPercentage: {
+        type: Number,
+        required: true,
+    },
     is_instock: {
         type: Boolean,
         default: true,

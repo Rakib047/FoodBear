@@ -40,6 +40,8 @@ router.route("/rating/:restaurantId/:userId")
 router.route("/offer/:restaurantId/:foodId")
       .post(controllers.addOfferedFood)
       .delete(controllers.removeOfferedFood)
+      .put(controllers.editOfferedFood)
+      .get(controllers.getSpecificOfferedFoodForSpecificRestaurant)
 router.route("/offer/:restaurantId")
       .get(controllers.getSpecificRestaurantOfferedFood)
 module.exports = router;

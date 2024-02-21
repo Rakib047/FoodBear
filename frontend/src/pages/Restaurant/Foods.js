@@ -46,26 +46,34 @@ export default function ShowFoods_Restaurant() {
 
       <div className="container" style={{ position: "relative", top: "100px" }}>
         {offeredFoods && offeredFoods.length > 0
-          ? offeredFoods.map((foodItem, index) => (
-              <div key={index} className="row mb-3">
-                <h3>{foodItem.offeredCatagoryName}</h3>
-                <hr />
+          ? offeredFoods.map((foodItem, index) => {
+              const correspondingFood = foods.find(
+                (food) => food._id === foodItem.foodId
+              );
+              return (
+                correspondingFood &&
+                correspondingFood.is_instock && (
+                  <div key={index} className="row mb-3">
+                    <h3>{foodItem.offeredCatagoryName}</h3>
+                    <hr />
 
-                <div className="col-12 col-md-6 col-lg-3">
-                  <Card
-                    _id={foodItem.foodId}
-                    restaurant_id={foodItem.restaurant_id}
-                    name={foodItem.foodItemName}
-                    img={foodItem.img}
-                    CategoryName={foodItem.offeredCatagoryName}
-                    price={foodItem.mainPrice}
-                    offeredPrice={foodItem.offeredPrice}
-                    isDiscounted={true}
-                    is_instock={foodItem.is_instock}
-                  ></Card>
-                </div>
-              </div>
-            ))
+                    <div className="col-12 col-md-6 col-lg-3">
+                      <Card
+                        _id={foodItem.foodId}
+                        restaurant_id={foodItem.restaurant_id}
+                        name={foodItem.foodItemName}
+                        img={foodItem.img}
+                        CategoryName={foodItem.offeredCatagoryName}
+                        price={foodItem.mainPrice}
+                        offeredPrice={foodItem.offeredPrice}
+                        isDiscounted={true}
+                        is_instock={correspondingFood.is_instock}
+                      ></Card>
+                    </div>
+                  </div>
+                )
+              );
+            })
           : null}
 
         {foodCategory ? (
@@ -96,7 +104,9 @@ export default function ShowFoods_Restaurant() {
                         price={foodItem.price}
                         is_instock={foodItem.is_instock}
                         isDiscounted={false}
-                        isAddedToOffer={offeredFoods.some(offeredFood => offeredFood.foodId === foodItem._id)}
+                        isAddedToOffer={offeredFoods.some(
+                          (offeredFood) => offeredFood.foodId === foodItem._id
+                        )}
                       ></Card>
                     </div>
                   ))}

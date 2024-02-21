@@ -4,10 +4,11 @@ import axios from "axios";
 
 export default function (props) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
   const handleDelete = () => {
     setShowConfirmModal(true);
   };
-
+  let percentage = 0
   const confirmDelete = async () => {
     try {
       const response = await fetch(
@@ -16,6 +17,7 @@ export default function (props) {
           method: "DELETE",
         }
       );
+      const response2 = await axios.delete(`http://localhost:4010/api/restaurant/offer/${props.restaurant_id}/${props._id}`);
 
       if (response.status === 200) {
         window.location.href = "/restaurant/foods";
@@ -58,6 +60,17 @@ export default function (props) {
           body: JSON.stringify(editedFood),
         }
       );
+      
+
+      const percentage =  (await axios.get(`http://localhost:4010/api/restaurant/offer/${props.restaurant_id}/${props._id}`)).data.discountPercentage;
+      const response2 = await axios.put(`http://localhost:4010/api/restaurant/offer/${props.restaurant_id}/${props._id}`, {
+        foodItemName: editedFood.name,
+        mainPrice: editedFood.price,
+        offeredPrice: editedFood.price - (editedFood.price * percentage) / 100,
+        img: editedFood.img
+      })
+
+      console.log(response2.data)
 
       if (response.status === 200) {
         // Close the modal after successful edit
@@ -167,7 +180,7 @@ export default function (props) {
       // This would be similar to the fetch request in handleEditSubmit
       // Include the new offer data in the request body
       console.log("Adding offer:", newOffer);
-      console.log(props.name);
+      setDiscountPercentage(newOffer.discount);
       const response = await axios.post(
         `http://localhost:4010/api/restaurant/offer/${props.restaurant_id}/${props._id}`,
         {
