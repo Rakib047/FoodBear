@@ -4,6 +4,7 @@ const FoodModel = require("../models/FoodModel");
 const UserModel = require("../models/UserModel");
 const DeliveryPersonModel = require("../models/DeliveryPersonModel");
 const OfferedFoodModel = require("../models/OfferedFoodModel");
+const OfferFoodCategoryModel = require("../models/OfferFoodCatagory");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwtSecret =
@@ -489,6 +490,29 @@ const getSpecificOfferedFoodForSpecificRestaurant = async(req,res)=>{
     }
 }
 
+const addOfferFoodCategory = async (req, res) => {
+  try {
+    const { CategoryName } = req.body;
+
+    // Check if the food category already exists
+    const existingCategory = await OfferFoodCategoryModel.findOne({ CategoryName });
+
+    if (existingCategory) {
+      return res.status(400).json({ message: "Food category already exists" });
+    }
+
+    // Create a new food category
+    const category = await OfferFoodCategoryModel.create({ CategoryName });
+
+    res.status(200).json(category);
+  } catch (error) {
+    console.log("error in adding food category");
+    res.json({ message: "food category not added!" });
+  }
+}
+
+
+
 
 module.exports = {
   signupRestaurant,
@@ -512,5 +536,6 @@ module.exports = {
   removeOfferedFood,
   getSpecificRestaurantOfferedFood,
   editOfferedFood,
-  getSpecificOfferedFoodForSpecificRestaurant
+  getSpecificOfferedFoodForSpecificRestaurant,
+  addOfferFoodCategory,
 };

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const OrderModel= require("../models/OrderModel")
 const FoodModel= require("../models/FoodModel")
+const OfferFoodCategoryModel = require("../models/OfferFoodCatagory")
 
 const getFoods = async(req,res)=>{
     const foodId = req.params.foodId;
@@ -181,6 +182,19 @@ const deliverOrder = async(req,res)=>{
   }
 }
 
+//this should not be here,but i had to keep it here as it was not working in the restaurant route
+const findCatagory = async(req,res)=>{
+  
+  try {
+    const foodCategory = await OfferFoodCategoryModel.find({});
+    res.status(200).json(foodCategory);
+  }
+  catch (error) {
+    console.log("error in getting food category");
+    res.json({ message: "food category not found!" });
+  }
+}
+
 module.exports={
     getFoods,
     placeUserOrder,
@@ -191,5 +205,6 @@ module.exports={
     getSpecificRestaurantOrder,
     getAllOrderofSpecificDpPerson,
     handlePickupOrder,
-    deliverOrder
+    deliverOrder,
+    findCatagory
 }

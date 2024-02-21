@@ -44,4 +44,10 @@ router.route("/offer/:restaurantId/:foodId")
       .get(controllers.getSpecificOfferedFoodForSpecificRestaurant)
 router.route("/offer/:restaurantId")
       .get(controllers.getSpecificRestaurantOfferedFood)
+router.route("/offer/offerfoodcategory")
+      .post(controllers.addOfferFoodCategory)
+
+// router.route("/offer/getoffercatagory")
+//       .get(controllers.findCatagory)
+
 module.exports = router;

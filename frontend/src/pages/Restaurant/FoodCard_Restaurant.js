@@ -193,12 +193,18 @@ export default function (props) {
         }
       );
 
+      const response2 = await axios.post("http://localhost:4010/api/restaurant/offer/offerfoodcategory", {
+        CategoryName: newOffer.offercatagory
+      })
+
       console.log(response.data);
 
       // After successfully adding the offer, close the modal
       setShowAddOfferModal(false);
       window.location.reload();
     } catch (error) {
+      setShowAddOfferModal(false);
+      window.location.reload();
       console.error("Error adding offer:", error);
     }
   };

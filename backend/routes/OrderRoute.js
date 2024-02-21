@@ -38,4 +38,8 @@ router.route("/orderReview/addOrderReview")
 router.route("/orderReview/getOrderReview/:userId/:restaurantId/:orderId")
       .get(controllers2.getOrderReview)
 
+//this should not be here,but i had to keep it here as it was not working in the restaurant route
+router.route("/offer/getoffercatagory")
+      .get(controllers.findCatagory)
+
 module.exports = router;

@@ -6,6 +6,7 @@ import { Row, Col } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { FaStar } from "react-icons/fa";
+import axios from "axios";
 
 export default function ShowFoods_Restaurant() {
   const [foods, setFoodItems] = useState([]);
@@ -29,6 +30,7 @@ export default function ShowFoods_Restaurant() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [ratings, setRatings] = useState([]);
   const [ratingPercentages, setRatingPercentages] = useState({});
+  const [offeredFoods, setOfferedFoods] = useState([]);
 
   const fetchData = async () => {
     let response = await fetch("http://localhost:4010/api/restaurant/foods", {
@@ -38,11 +40,19 @@ export default function ShowFoods_Restaurant() {
       },
     });
 
+    const response2 = await axios.get(
+      `http://localhost:4010/api/restaurant/offer/${localStorage.getItem(
+        "restaurant_id"
+      )}`
+    );
+
     response = await response.json();
     setFoodItems(response[0]);
     setFoodCategory(response[1]);
     setRestaurants(response[2]);
     console.log("restaurant id", localStorage.getItem("restaurant_id"));
+
+    setOfferedFoods(response2.data);
   };
 
   const handleRating = async (userRating) => {
@@ -350,7 +360,6 @@ export default function ShowFoods_Restaurant() {
     ? { transform: "scale(1.05)", transition: "transform 0.1s ease" }
     : {};
 
-
   return (
     <div>
       <div>
@@ -397,7 +406,7 @@ export default function ShowFoods_Restaurant() {
                     className="ms-2"
                     data-bs-toggle="modal"
                     data-bs-target="#ratingModal"
-                    style={{ cursor: "pointer" , ...hoverStyle }}
+                    style={{ cursor: "pointer", ...hoverStyle }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                   >
@@ -439,9 +448,7 @@ export default function ShowFoods_Restaurant() {
                               className="mr-2"
                               style={{ marginTop: "-2px", color: "#ff8a00" }}
                             >
-                              <span style={{ color: "black" }}>
-                                {star}
-                              </span>
+                              <span style={{ color: "black" }}>{star}</span>
 
                               <FaStar />
                             </span>
@@ -449,7 +456,10 @@ export default function ShowFoods_Restaurant() {
                               <div
                                 className="progress-bar"
                                 role="progressbar"
-                                style={{ width: `${percentage}%`, backgroundColor: "#ff8a00" }}
+                                style={{
+                                  width: `${percentage}%`,
+                                  backgroundColor: "#ff8a00",
+                                }}
                                 aria-valuenow={percentage}
                                 aria-valuemin="0"
                                 aria-valuemax="100"
@@ -505,13 +515,15 @@ export default function ShowFoods_Restaurant() {
                     borderRadius: "4px",
                     height: "32px", // Increase the height
                     border: "none",
-                    cursor: "pointer", ...hoverStyle2,
+                    cursor: "pointer",
+                    ...hoverStyle2,
                     boxShadow: "0px 8px 16px 0px rgba(1,1,1,0.2)",
                   }}
                 >
                   <i
-                    className={`bi ${isFavorite ? "bi-heart-fill" : "bi-heart"
-                      }`}
+                    className={`bi ${
+                      isFavorite ? "bi-heart-fill" : "bi-heart"
+                    }`}
                   ></i>
                   {isFavorite ? " Remove from favorites" : " Add to favorites"}
                 </button>
@@ -615,7 +627,8 @@ export default function ShowFoods_Restaurant() {
                                     margin: "10px",
                                     padding: "10px",
                                     borderRadius: "5px",
-                                    boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.2)",
+                                    boxShadow:
+                                      "0px 2px 4px 0px rgba(0,0,0,0.2)",
                                   }}
                                 >
                                   <h6>
@@ -653,14 +666,48 @@ export default function ShowFoods_Restaurant() {
       </div>
       <hr />
 
-      <div className="container">
+      <div className="container" style={{ position: "relative" }}>
+        {offeredFoods && offeredFoods.length > 0
+          ? offeredFoods.map((foodItem, index) => {
+              const correspondingFood = foods.find(
+                (food) => food._id === foodItem.foodId
+              );
+              return (
+                correspondingFood &&
+                correspondingFood.is_instock && (
+                  <div key={index} className="row mb-3">
+                    <h3>{foodItem.offeredCatagoryName}</h3>
+                    <hr />
+
+                    <div className="col-12 col-md-6 col-lg-3">
+                      <Card
+                        _id={foodItem.foodId}
+                        restaurant_id={foodItem.restaurant_id}
+                        name={foodItem.foodItemName}
+                        img={foodItem.img}
+                        CategoryName={foodItem.offeredCatagoryName}
+                        price={foodItem.mainPrice}
+                        offeredPrice={foodItem.offeredPrice}
+                        isDiscounted={true}
+                        is_instock={correspondingFood.is_instock}
+                      ></Card>
+                    </div>
+                  </div>
+                )
+              );
+            })
+          : null}
+
         {foodCategory ? (
           foodCategory.map((item, index) => {
             const foodsInCategory = foods.filter(
               (foodItem) =>
                 foodItem.CategoryName === item.CategoryName &&
-                foodItem.restaurant_id === desired_restaurant_id &&
-                foodItem.is_instock === true
+                foodItem.restaurant_id ===
+                  localStorage.getItem("restaurant_id") &&
+                !offeredFoods.some(
+                  (offeredFood) => offeredFood.foodId === foodItem._id
+                )
             );
 
             if (foodsInCategory.length > 0) {
@@ -681,6 +728,8 @@ export default function ShowFoods_Restaurant() {
                         img={foodItem.img}
                         CategoryName={foodItem.CategoryName}
                         price={foodItem.price}
+                        is_instock={foodItem.is_instock}
+                        isDiscounted={false}
                       ></Card>
                     </div>
                   ))}
