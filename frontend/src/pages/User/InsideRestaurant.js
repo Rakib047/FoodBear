@@ -31,6 +31,7 @@ export default function ShowFoods_Restaurant() {
   const [ratings, setRatings] = useState([]);
   const [ratingPercentages, setRatingPercentages] = useState({});
   const [offeredFoods, setOfferedFoods] = useState([]);
+  const [offeredFoodCategories, setOfferedFoodCategories] = useState([]);
 
   const fetchData = async () => {
     let response = await fetch("http://localhost:4010/api/restaurant/foods", {
@@ -45,6 +46,15 @@ export default function ShowFoods_Restaurant() {
         "restaurant_id"
       )}`
     );
+
+    axios
+    .get("http://localhost:4010/api/order/offer/getoffercatagory") //i dont know for what the hell reason it worked in this route
+    //but not in the restaurant route,maybe i did some crime to someone!
+    .then((response) => {
+      console.log("ekhane catagory");
+      console.log(response.data);
+      setOfferedFoodCategories(response.data);
+    });
 
     response = await response.json();
     setFoodItems(response[0]);
@@ -667,36 +677,54 @@ export default function ShowFoods_Restaurant() {
       <hr />
 
       <div className="container" style={{ position: "relative" }}>
-        {offeredFoods && offeredFoods.length > 0
-          ? offeredFoods.map((foodItem, index) => {
-              const correspondingFood = foods.find(
-                (food) => food._id === foodItem.foodId
-              );
-              return (
-                correspondingFood &&
-                correspondingFood.is_instock && (
-                  <div key={index} className="row mb-3">
-                    <h3>{foodItem.offeredCatagoryName}</h3>
-                    <hr />
+      {offeredFoodCategories ? (
+          offeredFoodCategories.map((item, index) => {
+            const foodsInCategory = offeredFoods.filter(
+              (foodItem) =>
+                foodItem.offeredCatagoryName === item.CategoryName &&
+                foodItem.restaurant_id === localStorage.getItem("restaurant_id")
+            );
 
-                    <div className="col-12 col-md-6 col-lg-3">
-                      <Card
-                        _id={foodItem.foodId}
-                        restaurant_id={foodItem.restaurant_id}
-                        name={foodItem.foodItemName}
-                        img={foodItem.img}
-                        CategoryName={foodItem.offeredCatagoryName}
-                        price={foodItem.mainPrice}
-                        offeredPrice={foodItem.offeredPrice}
-                        isDiscounted={true}
-                        is_instock={correspondingFood.is_instock}
-                      ></Card>
-                    </div>
-                  </div>
-                )
+            if (foodsInCategory.length > 0) {
+              return (
+                <div key={index} className="row mb-3">
+                  <h3>{item.CategoryName}</h3>
+                  <hr />
+
+                  {foodsInCategory.map((foodItem) => {
+                    const correspondingFood = foods.find(
+                      (food) => food._id === foodItem.foodId
+                    );
+                    return (
+                      correspondingFood &&
+                      correspondingFood.is_instock && (
+                        <div
+                          key={foodItem._id}
+                          className="col-12 col-md-6 col-lg-3"
+                        >
+                          <Card
+                            _id={foodItem.foodId}
+                            restaurant_id={foodItem.restaurant_id}
+                            name={foodItem.foodItemName}
+                            img={foodItem.img}
+                            CategoryName={foodItem.offeredCatagoryName}
+                            price={foodItem.mainPrice}
+                            offeredPrice={foodItem.offeredPrice}
+                            isDiscounted={true}
+                            is_instock={correspondingFood.is_instock}
+                          ></Card>
+                        </div>
+                      )
+                    );
+                  })}
+                </div>
               );
-            })
-          : null}
+            }
+            return null; // Don't render anything if there are no foods in this category
+          })
+        ) : (
+          <h1>Loading...</h1>
+        )}
 
         {foodCategory ? (
           foodCategory.map((item, index) => {

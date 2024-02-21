@@ -20,6 +20,7 @@ export const MyCart = () => {
   const [cartData, setCartData] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const { foodCount, updateFoodCount } = useContext(UserContext);
+  const [offeredFoods, setOfferedFoods] = useState([]);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -37,6 +38,11 @@ export const MyCart = () => {
       updateFoodCount(received_cart_json.length);
 
       localStorage.removeItem("food_count");
+
+      //console.log(localStorage.getItem("restaurant_id"));
+      const offerfoodRes = await axios.get(`http://localhost:4010/api/restaurant/offer/${localStorage.getItem("restaurant_id")}`);
+      setOfferedFoods(offerfoodRes.data);
+
       try {
         // Fetch cart_data
         const cartResponse = await fetch("http://localhost:4010/api/user/getcart", {
@@ -71,18 +77,24 @@ export const MyCart = () => {
         let totalPrice = 0;
 
         foodResults.forEach((foodItem) => {
+          // Check if the food item is in the offeredFoods array
+          const offeredFood = offeredFoods.find((offeredFoodItem) => offeredFoodItem.foodId === foodItem._id);
+        
+          // If it is, use the discounted price, otherwise use the regular price
+          const price = offeredFood ? Math.floor(Number(offeredFood.offeredPrice)) : Math.floor(Number(foodItem.price));
+        
           if (!uniqueFoodItems[foodItem._id]) {
             uniqueFoodItems[foodItem._id] = {
               id: foodItem._id,
               name: foodItem.name,
               type: foodItem.CategoryName,
               quantity: 1,
-              price: Number(foodItem.price),
+              price: price,
             };
           } else {
             uniqueFoodItems[foodItem._id].quantity += 1;
           }
-          totalPrice += Number(foodItem.price);
+          totalPrice += price;
         });
 
         // Convert the object into an array of unique food items

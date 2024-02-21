@@ -25,7 +25,6 @@ export default function FoodCard_Restaurant(props) {
   };
 
   const onClick = async () => {
-
     if (localStorage.getItem("user_id") === null) {
       alert("Please Login First");
     } else {
@@ -41,10 +40,15 @@ export default function FoodCard_Restaurant(props) {
       const check_json = await check.json();
       console.log(check_json);
 
-      const uniqueRestaurants = new Set(check_json.map(item => item.restaurant_id));
+      const uniqueRestaurants = new Set(
+        check_json.map((item) => item.restaurant_id)
+      );
       const numberOfUniqueRestaurants = uniqueRestaurants.size;
-      
-      if(numberOfUniqueRestaurants == 1 && !uniqueRestaurants.has(props.restaurant_id)){
+
+      if (
+        numberOfUniqueRestaurants == 1 &&
+        !uniqueRestaurants.has(props.restaurant_id)
+      ) {
         alert("You can't order from more than one restaurant at a time");
         return;
       }
@@ -70,7 +74,6 @@ export default function FoodCard_Restaurant(props) {
       //const updatedFoodCount = foodCount + 1;
       //setFoodCount(updatedFoodCount);
       updateFoodCount(foodCount + 1);
-
     }
   };
   return (
@@ -93,15 +96,27 @@ export default function FoodCard_Restaurant(props) {
         <h6 className="card-title">{props.name}</h6>
 
         <div className="d-flex flex-row justify-content-between mt-3">
-          <div className="h-100 fs-6">Tk {props.price}</div>
-          <button className="btn btn-md" 
-          style={{ backgroundColor: "#ff8a00", color: "white" }}
-          onClick={onClick}>
+          <div className="h-100 fs-6">
+            {props.isDiscounted ? (
+              <>
+                <del>Tk {props.price}</del>{" "}
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  Tk {Math.floor(props.offeredPrice)}
+                </span>
+              </>
+            ) : (
+              `Tk ${props.price}`
+            )}
+          </div>
+
+          <button
+            className="btn btn-md"
+            style={{ backgroundColor: "#ff8a00", color: "white" }}
+            onClick={onClick}
+          >
             <FontAwesomeIcon icon={faCartPlus} /> {/* Add the cart icon */}
           </button>
         </div>
-
-
       </div>
     </div>
   );
