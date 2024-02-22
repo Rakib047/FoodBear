@@ -83,7 +83,7 @@ export default function () {
                   to="/restaurant/statistics"
                   style={{ color: location.pathname === "/restaurant/statistics" ? 'orange' : 'white' }}
                 >
-                  Statistics
+                  Analytics
                 </Link>
               </li>
             </ul>
