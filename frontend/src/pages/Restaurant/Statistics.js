@@ -1,203 +1,169 @@
-import React, { useState } from "react";
-import { Card } from "react-bootstrap";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import React, { useState, useEffect } from "react";
+import { Card, Row, Col, Dropdown } from "react-bootstrap";
+import axios from 'axios';
 import Navbar_Restaurant from "../../components/Navbar_Restaurant";
 
 const RestaurantSalesPage = () => {
-  // Dummy data representing restaurant sales information
-  const salesData = [
-    { name: "Burger", Earned: 4730 },
-    { name: "Pizza", Earned: 5500 },
-    { name: "Salad", Earned: 1890 },
-    // Add more categories as needed
-  ];
+  const [orderVolume, setOrderVolume] = useState(0);
+  const [totalEarn, setTotalEarn] = useState(0);
+  const [filter, setFilter] = useState('Days');
+  const [mostPopularItem, setMostPopularItem] = useState(null);
+  const restaurantId = localStorage.getItem("restaurant_id");
 
-  // Dummy data representing how many times each food item was sold
-  const foodSoldData = [
-    { food: "Burger", count: 50 },
-    { food: "Pizza", count: 70 },
-    { food: "Salad", count: 30 },
-    // Add more food items as needed
-  ];
+  useEffect(() => {
+    fetchData();
+  }, [filter]); // Fetch data whenever filter changes
 
-  // Dummy data representing monthly sales in BDT
-  const monthlySalesData = [
-    { month: "Aug", sales: 50000 },
-    { month: "Sep", sales: 60000 },
-    { month: "Oct", sales: 67000 },
-    { month: "Nov", sales: 62000 },
-    { month: "Dec", sales: 56000 },
-    { month: "Jan", sales: 58000 },
-    { month: "Feb", sales: 29000 },
-    // Add more months as needed
-  ];
-
-  // Dummy data representing average order value for each month
-  const averageOrderValueData = [
-    { month: "Aug", averageOrder: 420 },
-    { month: "Sep", averageOrder: 370 },
-    { month: "Oct", averageOrder: 320 },
-    { month: "Nov", averageOrder: 265 },
-    { month: "Dec", averageOrder: 299 },
-    { month: "Jan", averageOrder: 355 },
-    { month: "Feb", averageOrder: 230 },
-    // Add more months as needed
-  ];
-
-  // Colors for different categories
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]; // Add more colors as needed
-  const [isHoveredSales, setIsHoveredSales] = useState(false);
-  const [isHoveredFood, setIsHoveredFood] = useState(false);
-  const [isHoveredMonthlySales, setIsHoveredMonthlySales] = useState(false);
-  const [isHoveredAvgOrderValue, setIsHoveredAvgOrderValue] = useState(false);
-
-  const handleMouseEnterSales = () => {
-    setIsHoveredSales(true);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:4010/api/order/restaurant/orders/${restaurantId}`);
+      const orders = response.data;
+      const filteredOrders = filterOrdersByDate(orders);
+      const volume = calculateOrderVolume(filteredOrders);
+      const earn = calculateTotalEarn(filteredOrders);
+      calculateMostPopularItem(filteredOrders).then(popularItem => setMostPopularItem(popularItem));
+      setOrderVolume(volume);
+      setTotalEarn(earn);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const handleMouseLeaveSales = () => {
-    setIsHoveredSales(false);
+  const filterOrdersByDate = (orders) => {
+    const currentDate = new Date();
+    const filteredOrders = orders.filter(order => {
+      const orderDate = new Date(order.date);
+      switch (filter) {
+        case 'Days':
+          return orderDate.getDate() === currentDate.getDate();
+        case 'Weeks':
+          return orderDate >= new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000); // Orders within the last 7 days
+        case 'Months':
+          return orderDate.getMonth() === currentDate.getMonth();
+        default:
+          return true; // Return all orders if filter is not specified
+      }
+    });
+    return filteredOrders;
   };
 
-  const handleMouseEnterFood = () => {
-    setIsHoveredFood(true);
+  const calculateOrderVolume = (orders) => {
+    return orders.length;
   };
 
-  const handleMouseLeaveFood = () => {
-    setIsHoveredFood(false);
+  const calculateTotalEarn = (orders) => {
+    return orders.reduce((total, order) => total + order.total_price, 0);
   };
 
-  const handleMouseEnterMonthlySales = () => {
-    setIsHoveredMonthlySales(true);
+  const calculateMostPopularItem = async (orders) => {
+    const itemCounts = orders.reduce((counts, order) => {
+      order.food_items.forEach(item => {
+        if (!counts[item.food_id]) {
+          counts[item.food_id] = 0;
+        }
+        counts[item.food_id]++;
+      });
+      return counts;
+    }, {});
+  
+    let mostPopularItemId = null;
+    let maxCount = 0;
+  
+    for (const itemId in itemCounts) {
+      if (itemCounts[itemId] > maxCount) {
+        mostPopularItemId = itemId;
+        maxCount = itemCounts[itemId];
+      }
+    }
+  
+    if (mostPopularItemId) {
+      try {
+        const response = await axios.get(`http://localhost:4010/api/order/user/food/${mostPopularItemId}`);
+        return response.data.name;
+      } catch (error) {
+        console.error("Error fetching food item:", error);
+      }
+    }
+  
+    return null;
   };
 
-  const handleMouseLeaveMonthlySales = () => {
-    setIsHoveredMonthlySales(false);
-  };
-
-  const handleMouseEnterAvgOrderValue = () => {
-    setIsHoveredAvgOrderValue(true);
-  };
-
-  const handleMouseLeaveAvgOrderValue = () => {
-    setIsHoveredAvgOrderValue(false);
-  };
-
-  const cardStyle = {
-    paddingTop: "120px",
-    width: "45%",
-    marginLeft: "20px",
-    marginBottom: "-60px",
-    transition: "transform 0.1s ease-in-out",
-  };
-
-  const cardStyle2 = {
-    paddingTop: "120px",
-    width: "45%",
-    marginLeft: "20px",
-    marginBottom: "60px",
-    transition: "transform 0.1s ease-in-out",
-  };
-
-  const cardStyleSales = {
-    ...cardStyle,
-    transform: isHoveredSales ? "scale(1.05)" : "scale(1)",
-  };
-
-  const cardStyleFood = {
-    ...cardStyle,
-    transform: isHoveredFood ? "scale(1.05)" : "scale(1)",
-  };
-
-  const cardStyleMonthlySales = {
-    ...cardStyle2,
-    transform: isHoveredMonthlySales ? "scale(1.05)" : "scale(1)",
-  };
-
-  const cardStyleAvgOrderValue = {
-    ...cardStyle2,
-    transform: isHoveredAvgOrderValue ? "scale(1.05)" : "scale(1)",
+  const handleFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
   };
 
   return (
     <div>
       <Navbar_Restaurant />
-      <div className="container" style={{ display: "flex", flexWrap: "wrap" }}>
-        {/* Restaurant Sales Card */}
-        <div style={cardStyleSales} onMouseEnter={handleMouseEnterSales} onMouseLeave={handleMouseLeaveSales}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Catagory-wise Sales</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={salesData}>
-                    <Bar dataKey="Earned" fill="#8884d8" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
+      <div div className="container" style={{ position: "relative", top: "100px" }}>
+        <Row>
+          <Col md={12}>
+            <div className="sticky-top" >
+              <Dropdown className="mb-3">
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic" style={{background:"#ff8a00",border:"none"}}>
+                  {filter}
+                </Dropdown.Toggle>
 
-        {/* Food Sold Card */}
-        <div style={cardStyleFood} onMouseEnter={handleMouseEnterFood} onMouseLeave={handleMouseLeaveFood}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Food-wise Sales</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={foodSoldData} layout="vertical">
-                    <XAxis type="number" />
-                    <YAxis dataKey="food" type="category" />
-                    <Bar dataKey="count" fill="#82ca9d" />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => setFilter('Days')}>Days</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setFilter('Weeks')}>Weeks</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setFilter('Months')}>Months</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={6}>
+            <Card className="mb-3 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Order Volume</Card.Title>
+                <Card.Text>{orderVolume}</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Total Earn</Card.Title>
+                <Card.Text>BDT {totalEarn}</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="mb-3 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Popular Item</Card.Title>
+                <Card.Text>{mostPopularItem}</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Customer Complain</Card.Title>
+                <Card.Text>NAI</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Pending Orders</Card.Title>
+                <Card.Text>2</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
 
-        {/* Monthly Sales Card */}
-        <div style={cardStyleMonthlySales} onMouseEnter={handleMouseEnterMonthlySales} onMouseLeave={handleMouseLeaveMonthlySales}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Monthly Sales in BDT</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={monthlySalesData}>
-                    <Bar dataKey="sales" fill="#ffbb28" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-
-        {/* Average Order Value Card */}
-        <div style={cardStyleAvgOrderValue} onMouseEnter={handleMouseEnterAvgOrderValue} onMouseLeave={handleMouseLeaveAvgOrderValue}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Average Order Per Month</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={averageOrderValueData}>
-                    <Bar dataKey="averageOrder" fill="#82ca9d" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
+          <Col md={6}>
+            <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Rejected Orders</Card.Title>
+                <Card.Text>2</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </div>
     </div>
   );

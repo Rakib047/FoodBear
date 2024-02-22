@@ -81,7 +81,7 @@ export const Login = () => {
         }}
       >
         <Form onSubmit={handleSubmit}>
-          <h1 className="text-center mt-4">Log in</h1>
+          <h1 className="text-center mt-4">Sign in-User</h1>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control

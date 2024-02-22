@@ -70,7 +70,7 @@ export const LoginRes = () => {
     <>
       <div className="container" style={{ width: "500px", border: "1px solid white", margin:"100px auto"}}>
         <Form onSubmit={handleSubmit}>
-        <h1 className="text-center mt-4">Sign in</h1>
+        <h1 className="text-center mt-4">Sign in-Restaurant</h1>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
