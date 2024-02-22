@@ -216,12 +216,12 @@ const RestaurantSalesPage = () => {
   };
 
   return (
-    <div>
+    <div >
       <Navbar_Restaurant />
       <div div className="container" style={{ position: "relative", top: "100px" }}>
         <Row>
           <Col md={12}>
-            <div className="sticky-top" >
+            <div>
               <Dropdown className="mb-3">
                 <Dropdown.Toggle variant="secondary" id="dropdown-basic" style={{background:"#ff8a00",border:"none"}}>
                   {filter}
