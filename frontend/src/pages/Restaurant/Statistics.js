@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useRef} from "react";
 import { Card, Row, Col, Dropdown } from "react-bootstrap";
 import axios from 'axios';
 import Navbar_Restaurant from "../../components/Navbar_Restaurant";
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+
 
 const RestaurantSalesPage = () => {
   const [orderVolume, setOrderVolume] = useState(0);
@@ -10,9 +13,80 @@ const RestaurantSalesPage = () => {
   const [mostPopularItem, setMostPopularItem] = useState(null);
   const restaurantId = localStorage.getItem("restaurant_id");
 
+  const [orderData, setOrderData] = useState([]);
+  const orderVolumeChartRef = useRef(null);
+  const totalEarnChartRef = useRef(null);
+  const orderVolumeChartInstance = useRef(null);
+  const totalEarnChartInstance = useRef(null);
+
   useEffect(() => {
     fetchData();
   }, [filter]); // Fetch data whenever filter changes
+
+  useEffect(() => {
+    if (orderVolumeChartRef.current && totalEarnChartRef.current) {
+      if (orderVolumeChartInstance.current) {
+        orderVolumeChartInstance.current.destroy();
+      }
+      if (totalEarnChartInstance.current) {
+        totalEarnChartInstance.current.destroy();
+      }
+      orderVolumeChartInstance.current = renderOrderVolumeChart(orderVolumeChartRef.current, orderData);
+      totalEarnChartInstance.current = renderTotalEarnChart(totalEarnChartRef.current, orderData);
+    }
+  }, [orderData]);
+
+  const renderOrderVolumeChart = (canvas, data) => {
+    const labels = data.map(entry => entry.date);
+    const volumes = data.map(entry => entry.orderVolume);
+
+    return new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Order Volume',
+          data: volumes,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  };
+
+  const renderTotalEarnChart = (canvas, data) => {
+    const labels = data.map(entry => entry.date);
+    const earnings = data.map(entry => entry.totalEarn);
+
+    return new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Total Earn',
+          data: earnings,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  };
 
   const fetchData = async () => {
     try {
@@ -24,6 +98,11 @@ const RestaurantSalesPage = () => {
       calculateMostPopularItem(filteredOrders).then(popularItem => setMostPopularItem(popularItem));
       setOrderVolume(volume);
       setTotalEarn(earn);
+
+      const filteredOrders2 = filterOrdersByDate2(orders);
+      const processedData = processData(filteredOrders2);
+      setOrderData(processedData);
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -88,6 +167,50 @@ const RestaurantSalesPage = () => {
     return null;
   };
 
+  const filterOrdersByDate2 = (orders) => {
+    const currentDate = new Date();
+    return orders.filter(order => {
+      const orderDate = new Date(order.date);
+      switch (filter) {
+        case 'Days':
+          return orderDate.getDate() === currentDate.getDate() &&
+                 orderDate.getMonth() === currentDate.getMonth() &&
+                 orderDate.getFullYear() === currentDate.getFullYear();
+        case 'Weeks':
+          return isSameWeek(orderDate, currentDate);
+        case 'Months':
+          return orderDate.getMonth() === currentDate.getMonth() &&
+                 orderDate.getFullYear() === currentDate.getFullYear();
+        default:
+          return true; // Return all orders if filter is not specified
+      }
+    });
+  };
+
+  const isSameWeek = (date1, date2) => {
+    const diff = Math.abs(date1 - date2);
+    const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000;
+    return diff <= millisecondsInWeek;
+  };
+
+  const processData = (orders) => {
+    const groupedData = {};
+    orders.forEach(order => {
+      const orderDate = new Date(order.date);
+      const formattedDate = `${orderDate.getDate()}/${orderDate.getMonth() + 1}/${orderDate.getFullYear()}`;
+      if (!groupedData[formattedDate]) {
+        groupedData[formattedDate] = {
+          date: formattedDate,
+          orderVolume: 0,
+          totalEarn: 0
+        };
+      }
+      groupedData[formattedDate].orderVolume++;
+      groupedData[formattedDate].totalEarn += order.total_price;
+    });
+    return Object.values(groupedData);
+  };
+
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
   };
@@ -130,6 +253,24 @@ const RestaurantSalesPage = () => {
               </Card.Body>
             </Card>
           </Col>
+          
+          <Col md={6}>
+            <Card className="mb-3 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Order Graph</Card.Title>
+                <canvas ref={orderVolumeChartRef}></canvas>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
+              <Card.Body>
+                <Card.Title>Total Earning Graph</Card.Title>
+                <canvas ref={totalEarnChartRef}></canvas>
+              </Card.Body>
+            </Card>
+          </Col>
+
           <Col md={6}>
             <Card className="mb-3 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
