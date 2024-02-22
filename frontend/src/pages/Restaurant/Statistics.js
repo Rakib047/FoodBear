@@ -257,7 +257,7 @@ const RestaurantSalesPage = () => {
           <Col md={6}>
             <Card className="mb-3 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
-                <Card.Title>Order Graph</Card.Title>
+                <Card.Title>Order Volume Graph</Card.Title>
                 <canvas ref={orderVolumeChartRef}></canvas>
               </Card.Body>
             </Card>
