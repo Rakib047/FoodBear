@@ -8,5 +8,7 @@ router.route("/addvoucher")
         .post(controllers.createVoucher)
 router.route("/getallusers")
        .get(controllers.getAllUsers)
-
+router.route("/getvoucher/:restaurant_id")
+        .get(controllers.getVoucher)
+        .delete(controllers.deleteVoucher)
 module.exports = router;

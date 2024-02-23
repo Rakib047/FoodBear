@@ -71,7 +71,14 @@ const AddVoucherModal = ({ show, onHide }) => {
         // Replace with your actual API endpoint to create a voucher
         console.log("ennnno")
         axios.post('http://localhost:4010/api/voucher/addvoucher', voucherData)
-            .then(response => console.log(response.data))
+            .then(response => {console.log(response.data)
+                setVoucher({
+                    voucherCode: "",
+                    expiryDate: "",
+                    minimumAmount: "",
+                    maxUsage: "",
+                });
+            })
             .catch(error => console.error('Error:', error));
 
         onHide();

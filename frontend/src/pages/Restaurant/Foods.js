@@ -59,6 +59,7 @@ export default function ShowFoods_Restaurant() {
       <Navbar_Restaurant />
 
       <div className="container" style={{ position: "relative", top: "100px" }}>
+        
         {offeredFoodCategories ? (
           offeredFoodCategories.map((item, index) => {
             const foodsInCategory = offeredFoods.filter(
