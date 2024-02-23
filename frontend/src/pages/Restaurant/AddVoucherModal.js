@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Modal, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Modal, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 const AddVoucherModal = ({ show, onHide }) => {
     const [voucher, setVoucher] = useState({
@@ -8,6 +9,20 @@ const AddVoucherModal = ({ show, onHide }) => {
         minimumAmount: "",
         maxUsage: "",
     });
+
+    const [users, setUsers] = useState([]);
+    const restaurantId = localStorage.getItem("restaurant_id");
+
+    useEffect(() => {
+        
+        // Replace with your actual API endpoint to fetch users
+        axios.get("http://localhost:4010/api/voucher/getallusers")
+            .then(response => {
+                console.log("Users:", response.data)
+                setUsers(response.data.map(user => ({ user_id: user._id, max_usage: voucher.maxUsage })));
+            })
+            .catch(error => console.error('Error:', error));
+    }, [voucher]);
 
     const onChange = (e) => {
         setVoucher({ ...voucher, [e.target.name]: e.target.value });
@@ -45,7 +60,19 @@ const AddVoucherModal = ({ show, onHide }) => {
             return;
         }
 
-        // Add your axios post request here
+        const voucherData = {
+            code: voucher.voucherCode,
+            discount: voucher.minimumAmount,
+            expiryDate: voucher.expiryDate,
+            restaurant_id: restaurantId, // Replace with the actual restaurant id
+            users: users,
+        };
+
+        // Replace with your actual API endpoint to create a voucher
+        console.log("ennnno")
+        axios.post('http://localhost:4010/api/voucher/addvoucher', voucherData)
+            .then(response => console.log(response.data))
+            .catch(error => console.error('Error:', error));
 
         onHide();
     };
