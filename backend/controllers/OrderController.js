@@ -195,6 +195,25 @@ const findCatagory = async(req,res)=>{
   }
 }
 
+const getAllOrders = async(req,res)=>{
+  try {
+    // Find all orders
+    const orders = await OrderModel.find({});
+
+    if (!orders) {
+      return res
+        .json({ message: "No orders found." });
+    }
+
+    // Send the orders as a response
+    res.send(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+
+}
+
 module.exports={
     getFoods,
     placeUserOrder,
@@ -206,5 +225,6 @@ module.exports={
     getAllOrderofSpecificDpPerson,
     handlePickupOrder,
     deliverOrder,
-    findCatagory
+    findCatagory,
+    getAllOrders
 }

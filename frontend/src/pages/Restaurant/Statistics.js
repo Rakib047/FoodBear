@@ -12,6 +12,9 @@ const RestaurantSalesPage = () => {
   const [filter, setFilter] = useState('Days');
   const [mostPopularItem, setMostPopularItem] = useState(null);
   const restaurantId = localStorage.getItem("restaurant_id");
+  const [totalUniqueClients, setTotalUniqueClients] = useState(0);
+  const [otherRestaurantAvgOrder, setOtherRestaurantAverageOrderVolume] = useState(0);
+  const [otherRestaurantAvgEarnings, setOtherRestaurantAverageEarning] = useState(0);
 
   const [orderData, setOrderData] = useState([]);
   const orderVolumeChartRef = useRef(null);
@@ -99,9 +102,25 @@ const RestaurantSalesPage = () => {
       setOrderVolume(volume);
       setTotalEarn(earn);
 
+      const totalClients = calculateTotalUniqueClients(filteredOrders);
+      setTotalUniqueClients(totalClients);
+
       const filteredOrders2 = filterOrdersByDate2(orders);
       const processedData = processData(filteredOrders2);
       setOrderData(processedData);
+
+      const response2 = await axios.get(`http://localhost:4010/api/order/all/getAllOrders`);
+      const allOrders = response2.data;
+      const filteredOrders3 = filterOrdersByDate(allOrders);
+
+      const otherRestaurantOrders = filteredOrders3.filter(order => {
+        return order.restaurant_id !== restaurantId;
+      });
+      console.log("otherRestaurantOrders", otherRestaurantOrders);
+      const otherRestaurantGroups = groupByRestaurant(otherRestaurantOrders);
+      const otherRestaurantAverages = calculateAverages(otherRestaurantGroups);
+      setOtherRestaurantAverageOrderVolume(otherRestaurantAverages.orderVolume);
+      setOtherRestaurantAverageEarning(otherRestaurantAverages.earning);
 
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -109,6 +128,7 @@ const RestaurantSalesPage = () => {
   };
 
   const filterOrdersByDate = (orders) => {
+    console.log("safari te")
     const currentDate = new Date();
     const filteredOrders = orders.filter(order => {
       const orderDate = new Date(order.date);
@@ -167,6 +187,11 @@ const RestaurantSalesPage = () => {
     return null;
   };
 
+  const calculateTotalUniqueClients = (orders) => {
+    const uniqueUserIds = new Set(orders.map(order => order.user_id));
+    return uniqueUserIds.size;
+  };
+
   const filterOrdersByDate2 = (orders) => {
     const currentDate = new Date();
     return orders.filter(order => {
@@ -215,6 +240,34 @@ const RestaurantSalesPage = () => {
     setFilter(selectedFilter);
   };
 
+  const groupByRestaurant = (orders) => {
+    return orders.reduce((groups, order) => {
+      if (!groups[order.restaurant_id]) {
+        groups[order.restaurant_id] = [];
+      }
+      groups[order.restaurant_id].push(order);
+      return groups;
+    }, {});
+  };
+  
+  const calculateAverages = (groups) => {
+    let totalOrderVolume = 0;
+    let totalEarning = 0;
+    let restaurantCount = 0;
+  
+    for (const restaurantId in groups) {
+      const orders = groups[restaurantId];
+      totalOrderVolume += calculateOrderVolume(orders);
+      totalEarning += calculateTotalEarn(orders);
+      restaurantCount++;
+    }
+  
+    return {
+      orderVolume: totalOrderVolume / restaurantCount,
+      earning: totalEarning / restaurantCount
+    };
+  };
+
   return (
     <div >
       <Navbar_Restaurant />
@@ -249,7 +302,7 @@ const RestaurantSalesPage = () => {
             <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
                 <Card.Title>Total Earn</Card.Title>
-                <Card.Text>BDT {totalEarn}</Card.Text>
+                <Card.Text><span>&#2547;</span> {totalEarn}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
@@ -282,16 +335,16 @@ const RestaurantSalesPage = () => {
           <Col md={6}>
             <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
-                <Card.Title>Customer Complain</Card.Title>
-                <Card.Text>NAI</Card.Text>
+                <Card.Title>Total Clients</Card.Title>
+                <Card.Text>{totalUniqueClients}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
           <Col md={6}>
             <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
-                <Card.Title>Pending Orders</Card.Title>
-                <Card.Text>2</Card.Text>
+                <Card.Title>Market Average Order Volume</Card.Title>
+                <Card.Text>{otherRestaurantAvgOrder}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
@@ -299,8 +352,8 @@ const RestaurantSalesPage = () => {
           <Col md={6}>
             <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
-                <Card.Title>Rejected Orders</Card.Title>
-                <Card.Text>2</Card.Text>
+                <Card.Title>Market Average Earning</Card.Title>
+                <Card.Text><span>&#2547;</span> {otherRestaurantAvgEarnings}</Card.Text>
               </Card.Body>
             </Card>
           </Col>

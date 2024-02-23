@@ -32,6 +32,9 @@ router.route("/deliveryperson/orders/pickeduporder/:orderId")
 router.route("/deliveryperson/orders/deliveredorder/:orderId")
       .put(controllers.deliverOrder)
 
+router.route("/all/getAllOrders")
+      .get(controllers.getAllOrders)
+
 router.route("/orderReview/addOrderReview")
       .post(controllers2.createOrderReview)
 
