@@ -7,6 +7,7 @@ const AddVoucherModal = ({ show, onHide }) => {
         voucherCode: "",
         expiryDate: "",
         minimumAmount: "",
+        discount: "",
         maxUsage: "",
     });
 
@@ -62,8 +63,10 @@ const AddVoucherModal = ({ show, onHide }) => {
 
         const voucherData = {
             code: voucher.voucherCode,
-            discount: voucher.minimumAmount,
+            minimumAmount: voucher.minimumAmount,
+            discount: voucher.discount,
             expiryDate: voucher.expiryDate,
+            maxUsage: voucher.maxUsage,
             restaurant_id: restaurantId, // Replace with the actual restaurant id
             users: users,
         };
@@ -76,8 +79,11 @@ const AddVoucherModal = ({ show, onHide }) => {
                     voucherCode: "",
                     expiryDate: "",
                     minimumAmount: "",
+                    discount: "",
                     maxUsage: "",
-                });
+                },
+                window.location.reload()
+                );
             })
             .catch(error => console.error('Error:', error));
 
@@ -117,6 +123,16 @@ const AddVoucherModal = ({ show, onHide }) => {
                             placeholder="Enter minimum amount"
                             name="minimumAmount"
                             value={voucher.minimumAmount}
+                            onChange={onChange}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="discount">
+                        <Form.Label>Discount Percentage</Form.Label>
+                        <Form.Control
+                            type="number"
+                            placeholder="Enter Discount percentage"
+                            name="discount"
+                            value={voucher.discount}
                             onChange={onChange}
                         />
                     </Form.Group>

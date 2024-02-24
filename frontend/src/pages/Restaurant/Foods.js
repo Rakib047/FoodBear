@@ -54,12 +54,69 @@ export default function ShowFoods_Restaurant() {
     setAuthToken(token);
   }, []);
 
+  const [vouchers, setVouchers] = useState([]);
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4010/api/voucher/getvoucher/${localStorage.getItem(
+            "restaurant_id"
+          )}`
+        );
+        console.log(response.data);
+        setVouchers(response.data);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+      }
+    };
+
+    fetchVouchers();
+  }, []);
+
+  const deleteVoucher = async (voucherId) => {
+    try {
+      await axios.delete(
+        `http://localhost:4010/api/voucher/getvoucher/${localStorage.getItem('restaurant_id')}`
+      );
+      setVouchers(vouchers.filter((voucher) => voucher._id !== voucherId));
+    } catch (error) {
+      console.error("Error deleting voucher:", error);
+    }
+  };
+
   return (
     <div>
       <Navbar_Restaurant />
 
       <div className="container" style={{ position: "relative", top: "100px" }}>
-        
+        {vouchers ? (
+          vouchers.map((voucher, index) => (
+            <div>
+              <h3>🎫 Current Voucher 🎫</h3>
+              <div key={index} className="card" style={{ width: "22rem",marginBottom:"2rem",marginTop:"1rem" }}>
+                <div className="card-body">
+                  <h5 className="card-title"><bold>{voucher.code}</bold></h5>
+                  <h6 className="card-subtitle mb-2 text-muted">
+                  Expiry Date: {new Date(voucher.expiryDate).getFullYear()}-{new Date(voucher.expiryDate).getMonth() + 1}-{new Date(voucher.expiryDate).getDate()}
+                  </h6>
+                  <p className="card-text">
+                    Minimum Amount: {voucher.minimumAmount}
+                  </p>
+                  <p className="card-text">Max Usage: {voucher.maxUsage}</p>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => deleteVoucher(voucher._id)}
+                  >
+                    Delete Voucher
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <h1>Loading Vouchers...</h1>
+        )}
+
         {offeredFoodCategories ? (
           offeredFoodCategories.map((item, index) => {
             const foodsInCategory = offeredFoods.filter(

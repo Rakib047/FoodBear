@@ -21,6 +21,10 @@ const VoucherSchema = new Schema({
         type: String,
         required: true,
     },
+    minimumAmount: {
+        type: Number,
+        required: true,
+    },
     discount: {
         type: Number,
         required: true,
@@ -28,6 +32,10 @@ const VoucherSchema = new Schema({
     expiryDate: {
         type: Date,
         required: true,
+    },
+    maxUsage: {
+        type: Number,
+        required: true
     },
     restaurant_id: {
         type: String,

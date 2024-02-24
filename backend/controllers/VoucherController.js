@@ -1,13 +1,15 @@
 const VoucherModel = require("../models/VoucherModel"); // Replace with the actual path to your Voucher model
 const UserModel = require("../models/UserModel"); // Replace with the actual path to your User model
 const createVoucher = async (req, res) => {
-  const { code, discount, expiryDate, restaurant_id, users } = req.body;
+  const { code,minimumAmount, discount, expiryDate,maxUsage,restaurant_id, users } = req.body;
 
   try {
     const voucher = new VoucherModel({
       code,
+      minimumAmount,
       discount,
       expiryDate,
+      maxUsage,
       restaurant_id,
       users,
     });

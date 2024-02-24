@@ -48,13 +48,13 @@ export default function ShowFoods_Restaurant() {
     );
 
     axios
-    .get("http://localhost:4010/api/order/offer/getoffercatagory") //i dont know for what the hell reason it worked in this route
-    //but not in the restaurant route,maybe i did some crime to someone!
-    .then((response) => {
-      console.log("ekhane catagory");
-      console.log(response.data);
-      setOfferedFoodCategories(response.data);
-    });
+      .get("http://localhost:4010/api/order/offer/getoffercatagory") //i dont know for what the hell reason it worked in this route
+      //but not in the restaurant route,maybe i did some crime to someone!
+      .then((response) => {
+        console.log("ekhane catagory");
+        console.log(response.data);
+        setOfferedFoodCategories(response.data);
+      });
 
     response = await response.json();
     setFoodItems(response[0]);
@@ -370,6 +370,25 @@ export default function ShowFoods_Restaurant() {
     ? { transform: "scale(1.05)", transition: "transform 0.1s ease" }
     : {};
 
+  const [vouchers, setVouchers] = useState([]);
+
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4010/api/voucher/getvoucher/${localStorage.getItem(
+            "restaurant_id"
+          )}`
+        );
+        setVouchers(response.data);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+      }
+    };
+
+    fetchVouchers();
+  }, []);
+
   return (
     <div>
       <div>
@@ -674,10 +693,40 @@ export default function ShowFoods_Restaurant() {
           ) : null
         )}
       </div>
+      <div>
+        <div
+          className="d-flex flex-wrap justify-content-left"
+          style={{
+            marginLeft: "80px",
+            marginTop: "20px",
+          }}
+        >
+          {vouchers ? (
+            vouchers.map((voucher, index) => (
+              <div
+                key={index}
+                className="card m-2"
+                style={{ width: "18rem", backgroundColor: "#f8f9fa"}}
+              >
+                <div className="card-body">
+                  <h5 className="card-title">{voucher.code}</h5>
+                  <p className="card-text">
+                    Enjoy {voucher.discount}% off on selected items!
+                  </p>
+                  {/* <p className="card-text">Max Usage: {voucher.maxUsage}</p> */}
+                  {/* <p className="card-text">Minimum Order: {voucher.minimumAmount}</p> */}
+                </div>
+              </div>
+            ))
+          ) : (
+            <h1>Loading Vouchers...</h1>
+          )}
+        </div>
+      </div>
       <hr />
 
       <div className="container" style={{ position: "relative" }}>
-      {offeredFoodCategories ? (
+        {offeredFoodCategories ? (
           offeredFoodCategories.map((item, index) => {
             const foodsInCategory = offeredFoods.filter(
               (foodItem) =>
