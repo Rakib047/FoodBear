@@ -256,6 +256,7 @@ export const MyCart = () => {
           payment_method: payment_method,
         }),
       });
+      localStorage.removeItem("discount");
       navigate("/user/dashboard");
     } catch (error) {
       console.error(error);
@@ -297,7 +298,7 @@ export const MyCart = () => {
     const voucher = response.data[0];
     const userId = localStorage.getItem("user_id");
     const user = voucher.users.find((user) => user.user_id === userId);
-    user.usage -= 1;
+    if(user.usage > 0) user.usage -= 1;
     await axios.put(
       `http://localhost:4010/api/voucher/updatevoucher/${voucher._id}`,
       {
@@ -388,6 +389,7 @@ export const MyCart = () => {
                         handleIncreaseQuantity={handleIncreaseQuantity}
                         handleDecreaseQuantity={handleDecreaseQuantity}
                         handleDeleteQuantity={handleDeleteQuantity}
+                        handleVoucherRemove={handleVoucherRemove}
                       />
                     </div>
                   ))}
