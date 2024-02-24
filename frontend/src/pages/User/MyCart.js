@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {Navbar} from "../../components/Navbar";
-import {CartCard} from "../../components/CartCard";
-import {Footer} from "../../components/Footer";
+import { Navbar } from "../../components/Navbar";
+import { CartCard } from "../../components/CartCard";
+import { Footer } from "../../components/Footer";
 
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import axios from "axios";
 
+import Modal from "react-bootstrap/Modal"; // import Modal component
+import Button from "react-bootstrap/Button"; // import Button component
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,30 +24,12 @@ export const MyCart = () => {
   const { foodCount, updateFoodCount } = useContext(UserContext);
   const [offeredFoods, setOfferedFoods] = useState([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchData = async () => {
-      const received_cart = await fetch("http://localhost:4010/api/user/getcart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: localStorage.getItem("user_id"),
-        }),
-      });
-      const received_cart_json = await received_cart.json();
-      updateFoodCount(received_cart_json.length);
-
-      localStorage.removeItem("food_count");
-
-      //console.log(localStorage.getItem("restaurant_id"));
-      const offerfoodRes = await axios.get(`http://localhost:4010/api/restaurant/offer/${localStorage.getItem("restaurant_id")}`);
-      setOfferedFoods(offerfoodRes.data);
-
-      try {
-        // Fetch cart_data
-        const cartResponse = await fetch("http://localhost:4010/api/user/getcart", {
+      const received_cart = await fetch(
+        "http://localhost:4010/api/user/getcart",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +37,35 @@ export const MyCart = () => {
           body: JSON.stringify({
             user_id: localStorage.getItem("user_id"),
           }),
-        });
+        }
+      );
+      const received_cart_json = await received_cart.json();
+      updateFoodCount(received_cart_json.length);
+
+      localStorage.removeItem("food_count");
+
+      //console.log(localStorage.getItem("restaurant_id"));
+      const offerfoodRes = await axios.get(
+        `http://localhost:4010/api/restaurant/offer/${localStorage.getItem(
+          "restaurant_id"
+        )}`
+      );
+      setOfferedFoods(offerfoodRes.data);
+
+      try {
+        // Fetch cart_data
+        const cartResponse = await fetch(
+          "http://localhost:4010/api/user/getcart",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: localStorage.getItem("user_id"),
+            }),
+          }
+        );
 
         const cartData = await cartResponse.json();
         setCartData(cartData);
@@ -78,11 +90,15 @@ export const MyCart = () => {
 
         foodResults.forEach((foodItem) => {
           // Check if the food item is in the offeredFoods array
-          const offeredFood = offeredFoods.find((offeredFoodItem) => offeredFoodItem.foodId === foodItem._id);
-        
+          const offeredFood = offeredFoods.find(
+            (offeredFoodItem) => offeredFoodItem.foodId === foodItem._id
+          );
+
           // If it is, use the discounted price, otherwise use the regular price
-          const price = offeredFood ? Math.floor(Number(offeredFood.offeredPrice)) : Math.floor(Number(foodItem.price));
-        
+          const price = offeredFood
+            ? Math.floor(Number(offeredFood.offeredPrice))
+            : Math.floor(Number(foodItem.price));
+
           if (!uniqueFoodItems[foodItem._id]) {
             uniqueFoodItems[foodItem._id] = {
               id: foodItem._id,
@@ -164,7 +180,7 @@ export const MyCart = () => {
       const data = await response.json();
       updateFoodCount(foodCount - 1);
       if (data.success) {
-        console.log("komse")
+        console.log("komse");
         setFoodItems((prevFoodItems) =>
           prevFoodItems.map((foodItem) =>
             foodItem.id === foodItemId && foodItem.quantity > 1
@@ -250,8 +266,38 @@ export const MyCart = () => {
       }),
     });
     updateFoodCount(0);
-    
   };
+
+  const [showVoucherModal, setShowVoucherModal] = useState(false); // State to control the visibility of the modal
+  const [voucherCode, setVoucherCode] = useState(""); // State to store the voucher code
+  const [voucherError, setVoucherError] = useState(""); // State to store error messages
+
+  // Function to handle voucher submission
+  const handleVoucherSubmit = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4010/api/voucher/getvoucher/${localStorage.getItem(
+          "restaurant_id"
+        )}`
+      );
+      // Check if voucher is valid for the restaurant and user has not reached the usage limit
+      // You need to implement this logic based on the response from the API
+      // For now, let's assume the voucher is valid
+      // Apply discount to total price
+      // setTotalPrice(totalPrice - discountAmount); // Adjust totalPrice based on the discount
+      // Close the modal
+      setShowVoucherModal(false);
+      // Clear the voucher code field
+      setVoucherCode("");
+      // Clear any previous error messages
+      setVoucherError("");
+    } catch (error) {
+      console.error(error);
+      // Handle error
+      setVoucherError("Failed to apply voucher. Please try again later.");
+    }
+  };
+
   return (
     <div>
       <div>
@@ -297,6 +343,56 @@ export const MyCart = () => {
                     Review Payment Method
                   </button>
                 </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <button
+                    onClick={() => setShowVoucherModal(true)}
+                    className="btn btn-md float-end"
+                    style={{ backgroundColor: "#ff8a00", color: "white" }}
+                  >
+                    Add a Voucher
+                  </button>
+                  {/* Modal for entering voucher code */}
+                  <Modal
+                    show={showVoucherModal}
+                    onHide={() => setShowVoucherModal(false)}
+                    dialogClassName="modal-sm" // Use Bootstrap's small modal size
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>Enter Voucher Code</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      {/* Input field for voucher code */}
+                      <input
+                        type="text"
+                        value={voucherCode}
+                        onChange={(e) => setVoucherCode(e.target.value)}
+                        className="w-100" // Make the input field take up the full width of the modal
+                      />
+                      {/* Display error message, if any */}
+                      {voucherError && <div>{voucherError}</div>}
+                    </Modal.Body>
+                    <Modal.Footer className="justify-content-center">
+                      {" "}
+                      {/* Center the button */}
+                      {/* Button to submit voucher code */}
+                      <Button
+                        className="btn btn-md"
+                        style={{ backgroundColor: "#ff8a00", color: "white",border:"none" }}
+                        onClick={handleVoucherSubmit}
+                      >
+                        Submit
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                </div>
               </div>
             ) : (
               <div
@@ -326,7 +422,7 @@ export const MyCart = () => {
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-                  <h5 className="text-center"> Choose Payment Method</h5>
+                    <h5 className="text-center"> Choose Payment Method</h5>
                   </div>
                   <div className="modal-body">
                     <div className="form-check">
@@ -404,7 +500,14 @@ export const MyCart = () => {
                   </div>
 
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-sm" data-bs-dismiss="modal" aria-label="Close" style={{ backgroundColor: "#ff8a00", color: "white"}} onClick={handleOrder}>
+                    <button
+                      type="button"
+                      className="btn btn-sm"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      style={{ backgroundColor: "#ff8a00", color: "white" }}
+                      onClick={handleOrder}
+                    >
                       Place Order
                     </button>
                   </div>
@@ -417,5 +520,4 @@ export const MyCart = () => {
       </div>
     </div>
   );
-}
-
+};
