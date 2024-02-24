@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { Card } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import Navbar_Restaurant from "../../components/Navbar_Restaurant";
+import { Footer } from "../../components/Footer";
+import { Modal } from "react-bootstrap";
+import axios from "axios";
 
 const RestaurantSalesPage = () => {
   // Dummy data representing restaurant sales information
@@ -50,157 +53,117 @@ const RestaurantSalesPage = () => {
   const [isHoveredFood, setIsHoveredFood] = useState(false);
   const [isHoveredMonthlySales, setIsHoveredMonthlySales] = useState(false);
   const [isHoveredAvgOrderValue, setIsHoveredAvgOrderValue] = useState(false);
+  const [totalOrder,setTotalOrder] = useState(0);
+  const [totalIncome,setTotalIncome] = useState(0);
+  const [restaurants, setRestaurant] = useState([]);
 
-  const handleMouseEnterSales = () => {
-    setIsHoveredSales(true);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:4010/api/restaurant/dashboard"
+      );
+
+      setRestaurant(response.data);
+
+      response.data.map((item, index) => {
+        if (item._id === localStorage.getItem("restaurant_id")) {
+          
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const handleMouseLeaveSales = () => {
-    setIsHoveredSales(false);
+  const fetchOrders = async () => {
+    let response = await fetch(
+      `http://localhost:4010/api/order/restaurant/orders/${localStorage.getItem(
+        "restaurant_id"
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    response = await response.json();
+    console.log("response", response);
+    // const complete = response.filter((order) => order.status === "delivered");
+    // setCompletedOrders(complete);
+
+    // const active = response.filter((order) => order.status !== "delivered");
+    // setActiveOrders(active);
+
+    setTotalOrder(response.length);
+
+    const totalPrice = response.reduce((acc, order) => acc + order.total_price, 0);
+    console.log(totalIncome);
+    setTotalIncome(totalPrice);
+
+
   };
 
-  const handleMouseEnterFood = () => {
-    setIsHoveredFood(true);
-  };
+  useEffect(() => {
+    fetchData();
+    fetchOrders();
+  }, []);
 
-  const handleMouseLeaveFood = () => {
-    setIsHoveredFood(false);
-  };
+  
 
-  const handleMouseEnterMonthlySales = () => {
-    setIsHoveredMonthlySales(true);
-  };
-
-  const handleMouseLeaveMonthlySales = () => {
-    setIsHoveredMonthlySales(false);
-  };
-
-  const handleMouseEnterAvgOrderValue = () => {
-    setIsHoveredAvgOrderValue(true);
-  };
-
-  const handleMouseLeaveAvgOrderValue = () => {
-    setIsHoveredAvgOrderValue(false);
-  };
-
-  const cardStyle = {
+  const mycardStyle = {
     paddingTop: "120px",
     width: "45%",
     marginLeft: "20px",
     marginBottom: "-60px",
     transition: "transform 0.1s ease-in-out",
   };
-
-  const cardStyle2 = {
-    paddingTop: "120px",
-    width: "45%",
-    marginLeft: "20px",
-    marginBottom: "60px",
-    transition: "transform 0.1s ease-in-out",
-  };
-
-  const cardStyleSales = {
-    ...cardStyle,
-    transform: isHoveredSales ? "scale(1.05)" : "scale(1)",
-  };
-
-  const cardStyleFood = {
-    ...cardStyle,
-    transform: isHoveredFood ? "scale(1.05)" : "scale(1)",
-  };
-
-  const cardStyleMonthlySales = {
-    ...cardStyle2,
-    transform: isHoveredMonthlySales ? "scale(1.05)" : "scale(1)",
-  };
-
-  const cardStyleAvgOrderValue = {
-    ...cardStyle2,
-    transform: isHoveredAvgOrderValue ? "scale(1.05)" : "scale(1)",
-  };
-
+  
   return (
-    <div>
+    <div align="center">
+      {restaurants.map((item , index) =>{
+        if(item._id === localStorage.getItem("restaurant_id")){
+          const restaurant = item;
+
+          return (
+            <div>
       <Navbar_Restaurant />
-      <div className="container" style={{ display: "flex", flexWrap: "wrap" }}>
+      <div className="container" align="center" style={{ display: "flex", flexWrap: "wrap" }}>
         {/* Restaurant Sales Card */}
-        <div style={cardStyleSales} onMouseEnter={handleMouseEnterSales} onMouseLeave={handleMouseLeaveSales}>
+        
+
+        <div style={mycardStyle}>
           <Card>
             <Card.Body>
-              <Card.Title>Catagory-wise Sales</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={salesData}>
-                    <Bar dataKey="Earned" fill="#8884d8" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
+              <Card.Title>Showing Total Order</Card.Title>
+              <div>
+              <p>{totalOrder}</p>
               </div>
             </Card.Body>
           </Card>
         </div>
 
-        {/* Food Sold Card */}
-        <div style={cardStyleFood} onMouseEnter={handleMouseEnterFood} onMouseLeave={handleMouseLeaveFood}>
+        <div style={mycardStyle}>
           <Card>
             <Card.Body>
-              <Card.Title>Food-wise Sales</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={foodSoldData} layout="vertical">
-                    <XAxis type="number" />
-                    <YAxis dataKey="food" type="category" />
-                    <Bar dataKey="count" fill="#82ca9d" />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
+              <Card.Title>Showing Total Income</Card.Title>
+              <div>
+              <p>{totalIncome}</p>
               </div>
             </Card.Body>
           </Card>
         </div>
 
-        {/* Monthly Sales Card */}
-        <div style={cardStyleMonthlySales} onMouseEnter={handleMouseEnterMonthlySales} onMouseLeave={handleMouseLeaveMonthlySales}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Monthly Sales in BDT</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={monthlySalesData}>
-                    <Bar dataKey="sales" fill="#ffbb28" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-
-        {/* Average Order Value Card */}
-        <div style={cardStyleAvgOrderValue} onMouseEnter={handleMouseEnterAvgOrderValue} onMouseLeave={handleMouseLeaveAvgOrderValue}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Average Order Per Month</Card.Title>
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <BarChart data={averageOrderValueData}>
-                    <Bar dataKey="averageOrder" fill="#82ca9d" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
       </div>
     </div>
+          );
+        }
+      })}
+    </div>
   );
+
+ 
 };
 
 export default RestaurantSalesPage;

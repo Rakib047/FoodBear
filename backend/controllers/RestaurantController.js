@@ -1,4 +1,5 @@
 const RestaurantModel = require("../models/RestaurantModel");
+const HomeKitchenModel = require("../models/HomeKitchenModel");
 const FoodCategoryModel = require("../models/FoodCatagoryModel");
 const FoodModel = require("../models/FoodModel");
 const UserModel = require("../models/UserModel");
@@ -40,6 +41,21 @@ const signupRestaurant = async (req, res) => {
       latitude: req.body.latitude, // Add latitude
       longitude: req.body.longitude, // Add longitude
     });
+    
+    if(req.body.is_homekitchen){
+      const newHomeKitchen = await HomeKitchenModel.create({
+        name: req.body.name,
+        location: req.body.location,
+        email: req.body.email,
+        password: hashedPassword,
+        contact: req.body.contact,
+        is_homekitchen: req.body.is_homekitchen,
+        img: req.body.img,
+        latitude: req.body.latitude, // Add latitude
+        longitude: req.body.longitude, // Add longitude
+      });
+    }
+    
     console.log(req.body.latitude+" "+req.body.longitude)
     res.status(200).json(newRestaurant);
   } catch (error) {
@@ -139,6 +155,45 @@ const toggleRestaurantOpen = async (req, res) => {
     return res
       .status(200)
       .json({ message: "is_open status updated", is_open: restaurant.is_open });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const updateHomeKitchen = async (req, res) => {
+  console.log("ekhane")
+  const { restaurantId } = req.params;
+  const {deliveryDays, startTime, endTime} = req.body;
+  try {
+    // Find the exact restu by ID
+    const restaurant = await RestaurantModel.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restuarant not found" });
+    }
+
+    // Find the home kitchen by restaurant name
+    const homeKitchen = await HomeKitchenModel.findOne({ name: restaurant.name });
+
+    if (!homeKitchen) {
+      return res.status(404).json({ message: "Home Kitchen is not found" });
+    }
+
+    homeKitchen.selectDays = selectDays;
+    homeKitchen.startTime = startTime;
+    homeKitchen.endTime = endTime;
+
+    // Toggle the is_open field
+    // restaurant.is_open = !restaurant.is_open;
+
+    // Save the updated state
+    console.log("ekhane")
+    await homeKitchen.save();
+
+    return res
+      .status(200)
+      .json({ message: "home kitchen is updated"});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -434,5 +489,6 @@ module.exports = {
   setUserReview,
   getSpecificRestaurantRating,
   getSpecificRestaurant,
-  getSpecificUserRatingForSpecificRestaurant
+  getSpecificUserRatingForSpecificRestaurant,
+  updateHomeKitchen
 };

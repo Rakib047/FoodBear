@@ -29,6 +29,10 @@ export default function ShowFoods_Restaurant() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [ratings, setRatings] = useState([]);
   const [ratingPercentages, setRatingPercentages] = useState({});
+  const [availableDays,setAvailableDays] = useState(["Saturday","Sunday"]);
+  const [startTime,setStartTime] = useState(11);
+  const [endTime , setEndTime] = useState(1);
+
 
   const fetchData = async () => {
     let response = await fetch("http://localhost:4010/api/restaurant/foods", {
@@ -349,7 +353,17 @@ export default function ShowFoods_Restaurant() {
   const hoverStyle3 = isHovered3
     ? { transform: "scale(1.05)", transition: "transform 0.1s ease" }
     : {};
+  
+  // Inside your component function
+const [showTimeModal, setShowTimeModal] = useState(false);
 
+// Function to toggle modal visibility
+const toggleTimeModal = () => {
+  setShowTimeModal(!showTimeModal);
+};
+const handleSeeAvailableTime = async () =>{
+  
+}
 
   return (
     <div>
@@ -546,6 +560,47 @@ export default function ShowFoods_Restaurant() {
                       >
                         Rate & Review Us!
                       </button> */}
+
+                      <Modal show={showTimeModal} onHide={toggleTimeModal}>
+                          <Modal.Header closeButton>
+                            <Modal.Title>Available Time</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            {/* Add your content for available time here */}
+                            {/* For example, a dropdown to select available time */}
+                            
+                            <p><b>Available Days: </b></p>
+                            {availableDays.join(', ')}
+                            <br></br>
+                            <br></br>
+                            <p><b>Start Time : </b></p>
+                            {startTime}
+                            <br></br>
+                            <p><b>End Time : </b></p>
+                            {endTime}
+
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={toggleTimeModal}>
+                              Close
+                            </Button>
+                            {/* Add additional buttons if needed */}
+                          </Modal.Footer>
+                        </Modal>
+
+                      {restaurant.is_homekitchen && (<button                         style={{
+                          backgroundColor: "#ff8a00",
+                          color: "white",
+                          padding: "4px 8px",
+                          fontSize: "14px",
+                          borderRadius: "4px",
+                          border: "none",
+                          cursor: "pointer", ...hoverStyle3,
+                          boxShadow: "0px 8px 16px 0px rgba(1,1,1,0.2)",
+                          height: "32px", // Increase the height
+                        }} onClick={
+                          toggleTimeModal}>See Available Time
+                        </button>)}
 
                       {/* Review Modal */}
                       <Modal show={showReviewModal} onHide={toggleReviewModal}>

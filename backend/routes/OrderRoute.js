@@ -37,5 +37,7 @@ router.route("/orderReview/addOrderReview")
 
 router.route("/orderReview/getOrderReview/:userId/:restaurantId/:orderId")
       .get(controllers2.getOrderReview)
-
+      
+router.route("/updatehomekitchen/:restaurantId")
+      .put(controllers.updateHomeKitchen)
 module.exports = router;

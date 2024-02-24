@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const OrderModel= require("../models/OrderModel")
 const FoodModel= require("../models/FoodModel")
+const RestaurantModel = require("../models/RestaurantModel")
+const HomeKitchenModel = require("../models/HomeKitchenModel")
 
 const getFoods = async(req,res)=>{
     const foodId = req.params.foodId;
@@ -181,6 +183,45 @@ const deliverOrder = async(req,res)=>{
   }
 }
 
+const updateHomeKitchen = async (req, res) => {
+  console.log("ekhane")
+  const { restaurantId } = req.params;
+  const {deliveryDays, startTime, endTime} = req.body;
+  try {
+    // Find the exact restu by ID
+    const restaurant = await RestaurantModel.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restuarant not found" });
+    }
+
+    // Find the home kitchen by restaurant name
+    const homeKitchen = await HomeKitchenModel.findOne({ name: restaurant.name });
+
+    if (!homeKitchen) {
+      return res.status(404).json({ message: "Home Kitchen is not found" });
+    }
+
+    homeKitchen.deliveryDays = deliveryDays;
+    homeKitchen.startTime = startTime;
+    homeKitchen.endTime = endTime;
+
+    // Toggle the is_open field
+    // restaurant.is_open = !restaurant.is_open;
+
+    // Save the updated state
+    console.log("ekhane")
+    await homeKitchen.save();
+
+    return res
+      .status(200)
+      .json({ message: "home kitchen is updated"});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports={
     getFoods,
     placeUserOrder,
@@ -191,5 +232,6 @@ module.exports={
     getSpecificRestaurantOrder,
     getAllOrderofSpecificDpPerson,
     handlePickupOrder,
-    deliverOrder
+    deliverOrder,
+    updateHomeKitchen
 }

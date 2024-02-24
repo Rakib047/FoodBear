@@ -10,6 +10,20 @@ export const DashboardRes = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showDeliveryTimeModal, setDeliveryTimeModal] = useState(false);
+  const [startTime, setStartTime] = useState(0.0);
+  const [endTime, setEndTime] = useState(0.0);
+  const [selectedDays, setSelectedDays] = useState([]);
+
+  const daysOfWeek = [
+    "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+  ];
 
   const fetchData = async () => {
     try {
@@ -46,6 +60,32 @@ export const DashboardRes = () => {
       }
     } catch (error) {
       console.error("Error updating is_open status:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      console.log("hhhhhhh")
+      const response = await axios.put(
+        `http://localhost:4010/api/order/updatehomekitchen/${localStorage.getItem(
+          "restaurant_id"
+        )}`,
+        { deliveryDays: selectedDays, startTime: startTime, endTime: endTime }
+      );
+      console.log("selected Days " + selectedDays);
+      console.log("Start Time : " + startTime);
+
+
+
+      if (response.status === 200) {
+        setDeliveryTimeModal(!showDeliveryTimeModal);
+        console.log("home kitchen updated successfully");
+      } else {
+        console.log("Failed to update home kitchen");
+      }
+    } catch (error) {
+      setDeliveryTimeModal(!showDeliveryTimeModal);
+      console.error("Error updating home kitchen:", error);
     }
   };
 
@@ -123,6 +163,8 @@ export const DashboardRes = () => {
   };
 
   const toggleReviewModal = () => setShowReviewModal(!showReviewModal);
+  const toggleDeliveryTimeModal = () =>
+    setDeliveryTimeModal(!showDeliveryTimeModal);
 
   useEffect(() => {
     fetchData();
@@ -205,6 +247,26 @@ export const DashboardRes = () => {
                         >
                           See Reviews
                         </button>
+                        {restaurant.is_homekitchen && (
+                          <button style={{
+                            backgroundColor: "#ff8a00", // Change to light blue
+                            color: "white",
+                            padding: "4px 8px",
+                            fontSize: "14px",
+                            borderRadius: "4px",
+                            border: "none",
+                            cursor: "pointer",
+                            boxShadow: "0px 8px 16px 0px rgba(1,1,1,0.2)",
+                            height: "40px" // Increase the height
+                        }}
+                        
+                            type="button"
+                            className="btn btn-outline-success btn-sm mt-2 ms-2"
+                            onClick={toggleDeliveryTimeModal} // You should define handleSetDeliveryTime function
+                          >
+                            Set Delivery Time
+                          </button>
+                        )}
                       </div>
                       <div
                         className="form-check form-switch mt-2"
@@ -280,6 +342,74 @@ export const DashboardRes = () => {
                         ))}
                       </Modal.Body>
                     </Modal>
+
+            
+                    {/* Delivery Time Modal */}
+<Modal show={showDeliveryTimeModal} onHide={toggleDeliveryTimeModal}>
+  <Modal.Header closeButton>
+    <Modal.Title>Set Delivery Time</Modal.Title>
+  </Modal.Header>
+  <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+    <div className="form-group">
+      <p>
+        <b>Select Delivery Days:</b>
+      </p>
+      {daysOfWeek.map((day) => (
+        <div className="form-check" key={day}>
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id={day}
+            value={day}
+            checked={selectedDays.includes(day)}
+            onChange={(e) => {
+              const isChecked = e.target.checked;
+              if (isChecked) {
+                setSelectedDays([...selectedDays, day]);
+              } else {
+                setSelectedDays(selectedDays.filter((d) => d !== day));
+              }
+            }}
+          />
+          <label className="form-check-label" htmlFor={day}>
+            {day.charAt(0).toUpperCase() + day.slice(1)}
+          </label>
+        </div>
+      ))}
+    </div>
+    <div className="form-group">
+      <label htmlFor="startTime">
+        <b>Start Time:</b>
+      </label>
+      <input
+        type="float"
+        className="form-control"
+        id="startTime"
+        placeholder="Enter start time"
+        value={startTime}
+        onChange={(e) => setStartTime(e.target.value)}
+      />
+    </div>
+    <div className="form-group">
+      <label htmlFor="endTime">
+        <b>End Time:</b>
+      </label>
+      <input
+        type="float"
+        className="form-control"
+        id="endTime"
+        placeholder="Enter end time"
+        value={endTime}
+        onChange={(e) => setEndTime(e.target.value)}
+      />
+    </div>
+  </Modal.Body>
+  <Modal.Footer>
+    <button className="btn btn-primary" onClick={handleSubmit}>
+      Submit
+    </button>
+  </Modal.Footer>
+</Modal>
 
                     <div className="row lg-6">
                       {/* Active Order gula show korsi */}
