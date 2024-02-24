@@ -56,9 +56,29 @@ const deleteVoucher = async (req, res) => {
     }
 }
 
+const updatevoucher = async(req,res)=>{
+  try {
+    const { id } = req.params;
+    const { users } = req.body;
+
+    // Find the voucher by id and update it
+    const voucher = await VoucherModel.findByIdAndUpdate(id, { users }, { new: true });
+
+    if (!voucher) {
+      return res.status(404).json({ message: 'Voucher not found' });
+    }
+
+    res.json(voucher);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
 module.exports = {
   createVoucher,
   getAllUsers,
   getVoucher,
-  deleteVoucher
+  deleteVoucher,
+  updatevoucher
 };

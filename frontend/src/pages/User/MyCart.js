@@ -6,7 +6,7 @@ import { Footer } from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import axios from "axios";
+import axios, { toFormData } from "axios";
 
 import Modal from "react-bootstrap/Modal"; // import Modal component
 import Button from "react-bootstrap/Button"; // import Button component
@@ -117,11 +117,16 @@ export const MyCart = () => {
         const uniqueFoodItemsArray = Object.values(uniqueFoodItems);
 
         setFoodItems(uniqueFoodItemsArray);
-        console.log("checkin changes");
-        foodItems.forEach((foodItem) => {
-          console.log(foodItem);
-        });
-        setTotalPrice(totalPrice);
+        // console.log("checkin changes");
+        // foodItems.forEach((foodItem) => {
+        //   console.log(foodItem);
+        // });
+
+        if (localStorage.getItem("discount") !== null) {
+          const discount = parseFloat(localStorage.getItem("discount"));
+          totalPrice = totalPrice - (discount / 100) * totalPrice;
+        }
+        setTotalPrice(Math.floor(totalPrice));
       } catch (err) {
         console.error(err);
       }
@@ -271,8 +276,36 @@ export const MyCart = () => {
   const [showVoucherModal, setShowVoucherModal] = useState(false); // State to control the visibility of the modal
   const [voucherCode, setVoucherCode] = useState(""); // State to store the voucher code
   const [voucherError, setVoucherError] = useState(""); // State to store error messages
+  const [voucherMessage, setVoucherMessage] = useState("");
+
+  useEffect(() => {
+    // Perform your action here
+    console.log(totalPrice);
+    setTotalPrice(totalPrice);
+  }, [totalPrice]);
 
   // Function to handle voucher submission
+  const [isVoucherApplied, setIsVoucherApplied] = useState(false);
+
+  const handleVoucherRemove = async () => {
+    setIsVoucherApplied(false);
+    const response = await axios.get(
+      `http://localhost:4010/api/voucher/getvoucher/${localStorage.getItem(
+        "restaurant_id"
+      )}`
+    );
+    const voucher = response.data[0];
+    const userId = localStorage.getItem("user_id");
+    const user = voucher.users.find((user) => user.user_id === userId);
+    user.usage -= 1;
+    await axios.put(
+      `http://localhost:4010/api/voucher/updatevoucher/${voucher._id}`,
+      {
+        users: voucher.users,
+      }
+    );
+    localStorage.removeItem("discount");
+  };
   const handleVoucherSubmit = async () => {
     try {
       const response = await axios.get(
@@ -280,21 +313,51 @@ export const MyCart = () => {
           "restaurant_id"
         )}`
       );
-      // Check if voucher is valid for the restaurant and user has not reached the usage limit
-      // You need to implement this logic based on the response from the API
-      // For now, let's assume the voucher is valid
-      // Apply discount to total price
-      // setTotalPrice(totalPrice - discountAmount); // Adjust totalPrice based on the discount
-      // Close the modal
-      setShowVoucherModal(false);
-      // Clear the voucher code field
-      setVoucherCode("");
-      // Clear any previous error messages
-      setVoucherError("");
+      const voucher = response.data[0];
+      console.log(voucher.minimumAmount);
+      const currentDate = new Date();
+      const expiryDate = new Date(voucher.expiryDate);
+      const userId = localStorage.getItem("user_id");
+      const user = voucher.users.find((user) => user.user_id === userId);
+
+      if (voucher.code.toLowerCase() === voucherCode.toLowerCase()) {
+        if (currentDate > expiryDate) {
+          setVoucherMessage("The voucher is out of date.");
+        } else if (user.usage >= voucher.maxUsage) {
+          setVoucherMessage(
+            "You have reached the maximum usage for this voucher."
+          );
+        } else if (totalPrice < voucher.minimumAmount) {
+          setVoucherMessage(
+            "Minimum Order Amount is BDT " + voucher.minimumAmount
+          );
+        } else {
+          setVoucherMessage("Voucher Applied Successfully");
+          setVoucherError("");
+          setVoucherCode("");
+          // Calculate discounted total price
+          const discountedTotalPrice =
+            totalPrice * ((100 - voucher.discount) / 100);
+
+          // setDiscounted from voucher to local storage
+          setIsVoucherApplied(true);
+          localStorage.setItem("discount", voucher.discount.toString());
+
+          setShowVoucherModal(false);
+          user.usage += 1;
+          await axios.put(
+            `http://localhost:4010/api/voucher/updatevoucher/${voucher._id}`,
+            {
+              users: voucher.users,
+            }
+          );
+        }
+      } else {
+        setVoucherMessage("This voucher does not exist.");
+      }
     } catch (error) {
       console.error(error);
-      // Handle error
-      setVoucherError("Failed to apply voucher. Please try again later.");
+      setVoucherMessage("Failed to apply voucher. Please try again later.");
     }
   };
 
@@ -352,13 +415,23 @@ export const MyCart = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <button
-                    onClick={() => setShowVoucherModal(true)}
-                    className="btn btn-md float-end"
-                    style={{ backgroundColor: "#ff8a00", color: "white" }}
-                  >
-                    Add a Voucher
-                  </button>
+                  {isVoucherApplied ? (
+                    <button
+                      onClick={handleVoucherRemove}
+                      className="btn btn-md float-end btn-danger"
+                      //style={{ backgroundColor: "#ff8a00", color: "white" }}
+                    >
+                      Remove Voucher
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setShowVoucherModal(true)}
+                      className="btn btn-md float-end"
+                      style={{ backgroundColor: "#ff8a00", color: "white" }}
+                    >
+                      Add a Voucher
+                    </button>
+                  )}
                   {/* Modal for entering voucher code */}
                   <Modal
                     show={showVoucherModal}
@@ -385,7 +458,11 @@ export const MyCart = () => {
                       {/* Button to submit voucher code */}
                       <Button
                         className="btn btn-md"
-                        style={{ backgroundColor: "#ff8a00", color: "white",border:"none" }}
+                        style={{
+                          backgroundColor: "#ff8a00",
+                          color: "white",
+                          border: "none",
+                        }}
                         onClick={handleVoucherSubmit}
                       >
                         Submit
@@ -518,6 +595,24 @@ export const MyCart = () => {
           {foodItems.length > 0 ? <Footer /> : <div></div>}
         </div>
       </div>
+      <Modal
+        show={!!voucherMessage} // Show the modal if there is a voucher message
+        onHide={() => setVoucherMessage("")} // Hide the modal and clear the message when the modal is closed
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Voucher Message</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{voucherMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="btn btn-md"
+            style={{ backgroundColor: "#ff8a00", color: "white" }}
+            onClick={() => setVoucherMessage("")} // Clear the message when the button is clicked
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

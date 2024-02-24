@@ -11,4 +11,6 @@ router.route("/getallusers")
 router.route("/getvoucher/:restaurant_id")
         .get(controllers.getVoucher)
         .delete(controllers.deleteVoucher)
+router.route('/updatevoucher/:id')
+        .put(controllers.updatevoucher)
 module.exports = router;
