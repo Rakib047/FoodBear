@@ -761,6 +761,7 @@ export default function ShowFoods_Restaurant() {
                             offeredPrice={foodItem.offeredPrice}
                             isDiscounted={true}
                             is_instock={correspondingFood.is_instock}
+                            discountPercentage={foodItem.discountPercentage}
                           ></Card>
                         </div>
                       )

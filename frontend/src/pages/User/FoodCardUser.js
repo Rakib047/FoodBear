@@ -103,6 +103,10 @@ export default function FoodCard_Restaurant(props) {
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   Tk {Math.floor(props.offeredPrice)}
                 </span>
+                <br/>
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                <i class="fa-solid fa-tags"></i> {props.discountPercentage}% off
+                </span>
               </>
             ) : (
               `Tk ${props.price}`
