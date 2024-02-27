@@ -29,7 +29,7 @@ const getAllRestaurant = async(req,res)=>{
   try {
 
       const restaurants=await RestaurantModel.find({})
-      console.log(restaurants.length)
+      //console.log(restaurants.length)
       res.send(restaurants)
   } catch (error) {
     console.log(error);
