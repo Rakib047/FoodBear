@@ -216,9 +216,9 @@ const getAllOrders = async(req,res)=>{
 
 const getFoodForHomeKitchen = async (req, res) => {
   try {
-    console.log(req.params.foodId);
+    //console.log(req.params.foodId);
     const food = await FoodModel.findById(req.params.foodId);
-    console.log(food);
+    //console.log(food);
     res.status(200).json(food);
   } catch (error) {
     console.log("error in getting food");

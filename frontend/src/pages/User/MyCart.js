@@ -84,6 +84,7 @@ export const MyCart = () => {
         );
 
         const foodResults = await Promise.all(foodPromises);
+        console.log(foodResults);
         // Calculate unique food items with quantity and total price
         const uniqueFoodItems = {};
         let totalPrice = 0;
@@ -106,6 +107,11 @@ export const MyCart = () => {
               type: foodItem.CategoryName,
               quantity: 1,
               price: price,
+              //for homekichen stuffs
+              minOrder: foodItem.minOrder,
+              startTime: foodItem.startTime,
+              endTime: foodItem.endTime,
+              daysOfWeek: foodItem.daysOfWeek,
             };
           } else {
             uniqueFoodItems[foodItem._id].quantity += 1;
@@ -390,6 +396,12 @@ export const MyCart = () => {
                         handleDecreaseQuantity={handleDecreaseQuantity}
                         handleDeleteQuantity={handleDeleteQuantity}
                         handleVoucherRemove={handleVoucherRemove}
+
+                        //homekitchen stuffs
+                        startTime={foodItem.startTime}
+                        endTime={foodItem.endTime}
+                        minOrder={foodItem.minOrder}
+                        daysOfWeek={foodItem.daysOfWeek}
                       />
                     </div>
                   ))}

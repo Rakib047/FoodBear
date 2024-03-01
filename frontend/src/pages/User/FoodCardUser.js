@@ -79,7 +79,6 @@ export default function FoodCard_Restaurant(props) {
   };
 
   const [restaurant, setRestaurant] = useState(null);
-  const [isWithinTimeRange, setIsWithinTimeRange] = useState(false);
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -89,27 +88,6 @@ export default function FoodCard_Restaurant(props) {
 
       setRestaurant(response.data);
 
-      console.log(props.startTime, "start time");
-      console.log(props.endTime, "endtime");
-      if (
-        response.data &&
-        response.data.is_homekitchen &&
-        props.startTime &&
-        props.endTime
-      ) {
-        const currentTime = new Date();
-        const currentHours = currentTime.getHours().toString().padStart(2, "0");
-        const currentMinutes = currentTime
-          .getMinutes()
-          .toString()
-          .padStart(2, "0");
-        const currentTimeString = `${currentHours}:${currentMinutes}`;
-
-        setIsWithinTimeRange(
-          currentTimeString >= props.startTime &&
-            currentTimeString <= props.endTime
-        );
-      }
     };
 
     fetchRestaurant();
@@ -154,21 +132,13 @@ export default function FoodCard_Restaurant(props) {
           </div>
 
           {restaurant && restaurant.is_homekitchen ? (
-            isWithinTimeRange ? (
+            (
               <button
                 className="btn btn-md"
                 style={{ backgroundColor: "#ff8a00", color: "white" }}
                 onClick={onClick}
               >
-                <FontAwesomeIcon icon={faCartPlus} />
-              </button>
-            ) : (
-              <button
-                className="btn btn-md"
-                style={{ backgroundColor: "#ff8a00", color: "white" }}
-                onClick={onClick}
-              >
-                <i class="fa-solid fa-clock"></i>
+                <i class="fa-solid fa-clock"></i> Preorder
               </button>
             )
           ) : (
