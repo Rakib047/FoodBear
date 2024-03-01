@@ -152,6 +152,9 @@ export default function ShowFoods_Restaurant() {
                             offeredPrice={foodItem.offeredPrice}
                             isDiscounted={true}
                             is_instock={correspondingFood.is_instock}
+                            startTime={correspondingFood.startTime}
+                            endTime={correspondingFood.endTime}
+                            minOrder={correspondingFood.minOrder}
                           ></Card>
                         </div>
                       )
@@ -194,6 +197,11 @@ export default function ShowFoods_Restaurant() {
                         price={foodItem.price}
                         is_instock={foodItem.is_instock}
                         isDiscounted={false}
+
+                        startTime={foodItem.startTime}
+                        endTime={foodItem.endTime}
+                        minOrder={foodItem.minOrder}
+                        
                         isAddedToOffer={offeredFoods.some(
                           (offeredFood) => offeredFood.foodId === foodItem._id
                         )}

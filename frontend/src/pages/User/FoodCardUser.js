@@ -4,6 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 export default function FoodCard_Restaurant(props) {
   const [isHovered, setIsHovered] = useState(false);
@@ -76,6 +77,44 @@ export default function FoodCard_Restaurant(props) {
       updateFoodCount(foodCount + 1);
     }
   };
+
+  const [restaurant, setRestaurant] = useState(null);
+  const [isWithinTimeRange, setIsWithinTimeRange] = useState(false);
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      const response = await axios.get(
+        `http://localhost:4010/api/restaurant/homekitchen/${props.restaurant_id}`
+      );
+
+      setRestaurant(response.data);
+
+      console.log(props.startTime, "start time");
+      console.log(props.endTime, "endtime");
+      if (
+        response.data &&
+        response.data.is_homekitchen &&
+        props.startTime &&
+        props.endTime
+      ) {
+        const currentTime = new Date();
+        const currentHours = currentTime.getHours().toString().padStart(2, "0");
+        const currentMinutes = currentTime
+          .getMinutes()
+          .toString()
+          .padStart(2, "0");
+        const currentTimeString = `${currentHours}:${currentMinutes}`;
+
+        setIsWithinTimeRange(
+          currentTimeString >= props.startTime &&
+            currentTimeString <= props.endTime
+        );
+      }
+    };
+
+    fetchRestaurant();
+  }, []);
+
   return (
     <div
       className="card mt-2"
@@ -103,9 +142,10 @@ export default function FoodCard_Restaurant(props) {
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   Tk {Math.floor(props.offeredPrice)}
                 </span>
-                <br/>
+                <br />
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                <i class="fa-solid fa-tags"></i> {props.discountPercentage}% off
+                  <i class="fa-solid fa-tags"></i> {props.discountPercentage}%
+                  off
                 </span>
               </>
             ) : (
@@ -113,13 +153,33 @@ export default function FoodCard_Restaurant(props) {
             )}
           </div>
 
-          <button
-            className="btn btn-md"
-            style={{ backgroundColor: "#ff8a00", color: "white" }}
-            onClick={onClick}
-          >
-            <FontAwesomeIcon icon={faCartPlus} /> {/* Add the cart icon */}
-          </button>
+          {restaurant && restaurant.is_homekitchen ? (
+            isWithinTimeRange ? (
+              <button
+                className="btn btn-md"
+                style={{ backgroundColor: "#ff8a00", color: "white" }}
+                onClick={onClick}
+              >
+                <FontAwesomeIcon icon={faCartPlus} />
+              </button>
+            ) : (
+              <button
+                className="btn btn-md"
+                style={{ backgroundColor: "#ff8a00", color: "white" }}
+                onClick={onClick}
+              >
+                Preorder
+              </button>
+            )
+          ) : (
+            <button
+              className="btn btn-md"
+              style={{ backgroundColor: "#ff8a00", color: "white" }}
+              onClick={onClick}
+            >
+              <FontAwesomeIcon icon={faCartPlus} />
+            </button>
+          )}
         </div>
       </div>
     </div>

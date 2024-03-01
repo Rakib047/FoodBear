@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -8,7 +8,26 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
     CategoryName: "", // Changed to CategoryName
     price: "",
     img: "",
+    startTime: "",
+    endTime: "",
+    minOrder: "",
   });
+
+  const [restaurant, setRestaurant] = useState(null);
+
+  useEffect(() => {
+    if (show) {
+      const fetchRestaurant = async () => {
+        const restaurant_id = localStorage.getItem("restaurant_id");
+        const response = await axios.get(
+          `http://localhost:4010/api/restaurant/homekitchen/${restaurant_id}`
+        );
+        
+        setRestaurant(response.data);
+      };
+      fetchRestaurant();
+    }
+  }, [show]);
 
   const onChange = (e) => {
     setFood({ ...food, [e.target.name]: e.target.value });
@@ -54,6 +73,11 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
         price: food.price,
         img: food.img,
         restaurant_id: localStorage.getItem("restaurant_id"),
+
+        //for homekitchen only
+        startTime: food.startTime,
+        endTime: food.endTime,
+        minOrder: food.minOrder,
       }
     );
 
@@ -191,12 +215,47 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
               onChange={onChange}
             />
           </Form.Group>
+          
+          {restaurant && restaurant.is_homekitchen && (
+            <>
+              <Form.Group controlId="startTime">
+                <Form.Label>Start Time</Form.Label>
+                <Form.Control
+                  type="time"
+                  name="startTime"
+                  value={food.startTime}
+                  onChange={onChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="endTime">
+                <Form.Label>End Time</Form.Label>
+                <Form.Control
+                  type="time"
+                  name="endTime"
+                  value={food.endTime}
+                  onChange={onChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="minOrder">
+                <Form.Label>Minimum Order Requirement</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter minimum order requirement"
+                  name="minOrder"
+                  value={food.minOrder}
+                  onChange={onChange}
+                />
+              </Form.Group>
+            </>
+          )}
+
           <div className="modal-footer">
             <Button variant="success" size="sm" onClick={handleAddSubmit}>
               Add food
             </Button>
           </div>
         </Form>
+
       </Modal.Body>
     </Modal>
   );

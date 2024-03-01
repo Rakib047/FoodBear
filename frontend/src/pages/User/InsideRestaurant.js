@@ -706,7 +706,7 @@ export default function ShowFoods_Restaurant() {
               <div
                 key={index}
                 className="card m-2"
-                style={{ width: "18rem", backgroundColor: "#f8f9fa"}}
+                style={{ width: "18rem", backgroundColor: "#f8f9fa" }}
               >
                 <div className="card-body">
                   <h5 className="card-title">{voucher.code}</h5>
@@ -762,6 +762,10 @@ export default function ShowFoods_Restaurant() {
                             isDiscounted={true}
                             is_instock={correspondingFood.is_instock}
                             discountPercentage={foodItem.discountPercentage}
+                            //homekitchen part
+                            startTime={foodItem.startTime}
+                            endTime={foodItem.endTime}
+                            minOrder={foodItem.minOrder}
                           ></Card>
                         </div>
                       )
@@ -808,6 +812,10 @@ export default function ShowFoods_Restaurant() {
                         price={foodItem.price}
                         is_instock={foodItem.is_instock}
                         isDiscounted={false}
+                        //homekitchen part
+                        startTime={foodItem.startTime}
+                        endTime={foodItem.endTime}
+                        minOrder={foodItem.minOrder}
                       ></Card>
                     </div>
                   ))}

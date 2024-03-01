@@ -163,6 +163,10 @@ const addFood = async (req, res) => {
       CategoryName: req.body.CategoryName,
       price: req.body.price,
       img: req.body.img,
+
+      startTime: req.body.startTime, // added field homekitchen
+      endTime: req.body.endTime, // added field homekitchen
+      minOrder: req.body.minOrder, // added field homekitchen
     });
     res.json({ message: "New food added!" });
   } catch (error) {
@@ -511,6 +515,16 @@ const addOfferFoodCategory = async (req, res) => {
   }
 }
 
+const getRestaurantInfo = async (req, res) => {
+  try {
+    const restaurant = await RestaurantModel.findById(req.params.restaurant_id);
+    res.status(200).json(restaurant);
+  } catch (error) {
+    console.log("error in getting restaurant info");
+    res.json({ message: "restaurant info not found!" });
+  }
+}
+
 
 
 
@@ -538,4 +552,5 @@ module.exports = {
   editOfferedFood,
   getSpecificOfferedFoodForSpecificRestaurant,
   addOfferFoodCategory,
+  getRestaurantInfo
 };
