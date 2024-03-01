@@ -84,7 +84,7 @@ export const MyCart = () => {
         );
 
         const foodResults = await Promise.all(foodPromises);
-        console.log(foodResults);
+
         // Calculate unique food items with quantity and total price
         const uniqueFoodItems = {};
         let totalPrice = 0;
@@ -247,8 +247,55 @@ export const MyCart = () => {
     setPaymentMethod(event.target.value);
   };
 
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [restaurant, setRestaurant] = useState(null);
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4010/api/restaurant/homekitchen/${localStorage.getItem(
+            "restaurant_id"
+          )}`
+        );
+        setRestaurant(response.data);
+      } catch (error) {
+        console.error("Error fetching restaurant data:", error);
+      }
+    };
+
+    fetchRestaurant();
+  }, []);
+
   const handleOrder = async () => {
     try {
+      //check min order is satisfied or not
+      if (restaurant !== null && restaurant.is_homekitchen) {
+        // Fetch minimum order quantity for each food item
+        const minOrderPromises = foodItems.map((foodItem) =>
+          axios
+            .get(`http://localhost:4010/api/order/homekitchen/${foodItem.id}`)
+            .then((response) => response.data.minOrder)
+        );
+
+        // Wait for all promises to resolve
+        const minOrderQuantities = await Promise.all(minOrderPromises);
+
+        // Check if each food item meets the minimum order requirement
+        const allFoodItemsMeetMinOrder = foodItems.every(
+          (foodItem, index) => foodItem.quantity >= minOrderQuantities[index]
+        );
+
+        if (!allFoodItemsMeetMinOrder) {
+          // If any food item does not meet the minimum order requirement, show an error message
+          alert(
+            "One or more food items do not meet the minimum order requirement."
+          );
+          return;
+        }
+      }
+
       fetch("http://localhost:4010/api/order/user/orders/neworder", {
         method: "POST",
         headers: {
@@ -260,6 +307,8 @@ export const MyCart = () => {
           food_items: foodItems,
           restaurant_id: localStorage.getItem("restaurant_id"),
           payment_method: payment_method,
+          selectedTime: selectedTime,
+          selectedDay: selectedDay,
         }),
       });
       localStorage.removeItem("discount");
@@ -287,7 +336,6 @@ export const MyCart = () => {
 
   useEffect(() => {
     // Perform your action here
-    console.log(totalPrice);
     setTotalPrice(totalPrice);
   }, [totalPrice]);
 
@@ -304,7 +352,7 @@ export const MyCart = () => {
     const voucher = response.data[0];
     const userId = localStorage.getItem("user_id");
     const user = voucher.users.find((user) => user.user_id === userId);
-    if(user.usage > 0) user.usage -= 1;
+    if (user.usage > 0) user.usage -= 1;
     await axios.put(
       `http://localhost:4010/api/voucher/updatevoucher/${voucher._id}`,
       {
@@ -396,12 +444,13 @@ export const MyCart = () => {
                         handleDecreaseQuantity={handleDecreaseQuantity}
                         handleDeleteQuantity={handleDeleteQuantity}
                         handleVoucherRemove={handleVoucherRemove}
-
                         //homekitchen stuffs
                         startTime={foodItem.startTime}
                         endTime={foodItem.endTime}
                         minOrder={foodItem.minOrder}
                         daysOfWeek={foodItem.daysOfWeek}
+                        setSelectedTime={setSelectedTime}
+                        setSelectedDay={setSelectedDay}
                       />
                     </div>
                   ))}

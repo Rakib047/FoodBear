@@ -52,7 +52,16 @@ const OrderSchema = new Schema({
     total_price: {
         type: Number,
         required: true
+    },
+
+    //for homekitchen only
+    selectedTime:{
+        type: String,
+    },
+    selectedDay:{
+        type: String,
     }
+    
 });
 
 module.exports = mongoose.model("order", OrderSchema);

@@ -125,6 +125,17 @@ export default function FoodCard_Restaurant(props) {
     return earthRadiusKm * c; // Distance in kilometers
   };
 
+  const [specificOrder, setSpecificOrder] = useState(null);
+
+  useEffect(() => {
+    const fetchSpecificOrder = async () => {
+      const response = await axios.get(`http://localhost:4010/api/homekitchen/getorder/${props._id}`);
+      setSpecificOrder(response.data);
+      console.log(response.data);
+    }
+    fetchSpecificOrder();
+  },[])
+
   const handleAccept = async () => {
     let dp_id = "";
 

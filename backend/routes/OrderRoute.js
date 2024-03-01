@@ -48,4 +48,5 @@ router.route("/offer/getoffercatagory")
 //weired!!!
 router.route("/homekitchen/:foodId")
       .get(controllers.getFoodForHomeKitchen)
+
 module.exports = router;

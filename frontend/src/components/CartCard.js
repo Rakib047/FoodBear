@@ -60,6 +60,38 @@ export const CartCard = (props) => {
     fetchData();
   }, []);
 
+  const [time, setSelectedTime] = useState("");
+  const [day, setSelectedDay] = useState("");
+
+  const handleSave = () => {
+    // Check if the selected day is in the range of available days
+    if (!props.daysOfWeek.includes(day)) {
+      alert("The selected day is not available. Please choose another day.");
+      return;
+    }
+  
+    // Check if the selected time is in the range of available times
+    const selectedTimeInMinutes = convertTimeToMinutes(time);
+    const startTimeInMinutes = convertTimeToMinutes(props.startTime);
+    const endTimeInMinutes = convertTimeToMinutes(props.endTime);
+  
+    if (selectedTimeInMinutes < startTimeInMinutes || selectedTimeInMinutes > endTimeInMinutes) {
+      alert("The selected time is not available. Please choose another time.");
+      return;
+    }
+    alert(`Selected day: ${day}, Selected time: ${time}`);
+    props.setSelectedDay(day);
+    props.setSelectedTime(time);
+    handleClose();
+    // If the selected day and time are valid, perform an action
+    // For example, you could send the selected day and time to a server
+  };
+
+  const convertTimeToMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
   return (
     <div
       className="card mt-3"
@@ -113,10 +145,23 @@ export const CartCard = (props) => {
               <p>Available days: {props.daysOfWeek.join(", ")}</p>
               <form>
                 <label for="appt-time">Choose a time:</label>
-                <br/>
-                <input type="time" id="appt-time" name="appt-time" required  style={{padding:"1px"}}/>
-                
-                <select id="appt-day" name="appt-day" required style={{marginLeft:"14px",padding:"4px"}}>
+                <br />
+                <input
+                  type="time"
+                  id="appt-time"
+                  name="appt-time"
+                  required
+                  style={{ padding: "1px" }}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                />
+
+                <select
+                  id="appt-day"
+                  name="appt-day"
+                  required
+                  style={{ marginLeft: "14px", padding: "4px" }}
+                  onChange={(e) => setSelectedDay(e.target.value)}
+                >
                   <option value="">--Select a day--</option>
                   <option value="Monday">Monday</option>
                   <option value="Tuesday">Tuesday</option>
@@ -132,7 +177,7 @@ export const CartCard = (props) => {
               <Button variant="secondary" onClick={handleClose}>
                 Close
               </Button>
-              <Button variant="primary" onClick={handleClose}>
+              <Button variant="primary" onClick={handleSave}>
                 Save Changes
               </Button>
             </Modal.Footer>

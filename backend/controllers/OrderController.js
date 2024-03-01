@@ -32,6 +32,8 @@ const placeUserOrder = async(req,res)=>{
       food_items: received_food_items,
       total_price: req.body.total_price,
       payment_method: req.body.payment_method,
+      selectedTime: req.body.selectedTime,
+      selectedDay: req.body.selectedDay
     });
     //console.log("in temp",temp)
     res.json({ message: "New order placed!" });
@@ -226,6 +228,8 @@ const getFoodForHomeKitchen = async (req, res) => {
   }
 }
 
+
+
 module.exports={
     getFoods,
     placeUserOrder,
@@ -239,5 +243,5 @@ module.exports={
     deliverOrder,
     findCatagory,
     getAllOrders,
-    getFoodForHomeKitchen
+    getFoodForHomeKitchen,
 }

@@ -7,6 +7,7 @@ const OfferedFoodModel = require("../models/OfferedFoodModel");
 const OfferFoodCategoryModel = require("../models/OfferFoodCatagory");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const OrderModel = require("../models/OrderModel");
 const jwtSecret =
   "EverythinginthisworldisChaoticthereisnomeaningofLifewehavetojustcreateit";
 
@@ -525,6 +526,7 @@ const getRestaurantInfo = async (req, res) => {
     res.json({ message: "restaurant info not found!" });
   }
 }
+
 
 
 
