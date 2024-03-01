@@ -155,6 +155,7 @@ export default function ShowFoods_Restaurant() {
                             startTime={correspondingFood.startTime}
                             endTime={correspondingFood.endTime}
                             minOrder={correspondingFood.minOrder}
+                            daysOfWeek={correspondingFood.daysOfWeek}
                           ></Card>
                         </div>
                       )
@@ -205,6 +206,7 @@ export default function ShowFoods_Restaurant() {
                         isAddedToOffer={offeredFoods.some(
                           (offeredFood) => offeredFood.foodId === foodItem._id
                         )}
+                        daysOfWeek={foodItem.daysOfWeek}
                       ></Card>
                     </div>
                   ))}

@@ -164,6 +164,7 @@ const addFood = async (req, res) => {
       price: req.body.price,
       img: req.body.img,
 
+      daysOfWeek: req.body.daysOfWeek, // added field daysOfWeek homekitchen
       startTime: req.body.startTime, // added field homekitchen
       endTime: req.body.endTime, // added field homekitchen
       minOrder: req.body.minOrder, // added field homekitchen
@@ -552,5 +553,5 @@ module.exports = {
   editOfferedFood,
   getSpecificOfferedFoodForSpecificRestaurant,
   addOfferFoodCategory,
-  getRestaurantInfo
+  getRestaurantInfo,
 };

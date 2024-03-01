@@ -17,9 +17,12 @@ export default function (props) {
           method: "DELETE",
         }
       );
-      const response2 = await axios.delete(
-        `http://localhost:4010/api/restaurant/offer/${props.restaurant_id}/${props._id}`
-      );
+
+      if (props.isDiscounted) {
+        const response2 = await axios.delete(
+          `http://localhost:4010/api/restaurant/offer/${props.restaurant_id}/${props._id}`
+        );
+      }
 
       if (response.status === 200) {
         window.location.href = "/restaurant/foods";
@@ -47,11 +50,27 @@ export default function (props) {
     startTime: props.startTime,
     endTime: props.endTime,
     minOrder: props.minOrder,
+    daysOfWeek: props.daysOfWeek || [], // added field daysOfWeek
   });
 
   const handleEditChange = (event) => {
-    setEditedFood({ ...editedFood, [event.target.name]: event.target.value });
+    const { name, value, type, checked } = event.target;
+  
+    if (type === 'checkbox' && name === 'daysOfWeek') {
+      setEditedFood(prevFood => {
+        if (checked) {
+          // Add the day to the array if it's not already included
+          return { ...prevFood, daysOfWeek: [...prevFood.daysOfWeek, value] };
+        } else {
+          // Remove the day from the array
+          return { ...prevFood, daysOfWeek: prevFood.daysOfWeek.filter(day => day !== value) };
+        }
+      });
+    } else {
+      setEditedFood(prevFood => ({ ...prevFood, [name]: value }));
+    }
   };
+  
 
   const handleEditSubmit = async () => {
     try {
@@ -254,6 +273,19 @@ export default function (props) {
     };
     fetchRestaurant();
   }, [props.restaurant_id]);
+
+  const [food, setFood] = useState(null);
+  useEffect(() => {
+    const fetchFood = async () => {
+      console.log(props._id, "food id");
+      const response = await axios.get(
+        `http://localhost:4010/api/order/homekitchen/${props._id}`
+      );
+      console.log(response.data, "fetchedddd foood");
+      setFood(response.data);
+    };
+    fetchFood();
+  }, []);
 
   return (
     <div>
@@ -460,36 +492,62 @@ export default function (props) {
                     />
                   </Form.Group>
 
-                  <Form.Group controlId="formStartTime">
-                    <Form.Label>Start Time</Form.Label>
-                    <Form.Control
-                      type="time"
-                      name="startTime"
-                      value={editedFood.startTime || ""}
-                      onChange={handleEditChange}
-                    />
-                  </Form.Group>
+                  {restaurant && restaurant.is_homekitchen && (
+                    <>
+                      <Form.Group controlId="daysOfWeek">
+                        <Form.Label>Days of Week</Form.Label>
+                        {[
+                          "Sunday",
+                          "Monday",
+                          "Tuesday",
+                          "Wednesday",
+                          "Thursday",
+                          "Friday",
+                          "Saturday",
+                        ].map((day, index) => (
+                          <Form.Check
+                            type="checkbox"
+                            label={day}
+                            name="daysOfWeek"
+                            value={day}
+                            checked={editedFood.daysOfWeek.includes(day)}
+                            onChange={handleEditChange}
+                            key={index}
+                          />
+                        ))}
+                      </Form.Group>
 
-                  <Form.Group controlId="formEndTime">
-                    <Form.Label>End Time</Form.Label>
-                    <Form.Control
-                      type="time"
-                      name="endTime"
-                      value={editedFood.endTime || ""}
-                      onChange={handleEditChange}
-                    />
-                  </Form.Group>
+                      <Form.Group controlId="formStartTime">
+                        <Form.Label>Start Time</Form.Label>
+                        <Form.Control
+                          type="time"
+                          name="startTime"
+                          value={editedFood.startTime || ""}
+                          onChange={handleEditChange}
+                        />
+                      </Form.Group>
 
-                  <Form.Group controlId="formMinOrder">
-                    <Form.Label>Minimum Order</Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="minOrder"
-                      value={editedFood.minOrder || ""}
-                      onChange={handleEditChange}
-                    />
-                  </Form.Group>
+                      <Form.Group controlId="formEndTime">
+                        <Form.Label>End Time</Form.Label>
+                        <Form.Control
+                          type="time"
+                          name="endTime"
+                          value={editedFood.endTime || ""}
+                          onChange={handleEditChange}
+                        />
+                      </Form.Group>
 
+                      <Form.Group controlId="formMinOrder">
+                        <Form.Label>Minimum Order</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="minOrder"
+                          value={editedFood.minOrder || ""}
+                          onChange={handleEditChange}
+                        />
+                      </Form.Group>
+                    </>
+                  )}
                 </Form>
               </div>
               <div className="modal-footer">

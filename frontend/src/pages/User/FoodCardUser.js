@@ -168,7 +168,7 @@ export default function FoodCard_Restaurant(props) {
                 style={{ backgroundColor: "#ff8a00", color: "white" }}
                 onClick={onClick}
               >
-                Preorder
+                <i class="fa-solid fa-clock"></i>
               </button>
             )
           ) : (

@@ -37,6 +37,10 @@ const FoodSchema = new Schema({
   minOrder: {
     type: Number,
   },
+  daysOfWeek: {
+    type: [String], // An array of strings
+    default: [], // Default value is an empty array
+  },
 });
 
 module.exports = mongoose.model("foods", FoodSchema);

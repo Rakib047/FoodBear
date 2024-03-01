@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -11,6 +11,7 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
     startTime: "",
     endTime: "",
     minOrder: "",
+    daysOfWeek: [],
   });
 
   const [restaurant, setRestaurant] = useState(null);
@@ -22,7 +23,7 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
         const response = await axios.get(
           `http://localhost:4010/api/restaurant/homekitchen/${restaurant_id}`
         );
-        
+
         setRestaurant(response.data);
       };
       fetchRestaurant();
@@ -30,7 +31,25 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
   }, [show]);
 
   const onChange = (e) => {
-    setFood({ ...food, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+
+    if (type === 'checkbox' && name === 'daysOfWeek') {
+      setFood(prevFood => {
+        if (checked) {
+          // Add the day to the array if it's not already included
+          if (!prevFood.daysOfWeek.includes(value)) {
+            return { ...prevFood, daysOfWeek: [...prevFood.daysOfWeek, value] };
+          }
+        } else {
+          // Remove the day from the array
+          return { ...prevFood, daysOfWeek: prevFood.daysOfWeek.filter(day => day !== value) };
+        }
+        // Return the previous state if no changes were made
+        return prevFood;
+      });
+    } else {
+      setFood({ ...food, [name]: value });
+    }
   };
 
   const validateForm = () => {
@@ -75,6 +94,7 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
         restaurant_id: localStorage.getItem("restaurant_id"),
 
         //for homekitchen only
+        daysOfWeek: food.daysOfWeek,
         startTime: food.startTime,
         endTime: food.endTime,
         minOrder: food.minOrder,
@@ -215,9 +235,32 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
               onChange={onChange}
             />
           </Form.Group>
-          
+
           {restaurant && restaurant.is_homekitchen && (
             <>
+              <Form.Group controlId="daysOfWeek">
+                <Form.Label>Days of Week</Form.Label>
+                {[
+                  "Sunday",
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                ].map((day, index) => (
+                  <Form.Check
+                    type="checkbox"
+                    label={day}
+                    name="daysOfWeek"
+                    value={day}
+                    checked={food.daysOfWeek.includes(day)}
+                    onChange={onChange}
+                    key={index}
+                  />
+                ))}
+              </Form.Group>
+
               <Form.Group controlId="startTime">
                 <Form.Label>Start Time</Form.Label>
                 <Form.Control
@@ -255,7 +298,6 @@ const AddFoodModal = ({ show, onHide, onSubmit }) => {
             </Button>
           </div>
         </Form>
-
       </Modal.Body>
     </Modal>
   );
