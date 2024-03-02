@@ -50,6 +50,7 @@ export default function FoodCard_Restaurant(props) {
   }, []);
 
   const handleReject = async () => {
+    setPreorderAccepted(false);
     let response = await fetch(
       `http://localhost:4010/api/order/restaurant/deleteorder/${props._id}`,
       {
@@ -140,6 +141,7 @@ export default function FoodCard_Restaurant(props) {
 
   const handleAccept = async () => {
     let dp_id = "";
+    setPreorderAccepted(false);
 
     const eligibleDeliveryPersons = deliverypersons.filter((deliveryperson) => {
       const distance = calculateDistance(
@@ -203,20 +205,27 @@ export default function FoodCard_Restaurant(props) {
   };
 
   const [showPreorderButton, setShowPreorderButton] = useState(false);
-  const [preorderAccepted, setPreorderAccepted] = useState(false);
+  const [preorderAccepted, setPreorderAccepted] = useState(
+    localStorage.getItem("preorderAccepted") === "true"
+  );
+
+  useEffect(() => {
+    // Save the preorderAccepted state to localStorage
+    localStorage.setItem("preorderAccepted", preorderAccepted);
+  }, [preorderAccepted]);
 
   const handlePreorder = async () => {
     let response = await axios.put(
       `http://localhost:4010/api/homekitchen/acceptpreorder/${props._id}`,
       {},
       {
-      headers: {
-        "Content-Type": "application/json",
-      },
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
 
-    console.log(response.status,"predorder er");
+    console.log(response.status, "predorder er");
 
     if (response.status === 200) {
       console.log("Preorder accepted");
@@ -225,7 +234,11 @@ export default function FoodCard_Restaurant(props) {
   };
 
   useEffect(() => {
-    if (restaurant.is_homekitchen && specificOrder.selectedTime && specificOrder.selectedDay) {
+    if (
+      restaurant.is_homekitchen &&
+      specificOrder.selectedTime &&
+      specificOrder.selectedDay
+    ) {
       const checkOrderTime = () => {
         const currentTime = new Date();
         const [hours, minutes] = specificOrder.selectedTime
@@ -353,42 +366,51 @@ export default function FoodCard_Restaurant(props) {
             </div>
           </div>
 
-          { (props.status === "pending"||props.status==="preordered") && (
-              <div className="d-flex flex-row justify-content-end mt-2">
-                <button
-                  className="btn btn-outline-danger btn-sm me-4"
-                  onClick={() => handleReject()}
-                >
-                  Reject
-                </button>
-                {showPreorderButton ? (
-                  preorderAccepted ? (
-                    <h5>
+          {(props.status === "pending" || props.status === "preordered") && (
+            <div className="d-flex flex-row justify-content-end mt-2">
+              <button
+                className="btn btn-outline-danger btn-sm me-4"
+                onClick={() => handleReject()}
+              >
+                Reject
+              </button>
+              {showPreorderButton ? (
+                preorderAccepted ? (
+                  <h5>
                     <span
                       className="badge bg-warning text-white badge-lg"
                       style={{ alignSelf: "flex-start" }}
                     >
                       Preorder Accepted
                     </span>
-                  </h5>
-                  ) : (
-                    <button
-                      className="btn btn-outline-primary btn-sm"
-                      onClick={() => handlePreorder()}
+
+                    <br />
+
+                    <span
+                      className="badge bg-info text-white badge-lg"
+                      style={{ alignSelf: "flex-start", marginTop: "5px",marginLeft:"5px" }}
                     >
-                      Accept Preorder
-                    </button>
-                  )
+                        {props.selectedDay} at {props.selectedTime}
+                    </span>
+                  </h5>
                 ) : (
                   <button
-                    className="btn btn-outline-success btn-sm"
-                    onClick={() => handleAccept()}
+                    className="btn btn-outline-primary btn-sm"
+                    onClick={() => handlePreorder()}
                   >
-                    Start Cooking
+                    Accept Preorder
                   </button>
-                )}
-              </div>
-            )}
+                )
+              ) : (
+                <button
+                  className="btn btn-outline-success btn-sm"
+                  onClick={() => handleAccept()}
+                >
+                  Start Cooking
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
