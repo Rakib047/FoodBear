@@ -731,7 +731,7 @@ export default function ShowFoods_Restaurant() {
             const foodsInCategory = offeredFoods.filter(
               (foodItem) =>
                 foodItem.offeredCatagoryName === item.CategoryName &&
-                foodItem.restaurant_id === localStorage.getItem("restaurant_id")
+                foodItem.restaurant_id === localStorage.getItem("restaurant_id") && foodItem.is_instock === true
             );
 
             if (foodsInCategory.length > 0) {
@@ -789,7 +789,7 @@ export default function ShowFoods_Restaurant() {
                   localStorage.getItem("restaurant_id") &&
                 !offeredFoods.some(
                   (offeredFood) => offeredFood.foodId === foodItem._id
-                )
+                ) && foodItem.is_instock === true
             );
 
             if (foodsInCategory.length > 0) {
