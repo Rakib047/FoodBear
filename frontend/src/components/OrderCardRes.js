@@ -7,7 +7,6 @@ export default function FoodCard_Restaurant(props) {
   const [showModal, setShowModal] = useState(false); // State for showing the modal
   const [dpName, setDpName] = useState("");
 
-
   const handleMouseEnter = () => {
     setIsHovered(true);
   };
@@ -96,6 +95,7 @@ export default function FoodCard_Restaurant(props) {
       }
     );
     response = await response.json();
+    localStorage.setItem("homekitchen", response.is_homekitchen);
     setRestaurant(response);
   };
 
@@ -129,12 +129,14 @@ export default function FoodCard_Restaurant(props) {
 
   useEffect(() => {
     const fetchSpecificOrder = async () => {
-      const response = await axios.get(`http://localhost:4010/api/homekitchen/getorder/${props._id}`);
+      const response = await axios.get(
+        `http://localhost:4010/api/homekitchen/getorder/${props._id}`
+      );
       setSpecificOrder(response.data);
-      console.log(response.data);
-    }
+      console.log("order vai order");
+    };
     fetchSpecificOrder();
-  },[])
+  }, []);
 
   const handleAccept = async () => {
     let dp_id = "";
@@ -199,6 +201,67 @@ export default function FoodCard_Restaurant(props) {
       window.location.reload("http://localhost:3000/restaurant/dashboard");
     }, 1000); // 1000 milliseconds (1 second) delay
   };
+
+  const [showPreorderButton, setShowPreorderButton] = useState(false);
+  const [preorderAccepted, setPreorderAccepted] = useState(false);
+
+  const handlePreorder = async () => {
+    let response = await axios.put(
+      `http://localhost:4010/api/homekitchen/acceptpreorder/${props._id}`,
+      {},
+      {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      }
+    );
+
+    console.log(response.status,"predorder er");
+
+    if (response.status === 200) {
+      console.log("Preorder accepted");
+      setPreorderAccepted(true);
+    }
+  };
+
+  useEffect(() => {
+    if (restaurant.is_homekitchen && specificOrder.selectedTime && specificOrder.selectedDay) {
+      const checkOrderTime = () => {
+        const currentTime = new Date();
+        const [hours, minutes] = specificOrder.selectedTime
+          .split(":")
+          .map(Number);
+        const orderTime = new Date();
+        orderTime.setHours(hours, minutes, 0, 0);
+
+        const days = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        const currentDay = days[currentTime.getDay()];
+
+        if (
+          specificOrder.selectedDay !== currentDay ||
+          currentTime < orderTime
+        ) {
+          setShowPreorderButton(true);
+        } else {
+          setShowPreorderButton(false);
+        }
+      };
+
+      checkOrderTime(); // Check immediately when the component mounts
+
+      const intervalId = setInterval(checkOrderTime, 1000); // Then check every second
+
+      return () => clearInterval(intervalId); // Clean up on component unmount
+    }
+  }, [restaurant.is_homekitchen]); // Re-run the effect when restaurant.home_kitchen changes
 
   const cardStyle = {
     width: "100%",
@@ -272,7 +335,7 @@ export default function FoodCard_Restaurant(props) {
                       className="badge bg-success text-white badge-lg"
                       style={{ alignSelf: "flex-start" }}
                     >
-                      Confirmed
+                      Cooking
                     </span>
                   </h5>
                 )}
@@ -290,22 +353,42 @@ export default function FoodCard_Restaurant(props) {
             </div>
           </div>
 
-          {props.status === "pending" && (
-            <div className="d-flex flex-row justify-content-end mt-2">
-              <button
-                className="btn btn-outline-danger btn-sm me-4"
-                onClick={() => handleReject()}
-              >
-                Reject
-              </button>
-              <button
-                className="btn btn-outline-success btn-sm"
-                onClick={() => handleAccept()}
-              >
-                Accept
-              </button>
-            </div>
-          )}
+          { (props.status === "pending"||props.status==="preordered") && (
+              <div className="d-flex flex-row justify-content-end mt-2">
+                <button
+                  className="btn btn-outline-danger btn-sm me-4"
+                  onClick={() => handleReject()}
+                >
+                  Reject
+                </button>
+                {showPreorderButton ? (
+                  preorderAccepted ? (
+                    <h5>
+                    <span
+                      className="badge bg-warning text-white badge-lg"
+                      style={{ alignSelf: "flex-start" }}
+                    >
+                      Preorder Accepted
+                    </span>
+                  </h5>
+                  ) : (
+                    <button
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => handlePreorder()}
+                    >
+                      Accept Preorder
+                    </button>
+                  )
+                ) : (
+                  <button
+                    className="btn btn-outline-success btn-sm"
+                    onClick={() => handleAccept()}
+                  >
+                    Start Cooking
+                  </button>
+                )}
+              </div>
+            )}
         </div>
       </div>
 

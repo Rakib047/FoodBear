@@ -138,7 +138,7 @@ const RestaurantSalesPage = () => {
         case 'Weeks':
           return orderDate >= new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000); // Orders within the last 7 days
         case 'Months':
-          return orderDate.getMonth() === currentDate.getMonth();
+          return orderDate >= new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000);
         default:
           return true; // Return all orders if filter is not specified
       }
@@ -204,8 +204,8 @@ const RestaurantSalesPage = () => {
         case 'Weeks':
           return isSameWeek(orderDate, currentDate);
         case 'Months':
-          return orderDate.getMonth() === currentDate.getMonth() &&
-                 orderDate.getFullYear() === currentDate.getFullYear();
+          return orderDate >= new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000) && // Orders within the last 30 days
+          orderDate.getFullYear() === currentDate.getFullYear(); // And the order year is the current year
         default:
           return true; // Return all orders if filter is not specified
       }
@@ -344,7 +344,7 @@ const RestaurantSalesPage = () => {
             <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
                 <Card.Title>Market Average Order Volume</Card.Title>
-                <Card.Text>{otherRestaurantAvgOrder}</Card.Text>
+                <Card.Text>{otherRestaurantAvgOrder.toFixed(0)}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
@@ -353,7 +353,7 @@ const RestaurantSalesPage = () => {
             <Card className="mb-4 mt-3 p-3 text-center shadow" style={{ borderRadius: '15px' }}>
               <Card.Body>
                 <Card.Title>Market Average Earning</Card.Title>
-                <Card.Text><span>&#2547;</span> {otherRestaurantAvgEarnings}</Card.Text>
+                <Card.Text><span>&#2547;</span> {otherRestaurantAvgEarnings.toFixed(0)}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
