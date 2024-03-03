@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const colors= require("colors")
-//i donno .env does not work here why?
+//you can use any of the following
 //const MONGO_URI="mongodb+srv://rakib047:Rakib22422m@merndb.nlsauhz.mongodb.net/FoodBear?retryWrites=true&w=majority"
 const MONGO_URI="mongodb://localhost:27017/FoodBear_Local"
 const mongoDB = async() =>{
