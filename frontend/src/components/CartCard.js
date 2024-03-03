@@ -124,7 +124,7 @@ export const CartCard = (props) => {
                   backgroundColor: "#ff8a00",
                   color: "white",
                   marginRight: "4rem",
-                  marginTop: ".8rem",
+                  position:"relative"
                 }}
                 onClick={handleShow}
               >

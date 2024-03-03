@@ -71,17 +71,11 @@ export default function FoodCard_Restaurant(props) {
   useEffect(() => {
     const fetchRating = async () => {
       const userId = localStorage.getItem("user_id");
-      const response = await fetch(
-        `http://localhost:4010/api/restaurant/rating/${props.restaurant_id}/${userId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await axios.get(
+        `http://localhost:4010/api/order/orderReview/getOrderReviewRating/${userId}/${props.restaurant_id}/${props._id}`
       );
-      const data = await response.json();
-      setUserRating(data.rating); // Set user's rating
+      
+      setUserRating(response.data.rating); // Set user's rating
     };
 
     const renderReviewButtonOrRating = async () => {
@@ -130,33 +124,8 @@ export default function FoodCard_Restaurant(props) {
 
     fetchRating();
     renderReviewButtonOrRating();
-  }, [props.restaurant_id, reviewButtonOrRating]);
+  }, [reviewButtonOrRating]);
 
-  // Render review button or user's rating
-  // const renderReviewButtonOrRating = async () => {
-  //   const userId = localStorage.getItem("user_id");
-  //   const response = await axios.get(`http://localhost:4010/api/order/orderReview/getOrderReview/${userId}/${props.restaurant_id}/${props._id}`);
-
-  //   //console.log(response.data.found)
-  //   if (response.data.found) { //ei if else tar jaygay ei order ta reviewed kina check kora lagbe
-  //     return <p>You rated this {userRating} <i class="fa-solid fa-star" style={{ color: "#ff8a00" }}></i></p>;
-  //   }
-
-  //   return (
-  //     <Button
-  //       className="btn btn-primary"
-  //       style={{
-  //         position: "relative",
-  //         top: "15px",
-  //         backgroundColor: "#ff8a00",
-  //         borderColor: "#ff8a00",
-  //       }}
-  //       onClick={handleShowReviewModal}
-  //     >
-  //       Give Review
-  //     </Button>
-  //   );
-  // };
 
   return (
     <div

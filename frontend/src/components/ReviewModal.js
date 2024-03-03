@@ -33,6 +33,7 @@ const ReviewModal = ({ show, handleClose, restaurant_id,order_id }) => {
         userId: localStorage.getItem("user_id"),
         restaurantId: restaurant_id,
         orderId: order_id,
+        rating: userRating,
     }
     );
     

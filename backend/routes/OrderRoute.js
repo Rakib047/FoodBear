@@ -41,6 +41,9 @@ router.route("/orderReview/addOrderReview")
 router.route("/orderReview/getOrderReview/:userId/:restaurantId/:orderId")
       .get(controllers2.getOrderReview)
 
+router.route("/orderReview/getOrderReviewRating/:userId/:restaurantId/:orderId")
+      .get(controllers2.getOrderReviewRating)
+
 //this should not be here,but i had to keep it here as it was not working in the restaurant route
 router.route("/offer/getoffercatagory")
       .get(controllers.findCatagory)

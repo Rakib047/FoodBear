@@ -31,7 +31,27 @@ const getOrderReview = async (req, res) => {
   }
 };
 
+const getOrderReviewRating = async (req, res) => {
+  const { userId, restaurantId, orderId } = req.params;
+  try {
+    const orderReview = await OrderReviewModel.findOne({
+      userId,
+      restaurantId,
+      orderId,
+    });
+    if (!orderReview) {
+      return res.json({ found: false });
+    }
+    res.json({ found: true, rating: orderReview.rating });
+  } catch (error) {
+    console.error("Error fetching order review:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+
+}
+
 module.exports = {
   createOrderReview,
   getOrderReview,
+  getOrderReviewRating
 };

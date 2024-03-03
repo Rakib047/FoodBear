@@ -14,6 +14,10 @@ const OrderReviewSchema = new Schema({
     type: String,
     required: true,
   },
+  rating: {
+    type: Number,
+    required: false,
+  }
 });
 
 const OrderReview = mongoose.model("OrderReview", OrderReviewSchema);
