@@ -44,9 +44,18 @@ export default function FoodCard_Restaurant(props) {
     setUser(response);
   };
 
+  const [receivedRating, setReceivedRating] = useState(0);
+  const fetchRating = async () => {
+    const response = await axios.get(
+      `http://localhost:4010/api/order/orderReview/getOrderReviewRating/${props.user_id}/${props.restaurant_id}/${props._id}`
+    );
+    setReceivedRating(response.data.rating);
+  };
+
   useEffect(() => {
     fetchFoods();
     fetchUser();
+    fetchRating();
   }, []);
 
   const handleReject = async () => {
@@ -324,6 +333,26 @@ export default function FoodCard_Restaurant(props) {
             <p style={{ fontSize: "0.8rem", marginBottom: "0px" }}>
               {new Date(props.date).toLocaleString()}
             </p>
+            <br />
+            {props.status === "delivered" && (
+              <p
+                style={{
+                  fontSize: "0.8rem",
+                  marginBottom: "0px",
+                  fontWeight: "bold",
+                }}
+              >
+                {receivedRating === 0 || receivedRating === null
+                  ? "No rating yet"
+                  : `Received Rating: ${receivedRating}`}
+                <i
+                  className="fas fa-star"
+                  style={{
+                    color: "#ff8a00",
+                  }}
+                ></i>
+              </p>
+            )}
           </div>
 
           <div className="col-4">
@@ -388,9 +417,13 @@ export default function FoodCard_Restaurant(props) {
 
                     <span
                       className="badge bg-info text-white badge-lg"
-                      style={{ alignSelf: "flex-start", marginTop: "5px",marginLeft:"5px" }}
+                      style={{
+                        alignSelf: "flex-start",
+                        marginTop: "5px",
+                        marginLeft: "5px",
+                      }}
                     >
-                        {props.selectedDay} at {props.selectedTime}
+                      {props.selectedDay} at {props.selectedTime}
                     </span>
                   </h5>
                 ) : (
