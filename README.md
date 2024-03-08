@@ -9,7 +9,7 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 ### Home page and Authentications
 
 - Description: Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
-- Image: ![User Authentication](https://cosmosgroup.sgp1.digitaloceanspaces.com/news/4579660_Food%20Delivery%20Apps.jpg)
+- ![User Authentication](https://drive.google.com/file/d/1Wd29DAykbJm-VGmesx1va_EdskTUzuG6/view?usp=sharing)
 
 ### User Homepage
 
