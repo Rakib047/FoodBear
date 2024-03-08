@@ -1,6 +1,6 @@
 # FoodBear
 
-FoodBear is a food delivery website I developed as part of my 4-1 term project for the Software Development Sessional course at BUET. It allows users to order food from various restaurants conveniently.
+FoodBear is a food delivery website I developed as part of my 4-1 term project for the  CSE-408(Software Development Sessional) course at BUET. It allows users to order food from various restaurants conveniently.
 
 The website is built on the MERN stack, comprising MongoDB, Express.js, React.js, and Node.js. It includes features like location wise restaurant search, menu browsing, cart management,home kitchen,restaurant analytics,order tracking and many more to provide a seamless user experience.
 
@@ -75,7 +75,7 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/FoodBear.git
+   git clone https://github.com/Rakib047/FoodBear.git
    
 2. From root directory:
    ```sh
