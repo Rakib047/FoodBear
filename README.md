@@ -9,7 +9,7 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 ### Home page and Authentications
 
 - Description: Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
-- ![User Authentication](<iframe src="https://drive.google.com/file/d/1Wd29DAykbJm-VGmesx1va_EdskTUzuG6/preview" width="640" height="480" allow="autoplay"></iframe>)
+- ![User Authentication]("https://drive.google.com/file/d/1Wd29DAykbJm-VGmesx1va_EdskTUzuG6/preview")
 
 ### User Homepage
 
