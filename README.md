@@ -24,7 +24,7 @@ Enables users to search for restaurants based on various criteria such as locati
 ### Integration of Google Map Api
 
 - Description: Enables users to search for restaurants based on various criteria such as location, and ratings.
-- Image: ![Restaurant Search](images/restaurant_search.png)
+- Image: ![Restaurant Search](https://gcdnb.pbrd.co/images/HfAQon3YOKm1.png?o=1)
 
 ### Menu Browsing
 
