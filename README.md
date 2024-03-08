@@ -109,7 +109,7 @@ Enables users to use Google map for searching restaurant.
    npm start
 ## Note
 
-When setting up your database connection in `DB.js`, make sure to use the following URL:
+When setting up your database connection in `db.js`, make sure to use the following URL:
 
 ```javascript
 const MONGO_URI = "mongodb+srv://rakib047:Rakib22422m@merndb.nlsauhz.mongodb.net/FoodBear?retryWrites=true&w=majority";
