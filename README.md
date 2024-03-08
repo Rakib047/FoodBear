@@ -31,13 +31,13 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
 - Image: ![Order Tracking](images/order_tracking.png)
 
-## Installation
+## Installation (Backend)
 
 1. Clone the repository:
    ```sh
    git clone https://github.com/yourusername/FoodBear.git
    
-2. Backend Setup:
+2. From root directory:
    ```sh
    cd backend
    
@@ -48,17 +48,26 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 4. Start the Server:
    ```sh
    npm start
+   
+## Installation (Frontend)
+
+2. From root directory:
+   ```sh
+   cd frontend
+   
+3. Package Installation:
+   ```sh
+   npm install
+
+4. Start localhost:3000 port(you can run multiple ports):
+   ```sh
+   npm start
+
+
 ## Note
 
 When setting up your database connection in `DB.js`, make sure to use the following URL:
 
 ```javascript
 const MONGO_URI = "mongodb+srv://rakib047:Rakib22422m@merndb.nlsauhz.mongodb.net/FoodBear?retryWrites=true&w=majority";
-   
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/FoodBear.git
-   
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/FoodBear.git
+
