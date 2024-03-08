@@ -36,3 +36,29 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 1. Clone the repository:
    ```sh
    git clone https://github.com/yourusername/FoodBear.git
+   
+2. Backend Setup:
+   ```sh
+   cd backend
+   
+3. Package Installation:
+   ```sh
+   npm install
+
+4. Start the Server:
+   ```sh
+   npm start
+## Note
+
+When setting up your database connection in `DB.js`, make sure to use the following URL:
+
+```javascript
+const MONGO_URI = "mongodb+srv://rakib047:Rakib22422m@merndb.nlsauhz.mongodb.net/FoodBear?retryWrites=true&w=majority";
+   
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/FoodBear.git
+   
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/FoodBear.git
