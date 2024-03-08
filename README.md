@@ -6,10 +6,10 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 
 ## Features
 
-### User Authentication
+### Home page and Authentications
 
-- Description: Allows users to create accounts, log in, and manage their profiles.
-- Image: ![User Authentication](images/user_auth.png)
+- Description: Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
+- Image: ![User Authentication](file:///Users/rakibabdullah/Desktop/Screenshot%202024-03-08%20at%202.41.58%E2%80%AFPM.png)
 
 ### Restaurant Search
 
