@@ -50,6 +50,12 @@ const GoogleMap = ({ updateLocationName }) => {
     }
   };
 
+  useEffect(() => {
+    if (markerRef.current && locationName) {
+      markerRef.current.setTitle(locationName);
+    }
+  }, [locationName]);
+
   const handleApiLoaded = (map, maps) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -60,7 +66,7 @@ const GoogleMap = ({ updateLocationName }) => {
         markerRef.current = new maps.Marker({
           position: center,
           map,
-          title: "You are here!",
+          title: locationName,
           draggable: true,
         });
         markerRef.current.addListener("dragend", handleMarkerDragEnd);
