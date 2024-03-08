@@ -8,7 +8,7 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 
 ### Home page and Authentications
 
-#### Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
+####Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
 ![User Authentication](https://gcdnb.pbrd.co/images/UObLCMd3AKyY.png?o=1)
 
 ![User Authentication](https://gcdnb.pbrd.co/images/r9vPHo4di9Dm.png?o=1)
@@ -17,9 +17,10 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 
 ### User Homepage
 
-- Description: Enables users to search for restaurants based on various criteria such as location, and ratings.
-- Image: ![Restaurant Search](images/restaurant_search.png)
-- 
+####Enables users to search for restaurants based on various criteria such as location, and ratings.
+
+![Restaurant Search](https://gcdnb.pbrd.co/images/CopJbEddNsLT.png?o=1)
+
 ### Integration of Google Map Api
 
 - Description: Enables users to search for restaurants based on various criteria such as location, and ratings.
