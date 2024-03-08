@@ -11,9 +11,14 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 - Description: Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
 - Image: ![User Authentication](https://drive.google.com/file/d/1Wd29DAykbJm-VGmesx1va_EdskTUzuG6/view)
 
-### Restaurant Search
+### User Homepage
 
-- Description: Enables users to search for restaurants based on various criteria such as cuisine, location, and ratings.
+- Description: Enables users to search for restaurants based on various criteria such as location, and ratings.
+- Image: ![Restaurant Search](images/restaurant_search.png)
+- 
+### Integration of Google Map Api
+
+- Description: Enables users to search for restaurants based on various criteria such as location, and ratings.
 - Image: ![Restaurant Search](images/restaurant_search.png)
 
 ### Menu Browsing
@@ -26,7 +31,42 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 - Description: Allows users to add items to their cart, adjust quantities, and proceed to checkout.
 - Image: ![Cart Management](images/cart_management.png)
 
-### Order Tracking
+### Use Vouchers
+
+- Description: Allows users to add items to their cart, adjust quantities, and proceed to checkout.
+- Image: ![Cart Management](images/cart_management.png)
+
+### Order Tracking and Map integration
+
+- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+- Image: ![Order Tracking](images/order_tracking.png)
+
+### HomeKitchen
+
+- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+- Image: ![Order Tracking](images/order_tracking.png)
+
+### Order Reviews and Ratings
+
+- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+- Image: ![Order Tracking](images/order_tracking.png)
+
+### Restaurant Side Dashboard
+
+- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+- Image: ![Order Tracking](images/order_tracking.png)
+
+### Restaurant Side Menu
+
+- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+- Image: ![Order Tracking](images/order_tracking.png)
+
+### Restaurant Analytics
+
+- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+- Image: ![Order Tracking](images/order_tracking.png)
+
+### Deliveryperson Dashboard
 
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
 - Image: ![Order Tracking](images/order_tracking.png)
@@ -62,8 +102,6 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 4. Start localhost:3000 port(you can run multiple ports):
    ```sh
    npm start
-
-
 ## Note
 
 When setting up your database connection in `DB.js`, make sure to use the following URL:
