@@ -1,6 +1,8 @@
 # FoodBear
 
-FoodBear is a food delivery website aimed at providing users with a convenient platform to order food from various restaurants.
+FoodBear is a food delivery website I developed as part of my 4-1 term project for the Software Development Sessional course at BUET. It allows users to order food from various restaurants conveniently.
+
+The website is built on the MERN stack, comprising MongoDB, Express.js, React.js, and Node.js. It includes features like location wise restaurant search, menu browsing, cart management,home kitchen,restaurant analytics,order tracking and many more to provide a seamless user experience.
 
 ## Features
 
