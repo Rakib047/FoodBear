@@ -5,60 +5,42 @@ FoodBear is a food delivery website I developed as part of my 4-1 term project f
 The website is built on the MERN stack, comprising MongoDB, Express.js, React.js, and Node.js. It includes features like location wise restaurant search, menu browsing, cart management,home kitchen,restaurant analytics,order tracking and many more to provide a seamless user experience.
 ## Demo Video
 
-## Features
+## 📋 Features
 
-### Home page and Authentications
+### 🔐 Home Page & Authentication
+- **Account Creation and Login**: Users, Restaurants, and Delivery Personnel can create accounts, log in, and manage their profiles.
+  
+### 🏠 User Homepage
+- **Restaurant Search**: Search for restaurants based on criteria such as location, ratings, and categories.
 
-Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
+### 🌍 Google Maps Integration
+- **Restaurant Location**: Users can locate nearby restaurants using Google Maps.
 
-### User Homepage
+### 📖 Menu Browsing
+- **Filter & Sort Menus**: Users can browse restaurant menus with filtering and sorting options for easy discovery.
 
-Enables users to search for restaurants based on various criteria such as location, and ratings.
+### 🛒 Cart Management
+- **Manage Cart Items**: Add items to the cart, adjust quantities, and proceed to checkout smoothly.
 
+### 🎟️ Voucher System
+- **Apply Discounts**: Users can use vouchers to receive discounts during checkout.
 
-### Integration of Google Map Api
+### 📦 Order Tracking & Map Integration
+- **Real-Time Order Tracking**: Track order progress, from preparation to delivery, with real-time updates on a map.
 
-Enables users to use Google map for searching restaurant.
+### 🍳 Home Kitchen Feature
+- **Home-Cooked Meals**: Users can order unique, home-cooked meals directly from home chefs.
 
-### Menu Browsing
+### ⭐ Order Reviews & Ratings
+- **Leave Feedback**: Users can provide ratings and reviews on their orders and restaurant experiences.
 
-Displays restaurant menus with options for filtering and sorting.
+### 📊 Restaurant Dashboard
+- **Order Management**: Manage incoming orders and update their status in real time.
+- **Menu Management**: Add, edit, or remove menu items easily.
+- **Analytics**: Access performance analytics for business insights.
 
-### Cart Management
-
-Allows users to add items to their cart, adjust quantities, and proceed to checkout.
-
-### Use Vouchers
-
- Allows users to add items to their cart, adjust quantities, and proceed to checkout.
-
-### Order Tracking and Map integration
-
- Provides real-time updates on the status of orders, from preparation to delivery.
-
-### HomeKitchen
-
-Provides real-time updates on the status of orders, from preparation to delivery.
-
-### Order Reviews and Ratings
-
-Provides real-time updates on the status of orders, from preparation to delivery.
-
-### Restaurant Side Dashboard
-
-Provides real-time updates on the status of orders, from preparation to delivery.
-
-### Restaurant Side Menu
-
-Provides real-time updates on the status of orders, from preparation to delivery.
-
-### Restaurant Analytics
-
-Provides real-time updates on the status of orders, from preparation to delivery.
-
-### Deliveryperson Dashboard
-
-Provides real-time updates on the status of orders, from preparation to delivery.
+### 🚚 Delivery Person Dashboard
+- **Manage Deliveries**: Delivery personnel can view assigned orders, track delivery routes, and update order statuses.
 
 ## Installation (Backend)
 
