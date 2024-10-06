@@ -21,44 +21,43 @@ Enables users to use Google map for searching restaurant.
 
 ### Menu Browsing
 
-- Description: Displays restaurant menus with options for filtering and sorting.
+Displays restaurant menus with options for filtering and sorting.
 
 ### Cart Management
 
-- Description: Allows users to add items to their cart, adjust quantities, and proceed to checkout.
+Allows users to add items to their cart, adjust quantities, and proceed to checkout.
 
 ### Use Vouchers
 
-- Description: Allows users to add items to their cart, adjust quantities, and proceed to checkout.
+ Allows users to add items to their cart, adjust quantities, and proceed to checkout.
 
 ### Order Tracking and Map integration
 
-- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+ Provides real-time updates on the status of orders, from preparation to delivery.
 
 ### HomeKitchen
 
-- Description: Provides real-time updates on the status of orders, from preparation to delivery.
-- Image: ![Order Tracking](images/order_tracking.png)
+Provides real-time updates on the status of orders, from preparation to delivery.
 
 ### Order Reviews and Ratings
 
-- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+Provides real-time updates on the status of orders, from preparation to delivery.
 
 ### Restaurant Side Dashboard
 
-- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+Provides real-time updates on the status of orders, from preparation to delivery.
 
 ### Restaurant Side Menu
 
-- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+Provides real-time updates on the status of orders, from preparation to delivery.
 
 ### Restaurant Analytics
 
-- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+Provides real-time updates on the status of orders, from preparation to delivery.
 
 ### Deliveryperson Dashboard
 
-- Description: Provides real-time updates on the status of orders, from preparation to delivery.
+Provides real-time updates on the status of orders, from preparation to delivery.
 
 ## Installation (Backend)
 
