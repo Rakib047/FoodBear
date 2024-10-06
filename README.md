@@ -9,42 +9,31 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 ### Home page and Authentications
 
 Allows users,restaurants and delivery persons to create accounts, log in, and manage their profiles.
-![User Authentication](https://gcdnb.pbrd.co/images/UObLCMd3AKyY.png?o=1)
-
-![User Authentication](https://gcdnb.pbrd.co/images/r9vPHo4di9Dm.png?o=1)
-
-![User Authentication](https://gcdnb.pbrd.co/images/yZ7Qb4DQ9K96.png?o=1)
 
 ### User Homepage
 
 Enables users to search for restaurants based on various criteria such as location, and ratings.
 
-![Restaurant Search](https://gcdnb.pbrd.co/images/CopJbEddNsLT.png?o=1)
 
 ### Integration of Google Map Api
 
 Enables users to use Google map for searching restaurant.
-![Restaurant Search](https://gcdnb.pbrd.co/images/HfAQon3YOKm1.png?o=1)
 
 ### Menu Browsing
 
 - Description: Displays restaurant menus with options for filtering and sorting.
-- Image: ![Menu Browsing](images/menu_browsing.png)
 
 ### Cart Management
 
 - Description: Allows users to add items to their cart, adjust quantities, and proceed to checkout.
-- Image: ![Cart Management](images/cart_management.png)
 
 ### Use Vouchers
 
 - Description: Allows users to add items to their cart, adjust quantities, and proceed to checkout.
-- Image: ![Cart Management](images/cart_management.png)
 
 ### Order Tracking and Map integration
 
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
-- Image: ![Order Tracking](images/order_tracking.png)
 
 ### HomeKitchen
 
@@ -54,27 +43,22 @@ Enables users to use Google map for searching restaurant.
 ### Order Reviews and Ratings
 
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
-- Image: ![Order Tracking](images/order_tracking.png)
 
 ### Restaurant Side Dashboard
 
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
-- Image: ![Order Tracking](images/order_tracking.png)
 
 ### Restaurant Side Menu
 
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
-- Image: ![Order Tracking](images/order_tracking.png)
 
 ### Restaurant Analytics
 
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
-- Image: ![Order Tracking](images/order_tracking.png)
 
 ### Deliveryperson Dashboard
 
 - Description: Provides real-time updates on the status of orders, from preparation to delivery.
-- Image: ![Order Tracking](images/order_tracking.png)
 
 ## Installation (Backend)
 
