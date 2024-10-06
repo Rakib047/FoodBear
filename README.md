@@ -1,9 +1,9 @@
-# FoodBear
+# 🐻 FoodBear 🐻
 
 FoodBear is a food delivery website I developed as part of my 4-1 term project for the  CSE-408(Software Development Sessional) course at BUET. It allows users to order food from various restaurants conveniently.
 
 The website is built on the MERN stack, comprising MongoDB, Express.js, React.js, and Node.js. It includes features like location wise restaurant search, menu browsing, cart management,home kitchen,restaurant analytics,order tracking and many more to provide a seamless user experience.
-## Demo Video
+## 📺 Demo Video
 
 ## 📋 Features
 
@@ -42,7 +42,7 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 ### 🚚 Delivery Person Dashboard
 - **Manage Deliveries**: Delivery personnel can view assigned orders, track delivery routes, and update order statuses.
 
-## Installation (Backend)
+## 🔧 Installation (Backend)
 
 1. Clone the repository:
    ```sh
@@ -60,7 +60,7 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
    ```sh
    npm start
    
-## Installation (Frontend)
+## 🔧 Installation (Frontend)
 
 2. From root directory:
    ```sh
@@ -73,7 +73,7 @@ The website is built on the MERN stack, comprising MongoDB, Express.js, React.js
 4. Start localhost:3000 port(you can run multiple ports):
    ```sh
    npm start
-## Note
+## 📝 Note
 
 When setting up your database connection in `db.js`, make sure to use the following URL:
 
